@@ -23,10 +23,10 @@ const style = {
   transform: "translate(-50%, -50%)",
   bgcolor: "#fff",
   borderRadius: 2,
-  p: 6,
-  maxWidth: 1220,
+  p: "24px 48px",
+  maxWidth: 1060,
   width: "100%",
-  maxHeight: "90vh",
+  maxHeight: "85vh",
   overflowY: "auto",
 };
 
@@ -77,7 +77,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               id="user-details-title"
               variant="h6"
               fontWeight={700}
-              sx={{ textTransform: "capitalize", marginBottom: "6px" }}
+              sx={{ textTransform: "capitalize", marginBottom: "4px" }}
             >
               {userData.name}
             </Typography>
@@ -86,6 +86,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               variant="body2"
               fontWeight={400}
               color="#666D80"
+              fontSize={14}
             >
               Last Activity on {userData.least_active}
             </Typography>
