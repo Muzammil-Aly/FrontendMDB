@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,6 +16,8 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+
+  font-family: "Mulish", sans-serif;
 }
 
 body {
@@ -39,4 +43,19 @@ a {
   html {
     color-scheme: dark;
   }
+}
+.ag-theme-material .ag-header {
+  background-color: #ededf0 !important;
+  height: 48px !important;
+  display: flex;
+  align-items: center;
+}
+.ag-theme-material .ag-header-cell {
+  background-color: #ededf0 !important;
+  height: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-top: 8px;
 }
