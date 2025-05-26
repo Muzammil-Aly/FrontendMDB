@@ -4,12 +4,10 @@ import { users } from "@/constants/Grid-Table/ColDefs";
 import { usersRow } from "@/constants/Grid-Table/RowData";
 import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
 import { Box, Typography } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import UserDetailsModal from "./UserDetailsModal";
 import CustomSearchField from "@/components/Common/CustomSearch";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import dayjs, { Dayjs } from "dayjs";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { Search } from "@mui/icons-material";
 import SelectDatePicker from "@/components/Common/DatePicker/DatePicker";
 import debounce from "lodash.debounce";
@@ -18,7 +16,6 @@ const Profile = () => {
   const userCol = useUsersColumn(users);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs("2022-04-17"));
 
   const onRowClicked = (params: any) => {
     setSelectedUser(params.data);
@@ -28,10 +25,11 @@ const Profile = () => {
   const handleDate = (date: string | null) => {
     console.log("Selected Date:", date);
   };
-  const handleSearch = useCallback(
-    debounce((value: string) => {
-      console.log("debounced search", value);
-    }, 3000),
+  const handleSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        console.log("debounced search", value);
+      }, 3000),
     []
   );
 
@@ -69,12 +67,6 @@ const Profile = () => {
             <SelectDatePicker onDateChange={handleDate} label="Start date" />
             <SelectDatePicker onDateChange={handleDate} label="End date" />
           </Box>
-          {/* <DemoItem label="Controlled calendar">
-            <DateCalendar
-              value={value}
-              onChange={(newValue: any) => setValue(newValue)}
-            />
-          </DemoItem> */}
         </Box>
         <AgGridTable
           rowData={usersRow}

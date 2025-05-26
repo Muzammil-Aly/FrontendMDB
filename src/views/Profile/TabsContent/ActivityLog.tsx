@@ -10,7 +10,6 @@ import React from "react";
 import { usersData } from "../data";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloseIcon from "@mui/icons-material/Close";
 const ActivityLog = () => {
   return (
     <Box>

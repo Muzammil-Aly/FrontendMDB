@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Modal, Typography, Stack, AccordionDetails } from "@mui/material";
+import { Box, Modal, Typography, Stack } from "@mui/material";
 
 import { tabItems } from "./data";
 
