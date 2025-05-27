@@ -17,4 +17,5 @@ export type CustomTextFieldProps = TextFieldProps & {
   type?: string;
   acceptedFileFormats?: string;
   readOnly?: boolean;
+  setSearchQuery?: any;
 };

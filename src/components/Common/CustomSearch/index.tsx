@@ -1,23 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Box, InputAdornment, TextField, Typography } from "@mui/material";
-import { TextFieldProps } from "@mui/material";
 import { MouseEventHandler, ReactNode } from "react";
-
-export type CustomTextFieldProps = TextFieldProps & {
-  helperText?: string;
-  placeholder?: string;
-  startIcon?: ReactNode;
-  endIcon?: ReactNode;
-  onStartIconClick?: MouseEventHandler<HTMLSpanElement>;
-  onEndIconClick?: MouseEventHandler<HTMLSpanElement>;
-  width?: string | number;
-  height?: string;
-  background?: string;
-  fixedEndText?: string;
-  searchQuery?: string;
-  setSearchQuery?: any;
-};
+import { CustomTextFieldProps } from "../../../types/CustomTextFieldProps";
 
 const CustomSearchField: React.FC<CustomTextFieldProps> = ({
   label,
