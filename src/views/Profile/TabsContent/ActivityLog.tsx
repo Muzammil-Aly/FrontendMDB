@@ -30,7 +30,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
   const { data, isLoading, isError } = useGetProfileEventsQuery(profileId);
 
   const events = data?.data?.results || [];
-
+  console.log("events----", events);
   return (
     <Box>
       <Typography fontWeight={700} mb={2.5} fontSize={20}>
@@ -58,10 +58,28 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
               .filter(([k]) =>
                 [
                   "Recipient Email Address",
+                  "Recipient Email",
                   "Campaign Name",
                   "Subject",
                   "Inbox Provider",
                   "machine_open",
+                  "email_address",
+                  "Source Name",
+                  "ShippingRate",
+                  "FulfillmentStatus",
+                  "FulfillmentHours",
+                  "Collections",
+                  "browser",
+                  "os",
+                  "method_detail",
+                  "method",
+                  "subject",
+                  "from",
+                  "Name",
+                  "Price",
+                  "Categories",
+                  "CollectionName",
+                  "CollectionID",
                 ].includes(k)
               )
               .slice(0, 5);

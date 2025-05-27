@@ -20,7 +20,6 @@ const Profile = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const { data, isLoading } = useGetProfilesQuery();
-  console.log("data=---------", data);
   const rowData = useMemo(() => {
     const results = data?.data?.results || [];
 
@@ -43,7 +42,7 @@ const Profile = () => {
         postal: location.zip || "N/A",
         address: location.address1 || "N/A",
         subscriptions: item.attributes.subscriptions ?? {},
-        predictive_analytics:item.attributes.predictive_analytics ?? {},
+        predictive_analytics: item.attributes.predictive_analytics ?? {},
       };
     });
   }, [data]);
@@ -90,7 +89,7 @@ const Profile = () => {
           <Box mt={-1}>
             <CustomSearchField
               endIcon={<Search />}
-              placeholder="Search by name, email"
+              placeholder="Search by Name, Email"
               onChange={onChange}
             />
           </Box>
