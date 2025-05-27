@@ -12,17 +12,38 @@ export interface Column {
 }
 
 const StatusCell = ({ value }: { value: string }) => {
-  const isActive = value?.toLowerCase() === "active";
+  const status = value?.toLowerCase();
+
+  const styles = {
+    subscribed: {
+      bgcolor: "#E0F8E9", 
+      color: "#299438",
+    },
+    unsubscribed: {
+      bgcolor: "#FFF4E5", 
+      color: "#B26A00",
+    },
+    never_subscribed: {
+      bgcolor: "#FDECEA", 
+      color: "#D32F2F",
+    },
+    default: {
+      bgcolor: "#E3E8EB",
+      color: "#68717D",
+    },
+  };
+
+  const style = styles[status as keyof typeof styles] || styles.default;
+
   return (
     <Box
       sx={{
-        bgcolor: isActive ? "#E0F8E9" : "#E3E8EB",
-        color: isActive ? "#299438" : "#68717D",
+        ...style,
         fontWeight: 600,
         borderRadius: "12px",
         padding: "4px 12px",
         textTransform: "uppercase",
-        fontSize: 12,
+        fontSize: 13,
         display: "inline-block",
         textAlign: "center",
       }}
