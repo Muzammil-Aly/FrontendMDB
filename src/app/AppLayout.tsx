@@ -2,17 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import { Box } from "@mui/material";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const isAuthPage = pathname === "/sign-in" || pathname === "/forgot-password";
 
-  if (isAuthPage) {
-    return <>{children}</>;
-  }
-
-  return (
+  const content = (
     <Box
       sx={{
         display: "flex",
@@ -21,12 +19,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         overflow: "hidden",
       }}
     >
-      {/* <Box sx={{ flexShrink: 0 }}>
-        <Sidebar />
-      </Box> */}
       <Box component="main" sx={{ flexGrow: 1, overflowY: "auto" }}>
         {children}
       </Box>
     </Box>
   );
+
+  return <Provider store={store}>{isAuthPage ? children : content}</Provider>;
 }

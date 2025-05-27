@@ -1,12 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Modal, Typography, Stack } from "@mui/material";
 
 import { tabItems } from "./data";
 
 import CustomTabs from "@/components/Common/CustomTabs";
 import ActivityLog from "./TabsContent/ActivityLog";
-import Details from "./TabsContent/Details";
 import Subscription from "./TabsContent/Subscription";
 import OrderHistory from "./TabsContent/OrderHistory";
 import Predictive from "./TabsContent/Predictive";
@@ -35,10 +34,15 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   onClose,
   userData,
 }) => {
-  const [activeTab, setActiveTab] = useState("activity log");
+  const [activeTab, setActiveTab] = useState("subscriptions");
+  useEffect(() => {
+    if (open) {
+      setActiveTab("subscriptions");
+    }
+  }, [open]);
   if (!userData) return null;
   const userDetails = [
-    { label: "Mobile", value: userData.mobile },
+    { label: "Mobile", value: userData.phone_number },
     { label: "Email", value: userData.email },
     { label: "Organization", value: userData.organization },
     { label: "Address", value: userData.address },
@@ -48,16 +52,14 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   ];
   const renderTabs = (tab: string) => {
     switch (tab.toLowerCase()) {
-      case "activity log":
-        return <ActivityLog />;
-      case "details":
-        return <Details />;
       case "subscriptions":
-        return <Subscription />;
+        return <Subscription subscriptions={userData.subscriptions} />;
       case "order history":
         return <OrderHistory />;
-      case "predictive insights":
-        return <Predictive />;
+      case "activity log":
+        return <ActivityLog profileId={userData.id} />;
+      case "predictive analytics":
+        return <Predictive data={userData.predictive_analytics} />;
       default:
         return null;
     }
@@ -115,7 +117,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               >
                 <Typography fontWeight={600}>{label}:</Typography>
                 <Typography fontWeight={400} color="#666D80">
-                  {value || "-"}
+                  {value || "N/A"}
                 </Typography>
               </Stack>
             ))}
