@@ -1,8 +1,27 @@
 "use client";
 import React, { useState } from "react";
 import { Box, InputAdornment, TextField, Typography } from "@mui/material";
-import { MouseEventHandler, ReactNode } from "react";
-import { CustomTextFieldProps } from "../../../types/CustomTextFieldProps";
+import { TextFieldProps } from "@mui/material";
+import { ChangeEvent, MouseEventHandler, ReactNode } from "react";
+
+ type CustomTextFieldProps = TextFieldProps & {
+  helperText?: any;
+  placeholder?: string;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  onStartIconClick?: MouseEventHandler<HTMLSpanElement>;
+  onEndIconClick?: MouseEventHandler<HTMLSpanElement>;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  width?: string | number;
+  height?: string;
+  background?: string;
+  fixedEndText?: string;
+  min?: string | number;
+  type?: string;
+  acceptedFileFormats?: string;
+  readOnly?: boolean;
+  setSearchQuery?: any;
+};
 
 const CustomSearchField: React.FC<CustomTextFieldProps> = ({
   label,
