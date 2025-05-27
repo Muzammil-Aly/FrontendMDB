@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Box, InputAdornment, TextField, Typography } from "@mui/material";
 import { MouseEventHandler, ReactNode } from "react";
-import { CustomTextFieldProps } from "@/types/CustomTextFieldProps";
+import { CustomTextFieldProps } from "../../../types/CustomTextFieldProps";
 
 const CustomSearchField: React.FC<CustomTextFieldProps> = ({
   label,
