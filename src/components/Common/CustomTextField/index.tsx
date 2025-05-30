@@ -111,7 +111,6 @@ const CustomTextField: React.FC<CustomTextFieldProps> = forwardRef(
               color: "#344054",
               borderRadius: "6px",
               fontFamily: "Mulish, sans-serif",
-              // padding: "8px -8px",
               height: height || "47px",
               width: width || "100%",
               background: background || "transparent",

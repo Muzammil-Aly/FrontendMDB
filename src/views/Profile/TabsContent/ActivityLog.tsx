@@ -13,6 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import React from "react";
 import { useGetProfileEventsQuery } from "@/redux/services/profileApi";
+import { dummyActivityLog } from "../data";
 
 interface ActivityLogProps {
   profileId: string;
@@ -29,7 +30,7 @@ const SkeletonAccordion = () => (
 const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
   const { data, isLoading, isError } = useGetProfileEventsQuery(profileId);
 
-  const events = data?.data?.results || [];
+  const events = data?.data?.results || dummyActivityLog;
   console.log("events----", events);
   return (
     <Box>
@@ -44,7 +45,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
             <SkeletonAccordion />
             <SkeletonAccordion />
           </>
-        ) : isError ? (
+        ) : isError && dummyActivityLog.length === 0 ? (
           <Typography color="error">Failed to load activity logs.</Typography>
         ) : events.length === 0 ? (
           <Typography textAlign="center" color="text.secondary">

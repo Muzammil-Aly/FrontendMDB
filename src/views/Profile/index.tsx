@@ -1,10 +1,9 @@
 "use client";
-
 import AgGridTable from "@/components/ag-grid";
 import { users } from "@/constants/Grid-Table/ColDefs";
 import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
 import { Box, Typography } from "@mui/material";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
 import CustomSearchField from "@/components/Common/CustomSearch";
 import { Search } from "@mui/icons-material";
@@ -13,6 +12,8 @@ import debounce from "lodash.debounce";
 import { formatDate } from "@/utils/FormatDate";
 import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
+import axios from "axios";
+import { usersRow } from "@/constants/Grid-Table/RowData";
 
 const Profile = () => {
   const userCol = useUsersColumn(users);
@@ -58,13 +59,27 @@ const Profile = () => {
     () =>
       debounce((value: string) => {
         console.log("Search:", value);
-      }, 3000),
+      }, 2000),
     []
   );
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleSearch(e.target.value);
   };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://143.198.202.145:8000/api/klaviyo/profiles/"
+  //       );
+  //       console.log("data", response.data);
+  //     } catch (error) {
+  //       console.error("API error:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <Box
@@ -102,7 +117,8 @@ const Profile = () => {
         <Loader />
       ) : (
         <AgGridTable
-          rowData={rowData}
+          // rowData={rowData}
+          rowData={usersRow}
           columnDefs={userCol}
           onRowClicked={onRowClicked}
           height={450}
