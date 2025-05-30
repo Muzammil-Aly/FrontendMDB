@@ -8,14 +8,18 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
+import { dummySubscriptions } from "../data";
 interface SubscriptionProps {
   subscriptions: Record<string, any>;
+  // subscriptions: dummySubscriptions;
 }
 
-const Subscription: React.FC<SubscriptionProps> = ({ subscriptions }) => {
-  if (!subscriptions)
+const Subscription= () => {
+  // if (!subscriptions)
+  //   return <Typography>No subscription data available.</Typography>;
+   if (!dummySubscriptions)
     return <Typography>No subscription data available.</Typography>;
+  
 
   return (
     <Box>
@@ -24,7 +28,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ subscriptions }) => {
       </Typography>
 
       <Box sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
-        {Object.entries(subscriptions).map(([type, content], idx) => (
+        {Object.entries(dummySubscriptions).map(([type, content], idx) => (
           <Accordion key={idx}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -36,7 +40,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ subscriptions }) => {
               </Stack>
             </AccordionSummary>
             <AccordionDetails>
-              {Object.entries(content).map(([subType, subDetails], i) => (
+              {Object.entries(dummySubscriptions).map(([subType, subDetails], i) => (
                 <Box key={i} mb={2}>
                   <Typography fontWeight={700} fontSize={16} mb={1}>
                     {subType.charAt(0).toUpperCase() + subType.slice(1)}:
