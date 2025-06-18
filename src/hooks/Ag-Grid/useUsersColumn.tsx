@@ -16,15 +16,15 @@ const StatusCell = ({ value }: { value: string }) => {
 
   const styles = {
     subscribed: {
-      bgcolor: "#E0F8E9", 
+      bgcolor: "#E0F8E9",
       color: "#299438",
     },
     unsubscribed: {
-      bgcolor: "#FFF4E5", 
+      bgcolor: "#FFF4E5",
       color: "#B26A00",
     },
     never_subscribed: {
-      bgcolor: "#FDECEA", 
+      bgcolor: "#FDECEA",
       color: "#D32F2F",
     },
     default: {
@@ -103,6 +103,8 @@ const useUsersColumn = (columns: Column[]) => {
           return { ...col, headerName: "Order History", width: 140 };
         case "least_active":
           return { ...col, headerName: "Last Active", flex: 1.2 };
+        case "store":
+          return { ...col, headerName: "Store", flex: 1.2 };
         case "status":
           return {
             ...col,

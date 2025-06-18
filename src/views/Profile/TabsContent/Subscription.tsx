@@ -8,60 +8,58 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { dummySubscriptions } from "../data";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 interface SubscriptionProps {
   subscriptions: Record<string, any>;
-  // subscriptions: dummySubscriptions;
 }
 
-const Subscription= () => {
-  // if (!subscriptions)
-  //   return <Typography>No subscription data available.</Typography>;
-   if (!dummySubscriptions)
+const Subscription = ({ subscriptions }: SubscriptionProps) => {
+  if (!subscriptions)
     return <Typography>No subscription data available.</Typography>;
-  
 
   return (
     <Box>
-      <Typography fontWeight={700} mb={2.5} fontSize={20}>
+      <Typography fontWeight={600} mb={2.5} variant="h4">
         Subscriptions
       </Typography>
 
       <Box sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
-        {Object.entries(dummySubscriptions).map(([type, content], idx) => (
-          <Accordion key={idx}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              sx={{ mb: "10px" }}
-            >
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <CheckCircleIcon sx={{ color: "#28a745", fontSize: 20 }} />
-                <Typography fontWeight={600}>{type.toUpperCase()}</Typography>
-              </Stack>
-            </AccordionSummary>
-            <AccordionDetails>
-              {Object.entries(dummySubscriptions).map(([subType, subDetails], i) => (
-                <Box key={i} mb={2}>
-                  <Typography fontWeight={700} fontSize={16} mb={1}>
-                    {subType.charAt(0).toUpperCase() + subType.slice(1)}:
+        {Object.entries(subscriptions).map(([type, content], idx) => {
+          const marketing = content?.marketing || {};
+          const isSubscribed = marketing.consent === "SUBSCRIBED";
+
+          const fieldsToShow = isSubscribed
+            ? ["consent", "last_updated", "method"]
+            : ["consent"];
+
+          return (
+            <Accordion key={idx}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {isSubscribed ? (
+                    <CheckCircleIcon sx={{ color: "#28a745", fontSize: 20 }} />
+                  ) : (
+                    <CancelIcon sx={{ color: "#dc3545", fontSize: 20 }} />
+                  )}
+                  <Typography fontWeight={600}>
+                    {type.replace("_", " ").toUpperCase()}
                   </Typography>
-                  <Stack spacing={1} pl={2}>
-                    {Object.entries(subDetails || {}).map(([key, value], j) => (
-                      <Typography key={j} variant="body2">
-                        <strong>{key.replace(/_/g, " ")}:</strong> &nbsp;&nbsp;
-                        {Array.isArray(value)
-                          ? value.length > 0
-                            ? value.join(", ")
-                            : "None"
-                          : value?.toString() ?? "N/A"}
-                      </Typography>
-                    ))}
-                  </Stack>
-                </Box>
-              ))}
-            </AccordionDetails>
-          </Accordion>
-        ))}
+                </Stack>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack spacing={1}>
+                  {fieldsToShow.map((key) => (
+                    <Typography key={key} variant="body2">
+                      <strong>{key.replace(/_/g, " ")}:</strong>{" "}
+                      {marketing[key]?.toString() ?? "N/A"}
+                    </Typography>
+                  ))}
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
       </Box>
     </Box>
   );

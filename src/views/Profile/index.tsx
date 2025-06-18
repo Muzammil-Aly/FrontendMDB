@@ -2,27 +2,40 @@
 import AgGridTable from "@/components/ag-grid";
 import { users } from "@/constants/Grid-Table/ColDefs";
 import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
 import CustomSearchField from "@/components/Common/CustomSearch";
-import { Search } from "@mui/icons-material";
-import SelectDatePicker from "@/components/Common/DatePicker/DatePicker";
+import { Send } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import { formatDate } from "@/utils/FormatDate";
 import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
-import axios from "axios";
-import { usersRow } from "@/constants/Grid-Table/RowData";
 
 const Profile = () => {
   const userCol = useUsersColumn(users);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [storeFilter, setStoreFilter] = useState<string | undefined>(undefined);
+  const [pageSize, setPageSize] = useState(10);
 
-  const { data, isLoading } = useGetProfilesQuery();
+  const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
+    { page, page_size: pageSize, email: searchTerm, store: storeFilter },
+    { skip: false }
+  );
+
   const rowData = useMemo(() => {
-    const results = data?.data?.results || [];
+    const results = data?.data || [];
 
     return results.map((item: any) => {
       const location = item.attributes.location || {};
@@ -44,6 +57,7 @@ const Profile = () => {
         address: location.address1 || "N/A",
         subscriptions: item.attributes.subscriptions ?? {},
         predictive_analytics: item.attributes.predictive_analytics ?? {},
+        store: item.store ?? "N/A",
       };
     });
   }, [data]);
@@ -53,33 +67,26 @@ const Profile = () => {
     setModalOpen(true);
   };
 
-  const handleDate = (date: string | null) => {};
-
-  const handleSearch = useMemo(
+  const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
-        console.log("Search:", value);
-      }, 2000),
+        setSearchTerm(value);
+        setPage(1);
+      }, 5000),
     []
   );
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleSearch(e.target.value);
-  };
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         "http://143.198.202.145:8000/api/klaviyo/profiles/"
-  //       );
-  //       console.log("data", response.data);
-  //     } catch (error) {
-  //       console.error("API error:", error);
-  //     }
-  //   };
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
 
-  //   fetchData();
-  // }, []);
+    if (value.trim() === "") {
+      setSearchTerm("");
+      setPage(1);
+    } else {
+      debouncedSearch(value);
+    }
+  };
 
   return (
     <Box
@@ -100,29 +107,82 @@ const Profile = () => {
         <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
           User Profile
         </Typography>
+
         <Box display={"flex"} alignItems={"center"} gap={3}>
           <Box mt={-1}>
-            <CustomSearchField
-              endIcon={<Search />}
-              placeholder="Search by Name, Email"
-              onChange={onChange}
-            />
+            <Box display={"flex"} alignItems="center" gap={1}>
+              <CustomSearchField
+                value={searchInput}
+                // onChange={(e) => setSearchInput(e.target.value)}
+                onChange={handleSearchInput}
+                placeholder="Search by Email"
+              />
+
+              {
+                <Send
+                  onClick={() => {
+                    setSearchTerm(searchInput);
+                    setPage(1);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    color: "#004FA7",
+                    height: "36px",
+                    width: "36px",
+                  }}
+                />
+              }
+            </Box>
           </Box>
-          <SelectDatePicker onDateChange={handleDate} label="Start date" />
-          <SelectDatePicker onDateChange={handleDate} label="End date" />
+
+          <FormControl size="small">
+            <Select
+              value={storeFilter || ""}
+              onChange={(e: any) => {
+                setStoreFilter(e.target.value);
+                setPage(1);
+              }}
+              displayEmpty
+              sx={{ minWidth: 150 }}
+            >
+              <MenuItem value="">All Stores</MenuItem>
+              <MenuItem value="namesake">Namesake</MenuItem>
+              <MenuItem value="babyletto">Babyletto</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl size="small">
+            <InputLabel>Page Size</InputLabel>
+            <Select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              label="Page Size"
+              sx={{ minWidth: 120 }}
+            >
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+              <MenuItem value={100}>100</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
       </Box>
 
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <Loader />
       ) : (
         <AgGridTable
-          // rowData={rowData}
-          rowData={usersRow}
+          rowData={rowData}
           columnDefs={userCol}
           onRowClicked={onRowClicked}
           height={450}
           enablePagination
+          currentPage={page}
+          totalPages={data?.total_pages || 1}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          pagination={false}
         />
       )}
 
