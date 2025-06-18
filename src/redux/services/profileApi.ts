@@ -4,16 +4,64 @@ export const klaviyoApi = createApi({
   reducerPath: "klaviyoApi",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+    prepareHeaders: (headers) => {
+      const token = process.env.NEXT_PUBLIC_DATABRICKS_PAT;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      headers.set("Content-Type", "application/json");
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
-    getProfiles: builder.query<any, void>({
-      query: () => `/api/klaviyo/profiles/`,
+    // getProfiles: builder.query<any, void>({
+    //   query: () => `/profiles/`,
+    // }),
+    // redux/services/profileApi.ts
+    getProfiles: builder.query<
+      any,
+      {
+        page?: number;
+        page_size?: number;
+        email?: string;
+        phone_number?: string;
+        store?: string;
+      }
+    >({
+      query: ({ page = 1, page_size = 10, email, phone_number, store }) => {
+        const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+        if (email) params.set("email", email);
+        if (phone_number) params.set("phone_number", phone_number);
+        if (store) params.set("store", store);
+
+        return `/profiles/?${params.toString()}`;
+      },
     }),
-    getProfileEvents: builder.query<any, string>({
-      query: (profileId) =>
-        `/api/klaviyo/profile/events/?profile_id=${profileId}`,
+
+    // getProfileEvents: builder.query<any, string>({
+    //   query: (profileId) =>
+    //     `/events?profile_id=${profileId}`,
+    // }),
+    getProfileEvents: builder.query<
+      any,
+      { profileId: string; page?: number; page_size?: number }
+    >({
+      query: ({ profileId, page = 1, page_size = 10 }) => {
+        const params = new URLSearchParams();
+        params.set("profile_id", profileId);
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+
+        return `/events?${params.toString()}`;
+      },
     }),
   }),
 });
 
-export const { useGetProfilesQuery, useGetProfileEventsQuery } = klaviyoApi;
+export const {
+  useGetProfilesQuery,
+  useGetProfileEventsQuery,
+  useLazyGetProfileEventsQuery,
+} = klaviyoApi;

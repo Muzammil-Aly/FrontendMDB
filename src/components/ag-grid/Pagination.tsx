@@ -23,10 +23,10 @@ const Pagination: React.FC<PaginationProps> = ({
       }}
     >
       <Typography variant="body2" sx={{ fontSize: "14px", color: "#667185" }}>
-        {"page"} {currentPage + 1} {"of"} {totalPages}
+        {"page"} {currentPage } {"of"} {totalPages}
       </Typography>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      {/* <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
         {[...Array(totalPages).keys()].map((page) => {
           if (
             page === 0 ||
@@ -70,18 +70,18 @@ const Pagination: React.FC<PaginationProps> = ({
           }
           return null;
         })}
-      </Box>
+      </Box> */}
 
       <Box sx={{ display: "flex", gap: "16px" }}>
         <NavButton
           text="Previous"
           onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 0}
+          disabled={currentPage === 1}
         />
         <NavButton
           text={"Next"}
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage + 1 === totalPages || totalPages === 0}
+          disabled={currentPage + 1 === totalPages || totalPages === 1}
         />
       </Box>
     </Box>

@@ -5,15 +5,17 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
+  CircularProgress,
+  Skeleton,
   Stack,
   Typography,
-  Skeleton,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import React from "react";
-import { useGetProfileEventsQuery } from "@/redux/services/profileApi";
-import { dummyActivityLog } from "../data";
+import React, { useEffect, useState } from "react";
+import { useLazyGetProfileEventsQuery } from "@/redux/services/profileApi";
+import CustomButton from "@/components/Common/CustomButton";
 
 interface ActivityLogProps {
   profileId: string;
@@ -28,33 +30,62 @@ const SkeletonAccordion = () => (
 );
 
 const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
-  const { data, isLoading, isError } = useGetProfileEventsQuery(profileId);
+  const [pageSize, setPageSize] = useState(10);
+  const [allEvents, setAllEvents] = useState<any[]>([]);
+  const [totalRecords, setTotalRecords] = useState(0);
 
-  const events = data?.data?.results || dummyActivityLog;
-  console.log("events----", events);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [trigger, { data, isLoading, isFetching }] =
+    useLazyGetProfileEventsQuery();
+
+  useEffect(() => {
+    trigger({ profileId, page: 1, page_size: pageSize });
+  }, [profileId, pageSize]);
+
+  useEffect(() => {
+    if (data?.data) {
+      setAllEvents(data.data);
+      setTotalRecords(data.total_records);
+    }
+  }, [data]);
+  const handleLoadMore = () => {
+    if (pageSize < totalRecords) {
+      setPageSize((prev) => prev + 10);
+    }
+  };
+  useEffect(() => {
+    setPageSize(10);
+    setAllEvents([]);
+  }, [profileId]);
+
   return (
     <Box>
-      <Typography fontWeight={700} mb={2.5} fontSize={20}>
+      <Typography fontWeight={600} mb={2.5} variant="h4">
         Activity Log
       </Typography>
 
-      <Box sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
-        {isLoading ? (
+      <Box sx={{ maxHeight: 400, overflowY: "auto", pr: 1 }}>
+        {isLoading && pageSize === 1 ? (
           <>
             <SkeletonAccordion />
             <SkeletonAccordion />
             <SkeletonAccordion />
           </>
-        ) : isError && dummyActivityLog.length === 0 ? (
-          <Typography color="error">Failed to load activity logs.</Typography>
-        ) : events.length === 0 ? (
-          <Typography textAlign="center" color="text.secondary">
-            No activity logs found.
-          </Typography>
+        ) : allEvents.length === 0 ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height={200}
+          >
+            <CircularProgress size={32} />
+          </Box>
         ) : (
-          events.map((event: any, idx: number) => {
-            const metricName = event.metric?.attributes?.name ?? "Unknown";
-            const props = event.event.attributes.event_properties;
+          allEvents.map((event: any, idx: number) => {
+            const metricName =
+              event?.relationships?.metric?.data?.name ?? "Unknown";
+            const props = event.attributes?.event_properties ?? {};
             const displayedProps = Object.entries(props)
               .filter(([k]) =>
                 [
@@ -78,7 +109,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
                   "from",
                   "Name",
                   "Price",
-                  "Categories",
+                  // "Categories",
                   "CollectionName",
                   "CollectionID",
                 ].includes(k)
@@ -87,10 +118,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
 
             return (
               <Accordion key={idx}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  sx={{ mb: "10px" }}
-                >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <CheckCircleIcon sx={{ color: "#28a745", fontSize: 20 }} />
                     <Typography fontWeight={500}>{metricName}</Typography>
@@ -100,8 +128,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
                   <Stack spacing={1} pl={2}>
                     {displayedProps.map(([key, value], i) => (
                       <Typography key={i} variant="body2">
-                        <strong>{key.replace(/_/g, " ")}:</strong>
-                        {"\u00A0\u00A0"}
+                        <strong>{key.replace(/_/g, " ")}:</strong>{" "}
                         {Array.isArray(value)
                           ? value.length > 0
                             ? value.join(", ")
@@ -116,6 +143,19 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
           })
         )}
       </Box>
+
+      {pageSize < totalRecords && (
+        <Box mt={2} textAlign="center">
+          <CustomButton
+
+            variant="contained"
+            onClick={handleLoadMore}
+            disabled={isFetching}
+          >
+            {isFetching ? "Loading..." : "Load More"}
+          </CustomButton>
+        </Box>
+      )}
     </Box>
   );
 };

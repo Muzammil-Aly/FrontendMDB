@@ -53,8 +53,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   const renderTabs = (tab: string) => {
     switch (tab.toLowerCase()) {
       case "subscriptions":
-        // return <Subscription subscriptions={userData.subscriptions} />;
-        return <Subscription />;
+        return <Subscription subscriptions={userData.subscriptions} />;
+      // return <Subscription />;
 
       case "order history":
         return <OrderHistory />;

@@ -8,8 +8,7 @@ interface PredictiveProps {
 const Predictive: React.FC<PredictiveProps> = ({ data }) => {
   return (
     <Box>
-      Predictive Analytics
-      {/* <Typography fontWeight={700} mb={2} fontSize={20}>
+      <Typography fontWeight={600} mb={4} variant="h4">
         Predictive Analytics
       </Typography>
       <Stack spacing={1}>
@@ -19,7 +18,7 @@ const Predictive: React.FC<PredictiveProps> = ({ data }) => {
             {value !== null ? value.toString() : "N/A"}
           </Typography>
         ))}
-      </Stack> */}
+      </Stack>
     </Box>
   );
 };
