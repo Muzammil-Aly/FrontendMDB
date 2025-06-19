@@ -85,6 +85,8 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
           allEvents.map((event: any, idx: number) => {
             const metricName =
               event?.relationships?.metric?.data?.name ?? "Unknown";
+            const { $value } = event?.attributes?.event_properties || {};
+
             const props = event.attributes?.event_properties ?? {};
             const displayedProps = Object.entries(props)
               .filter(([k]) =>
@@ -100,7 +102,6 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
                   "ShippingRate",
                   "FulfillmentStatus",
                   "FulfillmentHours",
-                  "Collections",
                   "browser",
                   "os",
                   "method_detail",
@@ -109,9 +110,11 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
                   "from",
                   "Name",
                   "Price",
-                  // "Categories",
                   "CollectionName",
                   "CollectionID",
+                  "Variant Name",
+                  "Vendor",
+                  "Items",
                 ].includes(k)
               )
               .slice(0, 5);
@@ -121,11 +124,29 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <CheckCircleIcon sx={{ color: "#28a745", fontSize: 20 }} />
-                    <Typography fontWeight={500}>{metricName}</Typography>
+                    <Box display="flex" gap={1} alignItems="center">
+                      <Typography fontWeight={500}>{metricName}</Typography>
+
+                      <Typography
+                        variant="caption"
+                        color="#666D80"
+                        fontWeight={400}
+                      >
+                        {new Date(
+                          event.attributes.datetime
+                        ).toLocaleDateString()}
+                      </Typography>
+                    </Box>
                   </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Stack spacing={1} pl={2}>
+                    {$value && (
+                      <Typography variant="body2">
+                        <strong>Value:</strong> {String($value)}
+                      </Typography>
+                    )}
+
                     {displayedProps.map(([key, value], i) => (
                       <Typography key={i} variant="body2">
                         <strong>{key.replace(/_/g, " ")}:</strong>{" "}
@@ -147,7 +168,6 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
       {pageSize < totalRecords && (
         <Box mt={2} textAlign="center">
           <CustomButton
-
             variant="contained"
             onClick={handleLoadMore}
             disabled={isFetching}
