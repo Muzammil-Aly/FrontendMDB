@@ -26,10 +26,10 @@ const ExternalTabs = ({ email }: ExternalTabsProps) => {
               Zendesk
             </Button>
             <Button
-              variant={activeTab === "zigital" ? "contained" : "outlined"}
-              onClick={() => setActiveTab("zigital")}
+              variant={activeTab === "Zigpoll" ? "contained" : "outlined"}
+              onClick={() => setActiveTab("Zigpoll")}
             >
-              Zigital
+              Zigpoll
             </Button>
           </Stack>
         </Box>
@@ -43,9 +43,9 @@ const ExternalTabs = ({ email }: ExternalTabsProps) => {
           sx={{ overflowY: "auto", pr: 1 }}
         >
           {activeTab === "zendesk" && <Zendesk email={email} />}
-          {activeTab === "zigital" && (
+          {activeTab === "Zigpoll" && (
             <Typography variant="body2" p={2}>
-             Zigital data will be here in the future....
+              Zigpoll data will be here in the future....
             </Typography>
           )}
         </Box>

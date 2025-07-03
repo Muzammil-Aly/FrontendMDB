@@ -134,8 +134,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
             {renderTabs(activeTab)}
           </Box>
         </Stack>
-        <ExternalTabs email={"ffergusson@mdbmail.com"} />
-        {/* <ExternalTabs email={userData.email} /> */}
+        {/* <ExternalTabs email={"ffergusson@mdbmail.com"} /> */}
+        <ExternalTabs email={userData.email} />
       </Box>
     </Modal>
   );
