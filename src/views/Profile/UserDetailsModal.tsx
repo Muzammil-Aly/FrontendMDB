@@ -9,6 +9,7 @@ import ActivityLog from "./TabsContent/ActivityLog";
 import Subscription from "./TabsContent/Subscription";
 import OrderHistory from "./TabsContent/OrderHistory";
 import Predictive from "./TabsContent/Predictive";
+import ExternalTabs from "./ZendexTabs";
 interface UserDetailsModalProps {
   open: boolean;
   onClose: () => void;
@@ -54,10 +55,9 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     switch (tab.toLowerCase()) {
       case "subscriptions":
         return <Subscription subscriptions={userData.subscriptions} />;
-      // return <Subscription />;
 
       case "order history":
-        return <OrderHistory />;
+        return <OrderHistory profileId={userData.id} />;
       case "activity log":
         return <ActivityLog profileId={userData.id} />;
       case "predictive analytics":
@@ -134,6 +134,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
             {renderTabs(activeTab)}
           </Box>
         </Stack>
+        <ExternalTabs email={"ffergusson@mdbmail.com"} />
+        {/* <ExternalTabs email={userData.email} /> */}
       </Box>
     </Modal>
   );

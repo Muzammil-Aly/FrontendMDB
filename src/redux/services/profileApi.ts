@@ -14,10 +14,6 @@ export const klaviyoApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    // getProfiles: builder.query<any, void>({
-    //   query: () => `/profiles/`,
-    // }),
-    // redux/services/profileApi.ts
     getProfiles: builder.query<
       any,
       {
@@ -40,10 +36,6 @@ export const klaviyoApi = createApi({
       },
     }),
 
-    // getProfileEvents: builder.query<any, string>({
-    //   query: (profileId) =>
-    //     `/events?profile_id=${profileId}`,
-    // }),
     getProfileEvents: builder.query<
       any,
       { profileId: string; page?: number; page_size?: number }
@@ -57,6 +49,14 @@ export const klaviyoApi = createApi({
         return `/events?${params.toString()}`;
       },
     }),
+    getOrderHistory: builder.query<any, { profileId: string }>({
+      query: ({ profileId }) => {
+        return `/order_history?profile_id=${profileId}`;
+      },
+    }),
+    getZendeskTickets: builder.query<any, { email?: string }>({
+      query: ({ email }) => `/zendesk_tickets?email=${email}`,
+    }),
   }),
 });
 
@@ -64,4 +64,6 @@ export const {
   useGetProfilesQuery,
   useGetProfileEventsQuery,
   useLazyGetProfileEventsQuery,
+  useGetOrderHistoryQuery,
+  useGetZendeskTicketsQuery,
 } = klaviyoApi;

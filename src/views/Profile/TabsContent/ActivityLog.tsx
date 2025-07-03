@@ -58,14 +58,25 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
     setPageSize(10);
     setAllEvents([]);
   }, [profileId]);
-
+  if (isFetching)
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+        <CircularProgress size={50} />
+      </Box>
+    );
+  if (!data?.data?.length)
+    return (
+      <Typography variant="h5" textAlign={"center"}>
+        No data available.
+      </Typography>
+    );
   return (
     <Box>
       <Typography fontWeight={600} mb={2.5} variant="h4">
         Activity Log
       </Typography>
 
-      <Box sx={{ maxHeight: 400, overflowY: "auto", pr: 1 }}>
+      <Box sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
         {isLoading && pageSize === 1 ? (
           <>
             <SkeletonAccordion />

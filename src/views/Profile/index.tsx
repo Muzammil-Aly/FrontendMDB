@@ -113,7 +113,6 @@ const Profile = () => {
             <Box display={"flex"} alignItems="center" gap={1}>
               <CustomSearchField
                 value={searchInput}
-                // onChange={(e) => setSearchInput(e.target.value)}
                 onChange={handleSearchInput}
                 placeholder="Search by Email"
               />
@@ -167,6 +166,22 @@ const Profile = () => {
               <MenuItem value={100}>100</MenuItem>
             </Select>
           </FormControl>
+          {/* <FormControl size="small">
+            <InputLabel>Segmentation</InputLabel>
+            <Select
+              // value={pageSize}
+              // onChange={(e) => {
+              //   setPageSize(Number(e.target.value));
+              //   // setPage(1);
+              // }}
+              label="Select segmentation"
+              sx={{ minWidth: 120 }}
+            >
+              <MenuItem value={"Segmentation1"}>Segmentation1</MenuItem>
+              <MenuItem value={"Segmentation2"}>Segmentation2</MenuItem>
+              <MenuItem value={"Segmentation3"}>Segmentation3</MenuItem>
+            </Select>
+          </FormControl> */}
         </Box>
       </Box>
 
