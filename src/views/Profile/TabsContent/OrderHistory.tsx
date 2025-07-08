@@ -13,10 +13,11 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ profileId }) => {
 
   if (isLoading)
     return (
-      <Typography>
-        <CircularProgress />
-      </Typography>
+      <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+        <CircularProgress size={50} />
+      </Box>
     );
+
   if (error) return <Typography>Error loading order history.</Typography>;
 
   const orders = data?.data?.[0]?.order_history || [];
@@ -30,7 +31,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ profileId }) => {
       {orders.length === 0 ? (
         <Typography>No order history available.</Typography>
       ) : (
-        <Stack spacing={3} sx={{ maxHeight: 300, overflowY: "auto",pr: 1 }}>
+        <Stack spacing={3} sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
           {orders.map((order: any, idx: number) => {
             const time = order.event_datetime;
             const props = order.event_properties;

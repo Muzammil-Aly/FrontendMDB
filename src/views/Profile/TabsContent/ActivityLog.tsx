@@ -10,6 +10,8 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -38,6 +40,16 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
 
   const [trigger, { data, isLoading, isFetching }] =
     useLazyGetProfileEventsQuery();
+
+  const [selectedFilter, setSelectedFilter] = useState<string>("All");
+  const uniqueMetrics = [
+    "All",
+    ...Array.from(
+      new Set(
+        allEvents.map((e) => e?.relationships?.metric?.data?.name ?? "Unknown")
+      )
+    ),
+  ];
 
   useEffect(() => {
     trigger({ profileId, page: 1, page_size: pageSize });
@@ -72,9 +84,36 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
     );
   return (
     <Box>
-      <Typography fontWeight={600} mb={2.5} variant="h4">
-        Activity Log
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2.5}
+        flexWrap="wrap"
+      >
+        <Typography fontWeight={600} variant="h4">
+          Activity Log
+        </Typography>
+
+        <Box display="flex" alignItems="center" gap={1} mt={{ xs: 1, sm: 0 }}>
+          <Typography variant="subtitle2" fontWeight={500}>
+            Filter:
+          </Typography>
+          <Select
+            size="small"
+            value={selectedFilter}
+            onChange={(e) => setSelectedFilter(e.target.value)}
+            displayEmpty
+            sx={{ minWidth: 200 }}
+          >
+            {uniqueMetrics.map((metric, idx) => (
+              <MenuItem key={idx} value={metric}>
+                {metric}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+      </Box>
 
       <Box sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
         {isLoading && pageSize === 1 ? (
@@ -93,86 +132,94 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ profileId }) => {
             <CircularProgress size={32} />
           </Box>
         ) : (
-          allEvents.map((event: any, idx: number) => {
-            const metricName =
-              event?.relationships?.metric?.data?.name ?? "Unknown";
-            const { $value } = event?.attributes?.event_properties || {};
+          allEvents
+            .filter((event: any) => {
+              const metricName =
+                event?.relationships?.metric?.data?.name ?? "Unknown";
+              return selectedFilter === "All" || metricName === selectedFilter;
+            })
+            .map((event: any, idx: number) => {
+              const metricName =
+                event?.relationships?.metric?.data?.name ?? "Unknown";
+              const { $value } = event?.attributes?.event_properties || {};
 
-            const props = event.attributes?.event_properties ?? {};
-            const displayedProps = Object.entries(props)
-              .filter(([k]) =>
-                [
-                  "Recipient Email Address",
-                  "Recipient Email",
-                  "Campaign Name",
-                  "Subject",
-                  "Inbox Provider",
-                  "machine_open",
-                  "email_address",
-                  "Source Name",
-                  "ShippingRate",
-                  "FulfillmentStatus",
-                  "FulfillmentHours",
-                  "browser",
-                  "os",
-                  "method_detail",
-                  "method",
-                  "subject",
-                  "from",
-                  "Name",
-                  "Price",
-                  "CollectionName",
-                  "CollectionID",
-                  "Variant Name",
-                  "Vendor",
-                  "Items",
-                ].includes(k)
-              )
-              .slice(0, 5);
+              const props = event.attributes?.event_properties ?? {};
+              const displayedProps = Object.entries(props)
+                .filter(([k]) =>
+                  [
+                    "Recipient Email Address",
+                    "Recipient Email",
+                    "Campaign Name",
+                    "Subject",
+                    "Inbox Provider",
+                    "machine_open",
+                    "email_address",
+                    "Source Name",
+                    "ShippingRate",
+                    "FulfillmentStatus",
+                    "FulfillmentHours",
+                    "browser",
+                    "os",
+                    "method_detail",
+                    "method",
+                    "subject",
+                    "from",
+                    "Name",
+                    "Price",
+                    "CollectionName",
+                    "CollectionID",
+                    "Variant Name",
+                    "Vendor",
+                    "Items",
+                  ].includes(k)
+                )
+                .slice(0, 5);
 
-            return (
-              <Accordion key={idx}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Stack direction="row" alignItems="center" spacing={1}>
-                    <CheckCircleIcon sx={{ color: "#28a745", fontSize: 20 }} />
-                    <Box display="flex" gap={1} alignItems="center">
-                      <Typography fontWeight={500}>{metricName}</Typography>
+              return (
+                <Accordion key={idx}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <CheckCircleIcon
+                        sx={{ color: "#28a745", fontSize: 20 }}
+                      />
+                      <Box display="flex" gap={1} alignItems="center">
+                        <Typography fontWeight={500}>{metricName}</Typography>
 
-                      <Typography
-                        variant="caption"
-                        color="#666D80"
-                        fontWeight={400}
-                      >
-                        {new Date(
-                          event.attributes.datetime
-                        ).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Stack spacing={1} pl={2}>
-                    {$value && (
-                      <Typography variant="body2">
-                        <strong>Value:</strong> {String($value)}
-                      </Typography>
-                    )}
+                        <Typography
+                          variant="caption"
+                          color="#666D80"
+                          fontWeight={400}
+                        >
+                          {new Date(
+                            event.attributes.datetime
+                          ).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Stack spacing={1} pl={2}>
+                      {$value && (
+                        <Typography variant="body2">
+                          <strong>Value:</strong> {String($value)}
+                        </Typography>
+                      )}
 
-                    {displayedProps.map(([key, value], i) => (
-                      <Typography key={i} variant="body2">
-                        <strong>{key.replace(/_/g, " ")}:</strong>{" "}
-                        {Array.isArray(value)
-                          ? value.length > 0
-                            ? value.join(", ")
-                            : "None"
-                          : value?.toString() ?? "N/A"}
-                      </Typography>
-                    ))}
-                  </Stack>
-                </AccordionDetails>
-              </Accordion>
-            );
-          })
+                      {displayedProps.map(([key, value], i) => (
+                        <Typography key={i} variant="body2">
+                          <strong>{key.replace(/_/g, " ")}:</strong>{" "}
+                          {Array.isArray(value)
+                            ? value.length > 0
+                              ? value.join(", ")
+                              : "None"
+                            : value?.toString() ?? "N/A"}
+                        </Typography>
+                      ))}
+                    </Stack>
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })
         )}
       </Box>
 
