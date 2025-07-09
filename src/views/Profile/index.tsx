@@ -18,6 +18,8 @@ import debounce from "lodash.debounce";
 import { formatDate } from "@/utils/FormatDate";
 import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const Profile = () => {
   const userCol = useUsersColumn(users);
@@ -61,6 +63,76 @@ const Profile = () => {
       };
     });
   }, [data]);
+
+  const exportToPDF = () => {
+    const doc = new jsPDF("l", "pt", "a4");
+
+    const appliedStore = storeFilter ? storeFilter : "All Stores";
+    const title = `${pageSize} User Profile from ${appliedStore}`;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const textWidth = doc.getTextWidth(title);
+    const x = (pageWidth - textWidth) / 2;
+
+    doc.setFontSize(14);
+    doc.text(title, x, 30); // ✅ Use the centered x here
+
+    const tableData = rowData.map((row: any) => [
+      row.name,
+      row.email,
+      row.phone_number,
+      row.organization,
+      row.order_history,
+      row.status,
+      row.country,
+      row.city,
+    ]);
+
+    autoTable(doc, {
+      startY: 50,
+      head: [
+        [
+          "Name",
+          "Email",
+          "Phone",
+          "Org",
+          "Orders",
+          "Status",
+          "Country",
+          "City",
+        ],
+      ],
+      body: tableData,
+      styles: {
+        fontSize: 9,
+        cellPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+        overflow: "linebreak",
+        valign: "middle",
+      },
+      headStyles: {
+        fillColor: [0, 79, 167],
+        textColor: 255,
+        fontStyle: "bold",
+        halign: "center",
+        valign: "middle",
+      },
+      columnStyles: {
+        0: { cellWidth: 100 },
+        1: { cellWidth: 180 },
+        2: { cellWidth: 90 },
+        3: { cellWidth: 100 },
+        4: { cellWidth: 80, halign: "center" },
+        5: { cellWidth: 80 },
+        6: { cellWidth: 80 },
+        7: { cellWidth: 80 },
+      },
+      margin: { left: 40, right: 40 },
+      tableWidth: "auto",
+      theme: "striped",
+    });
+
+    doc.save("UserProfiles.pdf");
+  };
 
   const onRowClicked = (params: any) => {
     setSelectedUser(params.data);
@@ -166,6 +238,24 @@ const Profile = () => {
               <MenuItem value={100}>100</MenuItem>
             </Select>
           </FormControl>
+
+          <FormControl size="small">
+            <button
+              onClick={exportToPDF}
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "#004FA7",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              Export PDF
+            </button>
+          </FormControl>
+
           {/* <FormControl size="small">
             <InputLabel>Segmentation</InputLabel>
             <Select
