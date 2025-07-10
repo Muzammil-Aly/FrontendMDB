@@ -33,7 +33,11 @@ const Zendesk = ({ email }: ZendeskProps) => {
   if (isError)
     return <Typography color="error">Failed to fetch ticket data.</Typography>;
   if (!data?.data?.length)
-    return <Typography variant="h5" textAlign={"center"}>No Zendesk ticket data available.</Typography>;
+    return (
+      <Typography variant="h5" textAlign={"center"}>
+        No Zendesk ticket data available.
+      </Typography>
+    );
   const cleanHtml = (raw: string) => {
     return raw
       .replace(/<([^>]+)?>(?!<\/a>|<\/b>|<\/strong>|<\/i>|<\/u>)/g, "")
@@ -76,10 +80,26 @@ const Zendesk = ({ email }: ZendeskProps) => {
                 <Typography variant="body2">
                   <strong>Status:</strong> {ticket.status}
                 </Typography>
-                <Typography variant="body2">
+                {/* <Typography variant="body2">
                   <strong>Score:</strong>{" "}
-                  {ticket.ticket_ratings[0]?.score || "N/A"}
-                </Typography>
+                  {ticket.ticket_ratings?.[0]?.score ?? "N/A"}
+                </Typography> */}
+
+                {(ticket.ticket_ratings || []).length > 0 ? (
+                  (ticket.ticket_ratings || []).map(
+                    (rating: any, index: number) => (
+                      <Typography key={index} variant="body2">
+                        <strong>Score {index + 1}:</strong>{" "}
+                        {rating.score ?? "N/A"}
+                      </Typography>
+                    )
+                  )
+                ) : (
+                  <Typography variant="body2">
+                    <strong>Score:</strong> N/A
+                  </Typography>
+                )}
+
                 <Divider sx={{ my: 1 }} />
 
                 {ticket.description && (

@@ -22,15 +22,24 @@ export const klaviyoApi = createApi({
         email?: string;
         phone_number?: string;
         store?: string;
+        segments?: string;
       }
     >({
-      query: ({ page = 1, page_size = 10, email, phone_number, store }) => {
+      query: ({
+        page = 1,
+        page_size = 10,
+        email,
+        phone_number,
+        store,
+        // segments,
+      }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
         params.set("page_size", page_size.toString());
         if (email) params.set("email", email);
         if (phone_number) params.set("phone_number", phone_number);
         if (store) params.set("store", store);
+        // if (segments) params.set("segment_id", segments);
 
         return `/profiles/?${params.toString()}`;
       },
@@ -57,6 +66,11 @@ export const klaviyoApi = createApi({
     getZendeskTickets: builder.query<any, { email?: string }>({
       query: ({ email }) => `/zendesk_tickets?email=${email}`,
     }),
+    getSegments: builder.query<any, { page?: number; page_size?: number }>({
+      query: ({ page, page_size } = {}) => {
+        return `/segments?page=${page}&page_size=${page_size}`;
+      },
+    }),
   }),
 });
 
@@ -66,4 +80,5 @@ export const {
   useLazyGetProfileEventsQuery,
   useGetOrderHistoryQuery,
   useGetZendeskTicketsQuery,
+  useGetSegmentsQuery,
 } = klaviyoApi;

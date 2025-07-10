@@ -9,6 +9,9 @@ import {
   MenuItem,
   Select,
   Typography,
+  TextField,
+  Autocomplete,
+  ListSubheader,
 } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
@@ -20,7 +23,12 @@ import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-
+import { useGetSegmentsQuery } from "@/redux/services/profileApi";
+import { exportProfilesToPDF } from "@/utils/exportPDF";
+interface SegmentOption {
+  id: string;
+  name: string;
+}
 const Profile = () => {
   const userCol = useUsersColumn(users);
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,9 +38,20 @@ const Profile = () => {
   const [page, setPage] = useState(1);
   const [storeFilter, setStoreFilter] = useState<string | undefined>(undefined);
   const [pageSize, setPageSize] = useState(10);
+  const [segmentFilter, setSegmentFilter] = useState<string | undefined>(
+    undefined
+  );
+
+  const [segmentSearch, setSegmentSearch] = useState("");
 
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
-    { page, page_size: pageSize, email: searchTerm, store: storeFilter },
+    {
+      page,
+      page_size: pageSize,
+      email: searchTerm,
+      store: storeFilter,
+      segments: segmentFilter,
+    },
     { skip: false }
   );
 
@@ -60,78 +79,31 @@ const Profile = () => {
         subscriptions: item.attributes.subscriptions ?? {},
         predictive_analytics: item.attributes.predictive_analytics ?? {},
         store: item.store ?? "N/A",
+        segments: (item.segments || []).join(", ") || "N/A",
       };
     });
   }, [data]);
+  const { data: segmentsData } = useGetSegmentsQuery({
+    page: 1,
+    page_size: 100,
+  });
+
+  const segmentOptions = useMemo(() => {
+    const seen = new Set();
+    return (segmentsData?.data || [])
+      .filter((seg: any) => {
+        if (seen.has(seg.name)) return false;
+        seen.add(seg.name);
+        return true;
+      })
+      .map((seg: any) => ({
+        id: seg.id,
+        name: seg.name,
+      }));
+  }, [segmentsData]);
 
   const exportToPDF = () => {
-    const doc = new jsPDF("l", "pt", "a4");
-
-    const appliedStore = storeFilter ? storeFilter : "All Stores";
-    const title = `${pageSize} User Profile from ${appliedStore}`;
-
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const textWidth = doc.getTextWidth(title);
-    const x = (pageWidth - textWidth) / 2;
-
-    doc.setFontSize(14);
-    doc.text(title, x, 30); // ✅ Use the centered x here
-
-    const tableData = rowData.map((row: any) => [
-      row.name,
-      row.email,
-      row.phone_number,
-      row.organization,
-      row.order_history,
-      row.status,
-      row.country,
-      row.city,
-    ]);
-
-    autoTable(doc, {
-      startY: 50,
-      head: [
-        [
-          "Name",
-          "Email",
-          "Phone",
-          "Org",
-          "Orders",
-          "Status",
-          "Country",
-          "City",
-        ],
-      ],
-      body: tableData,
-      styles: {
-        fontSize: 9,
-        cellPadding: { top: 4, right: 4, bottom: 4, left: 4 },
-        overflow: "linebreak",
-        valign: "middle",
-      },
-      headStyles: {
-        fillColor: [0, 79, 167],
-        textColor: 255,
-        fontStyle: "bold",
-        halign: "center",
-        valign: "middle",
-      },
-      columnStyles: {
-        0: { cellWidth: 100 },
-        1: { cellWidth: 180 },
-        2: { cellWidth: 90 },
-        3: { cellWidth: 100 },
-        4: { cellWidth: 80, halign: "center" },
-        5: { cellWidth: 80 },
-        6: { cellWidth: 80 },
-        7: { cellWidth: 80 },
-      },
-      margin: { left: 40, right: 40 },
-      tableWidth: "auto",
-      theme: "striped",
-    });
-
-    doc.save("UserProfiles.pdf");
+    // exportProfilesToPDF(rowData, pageSize, storeFilter, segmentSearch);
   };
 
   const onRowClicked = (params: any) => {
@@ -155,6 +127,7 @@ const Profile = () => {
     if (value.trim() === "") {
       setSearchTerm("");
       setPage(1);
+      debouncedSearch.cancel(); // cancel pending debounce
     } else {
       debouncedSearch(value);
     }
@@ -222,6 +195,41 @@ const Profile = () => {
             </Select>
           </FormControl>
 
+          <Autocomplete
+            freeSolo
+            options={segmentOptions as SegmentOption[]}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.name
+            }
+            inputValue={segmentSearch}
+            onInputChange={(event, newInputValue) => {
+              setSegmentSearch(newInputValue);
+            }}
+            onChange={(event, newValue) => {
+              if (typeof newValue === "object" && newValue !== null) {
+                setSegmentFilter(newValue.id);
+                setSegmentSearch(newValue.name);
+              } else {
+                setSegmentFilter(undefined);
+              }
+              setPage(1);
+            }}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.name}
+              </li>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Search by Segment"
+                placeholder="Type segment name..."
+                size="small"
+              />
+            )}
+            sx={{ minWidth: 200 }}
+          />
+
           <FormControl size="small">
             <InputLabel>Page Size</InputLabel>
             <Select
@@ -241,7 +249,14 @@ const Profile = () => {
 
           <FormControl size="small">
             <button
-              onClick={exportToPDF}
+              onClick={() =>
+                exportProfilesToPDF(
+                  rowData,
+                  pageSize,
+                  storeFilter,
+                  segmentSearch
+                )
+              }
               style={{
                 padding: "6px 12px",
                 backgroundColor: "#004FA7",
