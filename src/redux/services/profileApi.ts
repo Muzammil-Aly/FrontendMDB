@@ -31,7 +31,7 @@ export const klaviyoApi = createApi({
         email,
         phone_number,
         store,
-        // segments,
+        segments,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -39,7 +39,7 @@ export const klaviyoApi = createApi({
         if (email) params.set("email", email);
         if (phone_number) params.set("phone_number", phone_number);
         if (store) params.set("store", store);
-        // if (segments) params.set("segment_id", segments);
+        if (segments) params.set("segment_id", segments);
 
         return `/profiles/?${params.toString()}`;
       },
