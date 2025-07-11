@@ -36,23 +36,25 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ profileId }) => {
             const time = order.event_datetime;
             const props = order.event_properties;
             const value = props?.$extra?.price_set?.shop_money;
-
             return (
               <Box key={idx} sx={{ borderBottom: "1px solid #ddd", pb: 2 }}>
                 <Typography variant="body2">
-                  <strong>Product Name:</strong> {props?.Name || "N/A"}
+                  <strong>Product Name:</strong> {props?.Items || "N/A"}
                 </Typography>
                 <Typography variant="body2">
                   <strong>Variant Name:</strong>{" "}
                   {props?.["Variant Name"] || "N/A"}
                 </Typography>
                 <Typography variant="body2">
-                  <strong>Quantity:</strong> {props?.Quantity || "N/A"}
+                  <strong>Quantity:</strong> {props?.["Item Count"] || "N/A"}
                 </Typography>
                 <Typography variant="body2">
                   <strong>Value:</strong>{" "}
-                  {value?.currency
+                  {/* {value?.currency
                     ? `${value.currency} ${value.amount}`
+                    : "N/A"} */}
+                  {props?.$currency_code && props?.$value
+                    ? `${props.$currency_code} ${props.$value}`
                     : "N/A"}
                 </Typography>
                 <Typography variant="body2">
