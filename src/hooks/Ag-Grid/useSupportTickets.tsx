@@ -1,3 +1,4 @@
+
 import CustomButton from "@/components/Common/CustomButton";
 import { ICellRendererParams } from "ag-grid-community";
 import { useMemo } from "react";
@@ -83,44 +84,98 @@ const AvatarCell = ({ value }: { value: string }) => {
   );
 };
 
-const useUsersColumn = (columns: Column[]) => {
+
+
+
+
+const useSupportTicket = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
+        case "ticket_id":
+          return { ...col, headerName: "Ticket ID", flex: 1, minWidth: 150 };
+
         case "customer_id":
           return {
             ...col,
-            headerName: "Customer ID",
-            flex: 1,
-            width: 300,
+            headerName: "Customer",
+            flex: 1.2,
+            minWidth: 200,
             cellRenderer: (params: ICellRendererParams) => (
               <AvatarCell value={params.value} />
             ),
           };
-        case "email":
-          return { ...col, headerName: "Email", flex: 1 };
-        case "phone":
-          return { ...col, headerName: "Phone", width: 140 };
-        case "full_name":
-          return { ...col, headerName: "Full Name", flex: 1.2 };
-        case "source":
-          return { ...col, headerName: "Source", flex: 1.2 };
-            case "join_type":
-          return { ...col, headerName: "Join Type", flex: 1.2 };
+
+        case "created_at":
+          return { ...col, headerName: "Created At", flex: 1, minWidth: 160 };
+
+        case "resolved_at":
+          return { ...col, headerName: "Resolved At", flex: 1, minWidth: 160 };
+
         case "status":
           return {
             ...col,
             headerName: "Status",
-            width: 130,
+            flex: 1,
+            minWidth: 130,
             cellRenderer: (params: ICellRendererParams) => (
               <StatusCell value={params.value} />
             ),
           };
+
+        case "channel":
+          return { ...col, headerName: "Channel", flex: 1, minWidth: 140 };
+
+        case "tags":
+          return {
+            ...col,
+            headerName: "Tags",
+            flex: 1.5,
+            minWidth: 200,
+            valueFormatter: (params: any) =>
+              Array.isArray(params.value) ? params.value.join(", ") : params.value,
+          };
+
+        case "csat_score":
+          return {
+            ...col,
+            headerName: "CSAT Score",
+            flex: 1,
+            minWidth: 140,
+            cellStyle: { textAlign: "center", fontWeight: 600 },
+          };
+
+        case "sentiment_score":
+          return {
+            ...col,
+            headerName: "Sentiment Score",
+            flex: 1,
+            minWidth: 160,
+            cellStyle: { textAlign: "center", fontWeight: 600 },
+          };
+
+        case "last_comment_at":
+          return {
+            ...col,
+            headerName: "Last Comment At",
+            flex: 1,
+            minWidth: 180,
+          };
+
+        case "comment_count":
+          return {
+            ...col,
+            headerName: "Comment Count",
+            flex: 1,
+            minWidth: 140,
+            cellStyle: { textAlign: "right", fontWeight: 600 },
+          };
+
         default:
-          return col;
+          return { ...col, flex: 1, minWidth: 120 };
       }
     });
   }, [columns]);
 };
 
-export default useUsersColumn;
+export default useSupportTicket;

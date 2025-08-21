@@ -83,39 +83,80 @@ const AvatarCell = ({ value }: { value: string }) => {
   );
 };
 
-const useUsersColumn = (columns: Column[]) => {
+const useSupportTicketCommentColumn = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
+        case "comment_id":
+          return { ...col, headerName: "Comment ID", width: 150 };
+
+        case "master_id":
+          return {
+            ...col,
+            headerName: "Master ID (Customer)",
+            width: 180,
+          };
+
+        case "ticket_id":
+          return { ...col, headerName: "Ticket ID", width: 150 };
+
         case "customer_id":
           return {
             ...col,
             headerName: "Customer ID",
-            flex: 1,
-            width: 300,
+            width: 180,
             cellRenderer: (params: ICellRendererParams) => (
               <AvatarCell value={params.value} />
             ),
           };
-        case "email":
-          return { ...col, headerName: "Email", flex: 1 };
-        case "phone":
-          return { ...col, headerName: "Phone", width: 140 };
-        case "full_name":
-          return { ...col, headerName: "Full Name", flex: 1.2 };
-        case "source":
-          return { ...col, headerName: "Source", flex: 1.2 };
-            case "join_type":
-          return { ...col, headerName: "Join Type", flex: 1.2 };
-        case "status":
+
+        case "author_id":
+          return { ...col, headerName: "Author ID", width: 150 };
+
+        case "author_role":
           return {
             ...col,
-            headerName: "Status",
-            width: 130,
+            headerName: "Author Role",
+            width: 150,
             cellRenderer: (params: ICellRendererParams) => (
               <StatusCell value={params.value} />
             ),
           };
+
+        case "created_at":
+          return { ...col, headerName: "Created At", flex: 1, minWidth: 160 };
+
+        case "body":
+          return {
+            ...col,
+            headerName: "Body",
+            flex: 2,
+            minWidth: 300,
+            wrapText: true,
+            autoHeight: true,
+          };
+
+        case "public":
+          return {
+            ...col,
+            headerName: "Public",
+            width: 120,
+            cellRenderer: (params: ICellRendererParams) => (
+              <StatusCell value={params.value ? "Yes" : "No"} />
+            ),
+          };
+
+        case "parent_theme":
+          return { ...col, headerName: "Parent Theme", flex: 1.2, minWidth: 180 };
+
+        case "child_theme_cluster_name":
+          return {
+            ...col,
+            headerName: "Child Theme Cluster Name",
+            flex: 1.5,
+            minWidth: 200,
+          };
+
         default:
           return col;
       }
@@ -123,4 +164,5 @@ const useUsersColumn = (columns: Column[]) => {
   }, [columns]);
 };
 
-export default useUsersColumn;
+
+export default useSupportTicketCommentColumn;

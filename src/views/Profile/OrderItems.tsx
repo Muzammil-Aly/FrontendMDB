@@ -14,12 +14,7 @@ import {
   commentColumns,
   orderColumns,
 } from "@/constants/Grid-Table/RowData";
-import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
 import useOrdersColumn from "@/hooks/Ag-Grid/useOrdersColumn";
-import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
-import useSupportTicketColumn from "@/hooks/Ag-Grid/useSupportTickets";
-import useSupportTicketCommentColumn from "@/hooks/Ag-Grid/useSupportTicketCommentColumn";
-import useMarketingEvents from "@/hooks/Ag-Grid/useMarketingItems";
 import {
   Box,
   FormControl,
@@ -39,25 +34,19 @@ import debounce from "lodash.debounce";
 import { formatDate } from "@/utils/FormatDate";
 import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
+import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
+
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useGetSegmentsQuery } from "@/redux/services/profileApi";
 import { exportProfilesToPDF } from "@/utils/exportPDF";
-import Orders from "./Orders";
-import OrderItems from "./OrderItems";
 interface SegmentOption {
   id: string;
   name: string;
 }
-const Profile = () => {
-  const userCol = useUsersColumn(users);
-  const orderCol = useOrdersColumn(orders);
+const OrderItems = () => {
   const orderItemsCol = useOrderItems(orderItems);
-  const supportTicketCommentCol = useSupportTicketCommentColumn(
-    support_ticket_comments
-  );
-  const ticketColumns = useSupportTicketColumn(support_tickets);
-  const marketingEventsCol = useMarketingEvents(marketing_events);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [searchInput, setSearchInput] = useState("");
@@ -70,15 +59,7 @@ const Profile = () => {
   );
 
   const [segmentSearch, setSegmentSearch] = useState("");
-  const [activeMenu, setActiveMenu] = useState("Customer Profilies");
-  const menuItems = [
-    "Customer Profilies",
-    "Orders",
-    "Order Items",
-    "Support Tickets",
-    "Support Ticket Commnets",
-    "Marketing Events",
-  ];
+ 
 
   const [sourceFilter, setSourceFilter] = useState<string | undefined>(
     undefined
@@ -120,23 +101,6 @@ const Profile = () => {
     page_size: 100,
   });
 
-  const segmentOptions = useMemo(() => {
-    const seen = new Set();
-    return (segmentsData?.data || [])
-      .filter((seg: any) => {
-        if (seen.has(seg.name)) return false;
-        seen.add(seg.name);
-        return true;
-      })
-      .map((seg: any) => ({
-        id: seg.id,
-        name: seg.name,
-      }));
-  }, [segmentsData]);
-
-  const exportToPDF = () => {
-    // exportProfilesToPDF(rowData, pageSize, storeFilter, segmentSearch);
-  };
 
   const onRowClicked = (params: any) => {
     setSelectedUser(params.data);
@@ -165,77 +129,12 @@ const Profile = () => {
     }
   };
 
-  const menuConfig: Record<string, { rowData: any[]; columnDefs: any[] 
-    ; totalPages?: number;component?: React.ReactNode;
-  }> = {
-    Orders: {
-      rowData: orderColumns,
-      columnDefs: orderCol,
-            // totalPages:data?.total_pages || 1,
-             totalPages: 1,
-             component: <Orders />,
 
-            
-    },
-    "Order Items": {
-      rowData: ordersRow,
-      columnDefs: orderItemsCol,
-            totalPages: 1,
-             component: < OrderItems />,
-
-
-    },
-    "Support Tickets": {
-      rowData: ordersRow,
-      columnDefs: ticketColumns,
-    },
-    "Support Ticket Commnets": {
-      rowData: ordersRow,
-      columnDefs: supportTicketCommentCol,
-    },
-    "Marketing Events": {
-      rowData: ordersRow,
-      columnDefs: marketingEventsCol,
-    },
-    //  "Events": {
-    //   rowData: rowData,
-    //   columnDefs: orderItemsCol,
-    // },
-  };
   return (
     <Box display="flex">
-      <Box
-        sx={{
-          width: 200,
-          height: 800,
-          borderRight: "1px solid #ddd",
-          bgcolor: "#f9f9f9",
-          p: 2,
-        }}
-      >
-        <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-          UCP
-        </Typography>
-        {menuItems.map((item) => (
-          <Typography
-            key={item}
-            component="h2"
-            variant="subtitle2"
-            onClick={() => setActiveMenu(item)}
-            sx={{
-              p: 2,
-              cursor: "pointer",
-              fontWeight: activeMenu === item ? "bold" : "normal",
-              bgcolor: activeMenu === item ? "#e0e0e0" : "transparent",
-              borderRadius: "10px",
-            }}
-          >
-            {item}
-          </Typography>
-        ))}
-      </Box>
+      
 
-      {activeMenu === "Customer Profilies" && (
+      
         <Box flex={1} p={2}>
           <Box
             display={"flex"}
@@ -244,7 +143,7 @@ const Profile = () => {
             pr={3}
           >
             <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-              Profile
+             Order Items
             </Typography>
 
             <Box display={"flex"} alignItems={"center"} gap={3}>
@@ -344,22 +243,7 @@ const Profile = () => {
                 </button>
               </FormControl>
 
-              {/* <FormControl size="small">
-            <InputLabel>Segmentation</InputLabel>
-            <Select
-              // value={pageSize}
-              // onChange={(e) => {
-              //   setPageSize(Number(e.target.value));
-              //   // setPage(1);
-              // }}
-              label="Select segmentation"
-              sx={{ minWidth: 120 }}
-            >
-              <MenuItem value={"Segmentation1"}>Segmentation1</MenuItem>
-              <MenuItem value={"Segmentation2"}>Segmentation2</MenuItem>
-              <MenuItem value={"Segmentation3"}>Segmentation3</MenuItem>
-            </Select>
-          </FormControl> */}
+            
             </Box>
           </Box>
 
@@ -368,7 +252,7 @@ const Profile = () => {
           ) : (
             <AgGridTable
               rowData={rowData}
-              columnDefs={userCol}
+              columnDefs={ orderItemsCol}
               onRowClicked={onRowClicked}
               height={480}
               enablePagination
@@ -385,41 +269,11 @@ const Profile = () => {
             userData={selectedUser}
           />
         </Box>
-      )}
+    
 
-      {/* {menuConfig[activeMenu] && (
-        <Box flex={1} p={2}>
-            <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-              {activeMenu}
-            </Typography> */}
-            
-
-            {menuConfig[activeMenu] && (
-  <Box flex={1} p={2}>
-    {/* <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-      {activeMenu}
-    </Typography> */}
-
-    {menuConfig[activeMenu]?.component ? (
-      menuConfig[activeMenu].component
-    ) : (
-      <AgGridTable
-        rowData={menuConfig[activeMenu].rowData}
-        columnDefs={menuConfig[activeMenu].columnDefs}
-        onRowClicked={onRowClicked}
-        height={450}
-        enablePagination
-        currentPage={page}
-        totalPages={menuConfig[activeMenu].totalPages}
-        onPageChange={(newPage: any) => setPage(newPage)}
-        pagination={false}
-      />
-    )}
-  </Box>
-)}
 
     </Box>
   );
 };
 
-export default Profile;
+export default OrderItems;

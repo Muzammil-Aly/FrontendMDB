@@ -83,44 +83,74 @@ const AvatarCell = ({ value }: { value: string }) => {
   );
 };
 
-const useUsersColumn = (columns: Column[]) => {
+const useMarketingEvents = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
+        case "event_id":
+          return { ...col, headerName: "Event ID", flex: 1, minWidth: 160 };
+
         case "customer_id":
+          return { ...col, headerName: "Customer ID", flex: 1, minWidth: 160 };
+
+        case "event_type":
           return {
             ...col,
-            headerName: "Customer ID",
+            headerName: "Event Type",
             flex: 1,
-            width: 300,
+            minWidth: 140,
             cellRenderer: (params: ICellRendererParams) => (
-              <AvatarCell value={params.value} />
+              <Box
+                sx={{
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: "12px",
+                  fontWeight: 600,
+                  fontSize: 13,
+                  display: "inline-block",
+                  bgcolor: "#E3E8EB",
+                  color: "#555",
+                  textTransform: "capitalize",
+                }}
+              >
+                {params.value}
+              </Box>
             ),
           };
-        case "email":
-          return { ...col, headerName: "Email", flex: 1 };
-        case "phone":
-          return { ...col, headerName: "Phone", width: 140 };
-        case "full_name":
-          return { ...col, headerName: "Full Name", flex: 1.2 };
-        case "source":
-          return { ...col, headerName: "Source", flex: 1.2 };
-            case "join_type":
-          return { ...col, headerName: "Join Type", flex: 1.2 };
-        case "status":
+
+        case "campaign_id":
+          return { ...col, headerName: "Campaign ID", flex: 1, minWidth: 160 };
+
+        case "campaign_name":
           return {
             ...col,
-            headerName: "Status",
-            width: 130,
+            headerName: "Campaign Name",
+            flex: 1.5,
+            minWidth: 220,
             cellRenderer: (params: ICellRendererParams) => (
-              <StatusCell value={params.value} />
+              <Typography sx={{ fontWeight: 600 }}>{params.value}</Typography>
             ),
           };
+
+        case "event_timestamp":
+          return {
+            ...col,
+            headerName: "Event Timestamp",
+            flex: 1.2,
+            minWidth: 180,
+            valueFormatter: (params: any) =>
+              params.value
+                ? new Date(params.value).toLocaleString()
+                : "-",
+          };
+
         default:
-          return col;
+          return { ...col, flex: 1, minWidth: 120 };
       }
     });
   }, [columns]);
 };
 
-export default useUsersColumn;
+
+
+export default useMarketingEvents;

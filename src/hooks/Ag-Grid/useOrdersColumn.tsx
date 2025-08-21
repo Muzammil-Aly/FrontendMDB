@@ -83,44 +83,60 @@ const AvatarCell = ({ value }: { value: string }) => {
   );
 };
 
-const useUsersColumn = (columns: Column[]) => {
+const useOrdersColumn = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
+        case "order_id":
+          return { ...col, headerName: "Order ID", width: 150 };
         case "customer_id":
           return {
             ...col,
-            headerName: "Customer ID",
+            headerName: "Customer",
             flex: 1,
-            width: 300,
+            width: 250,
             cellRenderer: (params: ICellRendererParams) => (
               <AvatarCell value={params.value} />
             ),
           };
-        case "email":
-          return { ...col, headerName: "Email", flex: 1 };
-        case "phone":
-          return { ...col, headerName: "Phone", width: 140 };
-        case "full_name":
-          return { ...col, headerName: "Full Name", flex: 1.2 };
-        case "source":
-          return { ...col, headerName: "Source", flex: 1.2 };
-            case "join_type":
-          return { ...col, headerName: "Join Type", flex: 1.2 };
-        case "status":
+        case "order_date":
+          return { ...col, headerName: "Order Date", width: 160 };
+        case "total_value":
+          return { ...col, headerName: "Total Value", width: 140 };
+        case "discount_code":
+          return { ...col, headerName: "Discount Code", width: 160 };
+        case "fulfillment_status":
           return {
             ...col,
-            headerName: "Status",
-            width: 130,
+            headerName: "Fulfillment Status",
+            width: 180,
             cellRenderer: (params: ICellRendererParams) => (
               <StatusCell value={params.value} />
             ),
           };
+        case "shipping_address":
+          return { ...col, headerName: "Shipping Address", flex: 1.5 };
+        case "channel":
+          return { ...col, headerName: "Channel", width: 140 };
+        // case "is_returned":
+        //   return {
+        //     ...col,
+        //     headerName: "Returned?",
+        //     width: 120,
+        //     cellRenderer: (params: ICellRendererParams) => (
+        //       <Box sx={{ fontWeight: 600 }}>
+        //         {params.value ? "Yes" : "No"}
+        //       </Box>
+        //     ),
+        //   };
+        // case "return_amount":
+        //   return { ...col, headerName: "Return Amount", width: 160 };
+        // case "net_order_value":
+        //   return { ...col, headerName: "Net Order Value",  width: 180 };
         default:
           return col;
       }
     });
   }, [columns]);
 };
-
-export default useUsersColumn;
+export default useOrdersColumn;

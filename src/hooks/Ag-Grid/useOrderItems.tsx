@@ -83,44 +83,65 @@ const AvatarCell = ({ value }: { value: string }) => {
   );
 };
 
-const useUsersColumn = (columns: Column[]) => {
+const useOrderItems = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
-        case "customer_id":
+        case "order_item_id":
+          return { ...col, headerName: "Order Item ID", flex: 1, minWidth: 150 };
+
+        case "order_id":
+          return { ...col, headerName: "Order ID", flex: 1, minWidth: 150 };
+
+        case "sku":
+          return { ...col, headerName: "SKU", flex: 1, minWidth: 140 };
+
+        case "product_name":
           return {
             ...col,
-            headerName: "Customer ID",
-            flex: 1,
-            width: 300,
+            headerName: "Product Name",
+            flex: 1.5,
+            minWidth: 220,
             cellRenderer: (params: ICellRendererParams) => (
               <AvatarCell value={params.value} />
             ),
           };
-        case "email":
-          return { ...col, headerName: "Email", flex: 1 };
-        case "phone":
-          return { ...col, headerName: "Phone", width: 140 };
-        case "full_name":
-          return { ...col, headerName: "Full Name", flex: 1.2 };
-        case "source":
-          return { ...col, headerName: "Source", flex: 1.2 };
-            case "join_type":
-          return { ...col, headerName: "Join Type", flex: 1.2 };
-        case "status":
+
+        case "quantity":
           return {
             ...col,
-            headerName: "Status",
-            width: 130,
-            cellRenderer: (params: ICellRendererParams) => (
-              <StatusCell value={params.value} />
-            ),
+            headerName: "Quantity",
+            flex: 0.8,
+            minWidth: 100,
+            cellStyle: { textAlign: "right", fontWeight: 600 },
           };
+
+        case "gross_amount":
+          return {
+            ...col,
+            headerName: "Gross Amount",
+            flex: 1,
+            minWidth: 140,
+            cellStyle: { textAlign: "right", fontWeight: 600 },
+            valueFormatter: (params: any) =>
+              params.value ? `$${Number(params.value).toFixed(2)}` : "-",
+          };
+
+        case "item_type":
+          return { ...col, headerName: "Item Type", flex: 1, minWidth: 140 };
+
+        case "brand":
+          return { ...col, headerName: "Brand", flex: 1, minWidth: 140 };
+
+        case "collection":
+          return { ...col, headerName: "Collection", flex: 1, minWidth: 140 };
+
         default:
-          return col;
+          return { ...col, flex: 1, minWidth: 120 }; // fallback
       }
     });
   }, [columns]);
 };
 
-export default useUsersColumn;
+
+export default useOrderItems;

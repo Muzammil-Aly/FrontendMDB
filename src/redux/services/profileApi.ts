@@ -20,28 +20,37 @@ export const klaviyoApi = createApi({
         page?: number;
         page_size?: number;
         email?: string;
-        phone_number?: string;
-        store?: string;
-        segments?: string;
+        phone?: string;
+        full_name?: string;
+        source?: string;
+        join_type?: string;
+        customer_id?: string;
+        key?: string;
       }
     >({
       query: ({
         page = 1,
         page_size = 10,
         email,
-        phone_number,
-        store,
-        segments,
+        phone,
+        full_name,
+        source,
+        join_type,
+
+        customer_id
+        ,
+        key
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
         params.set("page_size", page_size.toString());
         if (email) params.set("email", email);
-        if (phone_number) params.set("phone_number", phone_number);
-        if (store) params.set("store", store);
-        if (segments) params.set("segment_id", segments);
-
-        return `/profiles/?${params.toString()}`;
+        if (phone) params.set("phone", phone);
+        if (full_name) params.set("full_name", full_name);
+        if (source) params.set("source", source);
+        if (customer_id) params.set("customer_id", customer_id);
+        if (join_type) params.set("join_type", join_type);
+        return `/customer_profiles/?${params.toString()}`;
       },
     }),
 
