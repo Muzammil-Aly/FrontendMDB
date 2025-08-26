@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import AgGridTable from "@/components/ag-grid";
@@ -22,7 +23,6 @@ const ResponsiveDashboard = ({
   onPageChange,
   currentMenu,
     getRowStyle
-
 }: any) => {
 
   const layouts = {
@@ -110,6 +110,7 @@ const ResponsiveDashboard = ({
             key="profiles"
             elevation={3}
             onClick={(e) => e.stopPropagation()} 
+            
             sx={{
               p: 2,
               borderRadius: 3,
@@ -148,60 +149,23 @@ const ResponsiveDashboard = ({
             </Box>
           </Paper> 
 
-          <Paper
-  key="customer_segments"
-  elevation={3}
-  className="drag-handle"
-  onClick={(e) => e.stopPropagation()} 
-  sx={{
-    p: 2,
-    borderRadius: 3,
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-  }}
->
-  <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
-    {selectedCustId && currentMenu === "profiles" && <CustomerSegmentCard custId={selectedCustId} />}
-    {selectedOrderId && currentMenu === "orders" && <OrderItems orderId={selectedOrderId} />}
-    {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments customerId={selectedTicket} />}
-  </Box>
-</Paper>
 
+ {(selectedCustId || selectedOrderId || selectedTicket) && (
+  <Paper
+    key="customer_segments"
+    elevation={3}
+    className="drag-handle"
+    onClick={(e) => e.stopPropagation()}
+    sx={{ p: 2, borderRadius: 3, height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}
+  >
+    <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
+      {selectedCustId && currentMenu === "profiles" && <CustomerSegmentCard custId={selectedCustId} />}
+      {selectedOrderId && currentMenu === "orders" && <OrderItems orderId={selectedOrderId} />}
+      {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments customerId={selectedTicket} />}
+    </Box>
+  </Paper>
+)}
 
-{/* 
-                    {(selectedCustId || selectedOrderId || selectedTicket) && (
-
-            <Paper
-              key="customer_segments"
-              elevation={3}
-              className="drag-handle"
-              onClick={(e) => e.stopPropagation()} 
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-  
-
-              <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
-                {currentMenu === "profiles" && (
-                  <CustomerSegmentCard custId={selectedCustId} />
-                )}
-                {currentMenu === "orders" && (
-                  <OrderItems orderId={selectedOrderId} />
-                )}
-                {currentMenu === "support_tickets" && (
-                  <SupportTicketComments customerId={selectedTicket} />
-                )}
-              </Box>
-
-            </Paper>
-
-          )} */}
         </ResponsiveGridLayout>
       </Box>
   );

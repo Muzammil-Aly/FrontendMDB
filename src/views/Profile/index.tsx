@@ -171,7 +171,7 @@ const getRowStyle = (params: any) => {
 const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
 
   return (
-    <Box display="flex">
+    <Box display="flex" >
       <Box
         sx={{
           width: 200,
