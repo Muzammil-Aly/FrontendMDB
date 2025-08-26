@@ -54,7 +54,16 @@ const [selectedOrder, setSelectedOrder] = useState<any>(null);
   }
 };
 
-
+const getRowStyle = (params: any) => {
+  if (selectedOrder?.order_id=== params.data.order_id) {
+   return {
+  backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
+   color: "#fff !important",      //           // white text for contrast
+  fontWeight: 600,            // makes it stand out a bit more
+};
+  }
+  return {};
+};
   return (
     <Box display="flex">
       <Box flex={1} p={1}>
@@ -113,6 +122,7 @@ const [selectedOrder, setSelectedOrder] = useState<any>(null);
             rowData={rowData}
             userCol={orderCol}
             onRowClicked={onRowClicked}
+            getRowStyle={getRowStyle} 
             selectedOrderId={selectedOrder?.order_id}
             enablePagination
             currentPage={page}

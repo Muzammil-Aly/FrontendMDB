@@ -88,6 +88,16 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
 
 
  
+const getRowStyle = (params: any) => {
+  if (selectedTicket?.customer_id=== params.data.customer_id) {
+   return {
+  backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
+   color: "#fff !important",      //           // white text for contrast
+  fontWeight: 600,            // makes it stand out a bit more
+};
+  }
+  return {};
+};
 
 
   return (
@@ -198,6 +208,8 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                         rowData={rowData}
                         userCol={ticketColumns}
                         onRowClicked={onRowClicked}
+            getRowStyle={getRowStyle} 
+
                         selectedTicket={selectedTicket?.customer_id}
                         enablePagination
                         currentPage={page}

@@ -99,6 +99,17 @@ const onRowClicked = (params: any) => {
     setSelectedUser(params.data);
   }
 };
+const getRowStyle = (params: any) => {
+  if (selectedUser?.customer_id === params.data.customer_id) {
+   return {
+  backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
+   color: "#fff !important",      //           // white text for contrast
+  fontWeight: 600,            // makes it stand out a bit more
+};
+  }
+  return {};
+};
+
 
 
 
@@ -295,7 +306,7 @@ const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
   rowData={rowData}
   userCol={userCol}
   onRowClicked={onRowClicked}
-  
+    getRowStyle={getRowStyle} 
   selectedCustId={selectedUser?.customer_id}
   enablePagination
   currentPage={page}

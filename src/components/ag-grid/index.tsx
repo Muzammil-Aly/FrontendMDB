@@ -12,7 +12,8 @@ import {
   CellStyleModule,
   ModuleRegistry ,
   PaginationModule ,
-  RowAutoHeightModule
+  RowAutoHeightModule,
+   RowStyleModule
 } from "ag-grid-community";
 import Pagination from "./Pagination";
 ModuleRegistry.registerModules([
@@ -21,7 +22,8 @@ ModuleRegistry.registerModules([
   ValidationModule,
   CellStyleModule,
   PaginationModule,
-  RowAutoHeightModule
+  RowAutoHeightModule,
+   RowStyleModule
 ]);
 
 const AgGridTable: React.FC<any> = ({
@@ -33,6 +35,7 @@ const AgGridTable: React.FC<any> = ({
   rowHeight = 60,
   paginationPageSize = 10,
   onRowClicked,
+  
   enablePagination = false,
   rowSelection = false,
   handleRowSelection = () => {},
@@ -43,6 +46,7 @@ const AgGridTable: React.FC<any> = ({
   rowClassRules,
   className,
   noTopBorder,
+  
   ...gridProps
 }) => {
   const rowSelectionMemo = useMemo<
@@ -94,9 +98,8 @@ const AgGridTable: React.FC<any> = ({
             ref={gridRef}
             rowData={rowData}
             columnDefs={columnDefs}
-            rowClassRules={rowClassRules}
-            className={className}
             getRowStyle={getRowStyle}
+               rowClassRules={rowClassRules as any}  
             defaultColDef={{
               // flex: 1,
                resizable: true,

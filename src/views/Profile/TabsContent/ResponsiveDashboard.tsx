@@ -21,6 +21,8 @@ const ResponsiveDashboard = ({
   totalPages,
   onPageChange,
   currentMenu,
+    getRowStyle
+
 }: any) => {
 
   const layouts = {
@@ -95,6 +97,7 @@ const ResponsiveDashboard = ({
         <ResponsiveGridLayout
           className="layout"
           layouts={layouts}
+          
           breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
           cols={{ lg: 12, md: 12, sm: 12, xs: 4, xxs: 2 }}
           rowHeight={30}
@@ -132,7 +135,7 @@ const ResponsiveDashboard = ({
                 rowData={rowData}
                 columnDefs={userCol}
                 onRowClicked={onRowClicked}
-                
+                  getRowStyle={getRowStyle}
                 enablePagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -145,7 +148,28 @@ const ResponsiveDashboard = ({
             </Box>
           </Paper> 
 
+          <Paper
+  key="customer_segments"
+  elevation={3}
+  className="drag-handle"
+  onClick={(e) => e.stopPropagation()} 
+  sx={{
+    p: 2,
+    borderRadius: 3,
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  }}
+>
+  <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
+    {selectedCustId && currentMenu === "profiles" && <CustomerSegmentCard custId={selectedCustId} />}
+    {selectedOrderId && currentMenu === "orders" && <OrderItems orderId={selectedOrderId} />}
+    {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments customerId={selectedTicket} />}
+  </Box>
+</Paper>
 
+
+{/* 
                     {(selectedCustId || selectedOrderId || selectedTicket) && (
 
             <Paper
@@ -177,7 +201,7 @@ const ResponsiveDashboard = ({
 
             </Paper>
 
-          )}
+          )} */}
         </ResponsiveGridLayout>
       </Box>
   );
