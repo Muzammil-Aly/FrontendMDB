@@ -8,8 +8,21 @@ import {
   ClientSideRowModelModule,
   RowSelectionModule,
   RowSelectionOptions,
+  ValidationModule,
+  CellStyleModule,
+  ModuleRegistry ,
+  PaginationModule ,
+  RowAutoHeightModule
 } from "ag-grid-community";
 import Pagination from "./Pagination";
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  RowSelectionModule,
+  ValidationModule,
+  CellStyleModule,
+  PaginationModule,
+  RowAutoHeightModule
+]);
 
 const AgGridTable: React.FC<any> = ({
   rowData,
@@ -23,7 +36,7 @@ const AgGridTable: React.FC<any> = ({
   enablePagination = false,
   rowSelection = false,
   handleRowSelection = () => {},
-  currentPage = 0, 
+  currentPage = 0,
   totalPages = 1,
   onPageChange = () => {},
   getRowStyle,
@@ -32,7 +45,6 @@ const AgGridTable: React.FC<any> = ({
   noTopBorder,
   ...gridProps
 }) => {
-
   const rowSelectionMemo = useMemo<
     RowSelectionOptions | "single" | "multiple"
   >(() => {
@@ -48,10 +60,11 @@ const AgGridTable: React.FC<any> = ({
           className={`ag-theme-material ${noTopBorder ? "no-top-border" : ""}`}
           style={{
             height: height,
-            width: width || "100%",
+            // width: width || "100%",
+            minWidth: '1000px',
           }}
         >
-          <AgGridReact
+          {/* <AgGridReact
             ref={gridRef}
             rowData={rowData}
             columnDefs={columnDefs}
@@ -71,6 +84,41 @@ const AgGridTable: React.FC<any> = ({
             rowHeight={rowHeight}
             onRowClicked={onRowClicked}
             suppressPaginationPanel={true}
+            rowSelection={rowSelection ? rowSelectionMemo : undefined}
+            onRowSelected={handleRowSelection}
+            {...gridProps}
+          /> */}
+
+          <AgGridReact
+            theme="legacy"
+            ref={gridRef}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            rowClassRules={rowClassRules}
+            className={className}
+            getRowStyle={getRowStyle}
+            defaultColDef={{
+              // flex: 1,
+               resizable: true,
+              sortable: true,
+            }}
+            modules={[
+              ClientSideRowModelModule,
+              RowSelectionModule,
+              ValidationModule,
+              CellStyleModule,
+              PaginationModule,
+
+            ]}
+            pagination={enablePagination}
+            paginationPageSize={
+              enablePagination ? paginationPageSize : undefined
+            }
+            domLayout="normal"
+            rowHeight={rowHeight}
+            onRowClicked={onRowClicked}
+            suppressPaginationPanel={true}
+            //  suppressHorizontalScroll={true} 
             rowSelection={rowSelection ? rowSelectionMemo : undefined}
             onRowSelected={handleRowSelection}
             {...gridProps}

@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { Box, Modal, Typography, Stack } from "@mui/material";
@@ -9,7 +10,11 @@ import ActivityLog from "./TabsContent/ActivityLog";
 import Subscription from "./TabsContent/Subscription";
 import OrderHistory from "./TabsContent/OrderHistory";
 import Predictive from "./TabsContent/Predictive";
-import ExternalTabs from "./ZendexTabs";
+import CustomerSegmentCard from "./CustomerSegmentCard";
+import Orders from "./Orders";
+import SupportTickets from "./SupportTickets";
+import MarketingEvents from "./MarketingEvents";
+
 interface UserDetailsModalProps {
   open: boolean;
   onClose: () => void;
@@ -35,41 +40,101 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   onClose,
   userData,
 }) => {
-  const [activeTab, setActiveTab] = useState("subscriptions");
-  useEffect(() => {
-    if (open) {
-      setActiveTab("subscriptions");
-    }
-  }, [open]);
-  if (!userData) return null;
-  const userDetails = [
-    { label: "Mobile", value: userData.phone_number },
-    { label: "Email", value: userData.email },
-    { label: "Organization", value: userData.organization },
-    { label: "Address", value: userData.address },
-    { label: "City", value: userData.city },
-    { label: "Country", value: userData.country },
-    { label: "Postal", value: userData.postal },
-  ];
-  const renderTabs = (tab: string) => {
-    switch (tab.toLowerCase()) {
-      case "subscriptions":
-        return <Subscription subscriptions={userData.subscriptions} />;
+  const [activeMenu, setActiveMenu] = useState("Customer Segments");
 
-      case "order history":
-        return <OrderHistory profileId={userData.id} />;
-      case "activity log":
-        return <ActivityLog profileId={userData.id} />;
-      case "predictive analytics":
-        return <Predictive data={userData.predictive_analytics} />;
-      default:
-        return null;
-    }
+  const menuItems = [
+    "Customer Segments",
+    "Orders",
+    "Support Tickets",
+    "Marketing Events",
+    "Detailed Information",
+  ];
+
+  useEffect(() => {
+    if (open) setActiveMenu("Customer Segments");
+  }, [open]);
+
+  if (!userData) return null;
+
+  const userDetails = [
+    { label: "Customer ID", value: userData.customer_id },
+    { label: "Email", value: userData.email },
+    { label: "Phone", value: userData.phone },
+    { label: "Full Name", value: userData.full_name },
+    { label: "Source", value: userData.source },
+    { label: "Join Type", value: userData.join_type },
+    { label: "Key", value: userData.key },
+  ];
+
+  const menuConfig: Record<
+    string,
+    { component: React.ReactNode }
+  > = {
+    "Customer Segments": {
+      component: <CustomerSegmentCard custId={userData.customer_id} />,
+    },
+    Orders: {
+     
+      component:  <OrderHistory customerId={userData.customer_id} />,
+
+    },
+    "Support Tickets": {
+      component:      <SupportTickets customerId={userData.customer_id} />,
+    },
+    "Marketing Events": {
+      component: <MarketingEvents customerId={userData.customer_id} />  ,
+    },
+    "Detailed Information": {
+      component: (
+        <Box>
+          {userDetails.map(({ label, value }) => (
+            <Stack
+              key={label}
+              direction="row"
+              justifyContent="space-between"
+              borderBottom="1px solid rgba(193, 199, 208, 0.3)"
+              pb={1}
+            >
+              <Typography fontWeight={600}>{label}:</Typography>
+              <Typography fontWeight={400} color="#666D80">
+                {value || "N/A"}
+              </Typography>
+            </Stack>
+          ))}
+        </Box>
+      ),
+    },
   };
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="user-details-title">
       <Box sx={style}>
+        <Box mb={4}>
+          <Typography fontWeight={700} mb={2.8} fontSize={20}>
+            Profile Information
+          </Typography>
+          <Box
+            display="grid"
+            gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+            gap={2}
+          >
+            {userDetails.map(({ label, value }) => (
+              <Stack
+                key={label}
+                direction="row"
+                justifyContent="space-between"
+                borderBottom="1px solid rgba(193, 199, 208, 0.3)"
+                pb={1}
+              >
+                <Typography fontWeight={600}>{label}:</Typography>
+                <Typography fontWeight={400} color="#666D80">
+                  {value || "N/A"}
+                </Typography>
+              </Stack>
+            ))}
+          </Box>
+        </Box>
+
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -95,35 +160,35 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               Last Activity on {userData.least_active}
             </Typography>
           </Stack>
-          <Box mt={4} display="flex" gap={2} justifyContent="flex-end">
-            <CustomTabs
-              tabs={tabItems}
-              onTabChange={(label) => setActiveTab(label)}
-            />
-          </Box>
         </Stack>
 
-        <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
-          <Box flex={1}>
-            <Typography fontWeight={700} mb={2.8} fontSize={20}>
-              Profile Information
-            </Typography>
-            {userDetails.map(({ label, value }) => (
-              <Stack
-                key={label}
-                direction="row"
-                justifyContent="space-between"
-                mb={2}
-                borderBottom="1px solid rgba(193, 199, 208, 0.3)"
-                paddingBottom={1}
+        {/* Sidebar Menu */}
+        <Stack direction="row" spacing={2}>
+          <Stack
+            sx={{
+              minWidth: "200px",
+              borderRight: "1px solid #ddd",
+            }}
+          >
+            {menuItems.map((item) => (
+              <Typography
+                key={item}
+                component="h2"
+                variant="subtitle2"
+                onClick={() => setActiveMenu(item)}
+                sx={{
+                  p: 2,
+                  cursor: "pointer",
+                  fontWeight: activeMenu === item ? "bold" : "normal",
+                  bgcolor: activeMenu === item ? "#e0e0e0" : "transparent",
+                  borderRadius: "10px",
+                }}
               >
-                <Typography fontWeight={600}>{label}:</Typography>
-                <Typography fontWeight={400} color="#666D80">
-                  {value || "N/A"}
-                </Typography>
-              </Stack>
+                {item}
+              </Typography>
             ))}
-          </Box>
+          </Stack>
+
           <Box
             flex={1}
             border={"1px solid #C1C7D0"}
@@ -131,11 +196,9 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
             borderRadius={2}
             overflow={"hidden"}
           >
-            {renderTabs(activeTab)}
+            {menuConfig[activeMenu]?.component}
           </Box>
         </Stack>
-        {/* <ExternalTabs email={"ffergusson@mdbmail.com"} /> */}
-        <ExternalTabs email={userData.email} />
       </Box>
     </Modal>
   );

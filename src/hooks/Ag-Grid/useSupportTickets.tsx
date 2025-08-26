@@ -54,35 +54,7 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-const AvatarCell = ({ value }: { value: string }) => {
-  if (!value) return null;
-  const initials = value
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
 
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Avatar
-        sx={{
-          bgcolor: "#D9D9D9",
-          color: "#555",
-          fontWeight: "bold",
-          fontSize: 14,
-          width: 36,
-          height: 36,
-        }}
-        aria-label={value}
-      >
-        {initials}
-      </Avatar>
-      <Typography sx={{ fontWeight: 600, textTransform: "capitalize" }}>
-        {value}
-      </Typography>
-    </Box>
-  );
-};
 
 
 
@@ -101,16 +73,24 @@ const useSupportTicket = (columns: Column[]) => {
             headerName: "Customer",
             flex: 1.2,
             minWidth: 200,
-            cellRenderer: (params: ICellRendererParams) => (
-              <AvatarCell value={params.value} />
-            ),
+          
           };
 
         case "created_at":
-          return { ...col, headerName: "Created At", flex: 1, minWidth: 160 };
+          return {
+            ...col,
+            headerName: "Created At",
+            flex: 1,
+            minWidth: 160,
+          };
 
         case "resolved_at":
-          return { ...col, headerName: "Resolved At", flex: 1, minWidth: 160 };
+          return {
+            ...col,
+            headerName: "Resolved At",
+            flex: 1,
+            minWidth: 160,
+          };
 
         case "status":
           return {
@@ -118,9 +98,7 @@ const useSupportTicket = (columns: Column[]) => {
             headerName: "Status",
             flex: 1,
             minWidth: 130,
-            cellRenderer: (params: ICellRendererParams) => (
-              <StatusCell value={params.value} />
-            ),
+            
           };
 
         case "channel":
@@ -132,8 +110,7 @@ const useSupportTicket = (columns: Column[]) => {
             headerName: "Tags",
             flex: 1.5,
             minWidth: 200,
-            valueFormatter: (params: any) =>
-              Array.isArray(params.value) ? params.value.join(", ") : params.value,
+            valueFormatter: (params: any) => params.value || "-", // plain string now
           };
 
         case "csat_score":
@@ -143,6 +120,8 @@ const useSupportTicket = (columns: Column[]) => {
             flex: 1,
             minWidth: 140,
             cellStyle: { textAlign: "center", fontWeight: 600 },
+            valueFormatter: (params: any) =>
+              params.value !== null ? params.value : "-",
           };
 
         case "sentiment_score":
@@ -152,6 +131,8 @@ const useSupportTicket = (columns: Column[]) => {
             flex: 1,
             minWidth: 160,
             cellStyle: { textAlign: "center", fontWeight: 600 },
+            valueFormatter: (params: any) =>
+              params.value !== null ? params.value : "-",
           };
 
         case "last_comment_at":
@@ -160,6 +141,7 @@ const useSupportTicket = (columns: Column[]) => {
             headerName: "Last Comment At",
             flex: 1,
             minWidth: 180,
+            valueFormatter: (params: any) => params.value || "-",
           };
 
         case "comment_count":
@@ -169,6 +151,8 @@ const useSupportTicket = (columns: Column[]) => {
             flex: 1,
             minWidth: 140,
             cellStyle: { textAlign: "right", fontWeight: 600 },
+            valueFormatter: (params: any) =>
+              params.value !== null ? params.value : "0",
           };
 
         default:
@@ -177,5 +161,6 @@ const useSupportTicket = (columns: Column[]) => {
     });
   }, [columns]);
 };
+
 
 export default useSupportTicket;

@@ -53,69 +53,22 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-const AvatarCell = ({ value }: { value: string }) => {
-  if (!value) return null;
-  const initials = value
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Avatar
-        sx={{
-          bgcolor: "#D9D9D9",
-          color: "#555",
-          fontWeight: "bold",
-          fontSize: 14,
-          width: 36,
-          height: 36,
-        }}
-        aria-label={value}
-      >
-        {initials}
-      </Avatar>
-      <Typography sx={{ fontWeight: 600, textTransform: "capitalize" }}>
-        {value}
-      </Typography>
-    </Box>
-  );
-};
-
 const useUsersColumn = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
         case "customer_id":
-          return {
-            ...col,
-            headerName: "Customer ID",
-            flex: 1,
-            width: 300,
-            cellRenderer: (params: ICellRendererParams) => (
-              <AvatarCell value={params.value} />
-            ),
-          };
+          return { ...col, headerName: "Customer ID", minWidth: 150 };
         case "email":
-          return { ...col, headerName: "Email", flex: 1 };
+          return { ...col, headerName: "Email", minWidth: 200 };
         case "phone":
-          return { ...col, headerName: "Phone", width: 140 };
+          return { ...col, headerName: "Phone", minWidth: 140 };
         case "full_name":
-          return { ...col, headerName: "Full Name", flex: 1.2 };
+          return { ...col, headerName: "Full Name", minWidth: 200 };
         case "source":
-          return { ...col, headerName: "Source", flex: 1.2 };
-            case "join_type":
-          return { ...col, headerName: "Join Type", flex: 1.2 };
-        case "status":
-          return {
-            ...col,
-            headerName: "Status",
-            width: 130,
-            cellRenderer: (params: ICellRendererParams) => (
-              <StatusCell value={params.value} />
-            ),
-          };
+          return { ...col, headerName: "Source", minWidth: 150 };
+        case "join_type":
+          return { ...col, headerName: "Join Type", minWidth: 150 };
         default:
           return col;
       }

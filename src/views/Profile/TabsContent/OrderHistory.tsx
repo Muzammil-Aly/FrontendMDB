@@ -1,72 +1,126 @@
 "use client";
-import React from "react";
-import { Box, Typography, Stack, CircularProgress } from "@mui/material";
-import { useGetOrderHistoryQuery } from "@/redux/services/profileApi";
-import { formatDate } from "@/utils/FormatDate";
+import React, { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Box,
+  Alert,
+  Typography,
+} from "@mui/material";
+import { useGetCustomerOrdersQuery } from "@/redux/services/profileApi";
+import OrderItems from "../OrderItems";
 
-interface OrderHistoryProps {
-  profileId: string;
+interface Order {
+  order_id: string;
+  order_date: string;
+  customer_id: string;
+  profit_name: string;
+  channel: string;
+  shipping_address: string;
+  customer_no: string;
+  fulfillment_status: string | null;
+  discount_code: string | null;
+  total_value: number;
 }
 
-const OrderHistory: React.FC<OrderHistoryProps> = ({ profileId }) => {
-  const { data, isLoading, error } = useGetOrderHistoryQuery({ profileId });
+interface OrdersTableProps {
+  customerId?: string;
+  orderId?: string;
+}
 
-  if (isLoading)
+const OrdersTable: React.FC<OrdersTableProps> = ({ customerId, orderId }) => {
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  const { data, isLoading, isFetching, error } = useGetCustomerOrdersQuery({
+    customer_id: customerId,
+    order_id: orderId,
+    page: 1,
+    page_size: 10,
+  });
+
+  if (isLoading || isFetching) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
-        <CircularProgress size={50} />
+      <Box display="flex" justifyContent="center" alignItems="center" p={3}>
+        <CircularProgress />
       </Box>
     );
+  }
 
-  if (error) return <Typography>Error loading order history.</Typography>;
+  if (error) {
+    return <Alert severity="error">Failed to load orders</Alert>;
+  }
 
-  const orders = data?.data?.[0]?.order_history || [];
+  const orders: Order[] = Array.isArray(data?.data) ? data.data : [];
+
+  if (orders.length === 0) {
+    return <Alert severity="info">No orders found</Alert>;
+  }
 
   return (
-    <Box>
-      <Typography fontWeight={600} mb={4} variant="h4">
-        Order History
-      </Typography>
+    <>
+      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell><b>Order ID</b></TableCell>
+              <TableCell><b>Order Date</b></TableCell>
+              <TableCell><b>Customer ID</b></TableCell>
+              <TableCell><b>Customer No</b></TableCell>
+              <TableCell><b>Profit Name</b></TableCell>
+              <TableCell><b>Channel</b></TableCell>
+              <TableCell><b>Shipping Address</b></TableCell>
+              <TableCell><b>Fulfillment Status</b></TableCell>
+              <TableCell><b>Discount Code</b></TableCell>
+              <TableCell align="right"><b>Total Value</b></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {orders.map((order) => (
+              <TableRow
+                key={order.order_id}
+                hover
+                sx={{ cursor: "pointer" }}
+                onClick={() => setSelectedOrder(order)} // 👈 set clicked order
+              >
+                <TableCell>{order.order_id}</TableCell>
+                <TableCell>
+                  {new Date(order.order_date).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{order.customer_id}</TableCell>
+                <TableCell>{order.customer_no}</TableCell>
+                <TableCell>{order.profit_name}</TableCell>
+                <TableCell>{order.channel}</TableCell>
+                <TableCell>{order.shipping_address}</TableCell>
+                <TableCell>
+                  {order.fulfillment_status || (
+                    <Typography color="text.secondary">Pending</Typography>
+                  )}
+                </TableCell>
+                <TableCell>{order.discount_code || "N/A"}</TableCell>
+                <TableCell align="right">
+                  ${order.total_value.toFixed(2)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      {orders.length === 0 ? (
-        <Typography>No order history available.</Typography>
-      ) : (
-        <Stack spacing={3} sx={{ maxHeight: 300, overflowY: "auto", pr: 1 }}>
-          {orders.map((order: any, idx: number) => {
-            const time = order.event_datetime;
-            const props = order.event_properties;
-            const value = props?.$extra?.price_set?.shop_money;
-            return (
-              <Box key={idx} sx={{ borderBottom: "1px solid #ddd", pb: 2 }}>
-                <Typography variant="body2">
-                  <strong>Product Name:</strong> {props?.Items || "N/A"}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Variant Name:</strong>{" "}
-                  {props?.["Variant Name"] || "N/A"}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Quantity:</strong> {props?.["Item Count"] || "N/A"}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Value:</strong>{" "}
-                  {/* {value?.currency
-                    ? `${value.currency} ${value.amount}`
-                    : "N/A"} */}
-                  {props?.$currency_code && props?.$value
-                    ? `${props.$currency_code} ${props.$value}`
-                    : "N/A"}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Date:</strong> {formatDate(time)}
-                </Typography>
-              </Box>
-            );
-          })}
-        </Stack>
+      {selectedOrder && (
+        <Box mt={3}>
+          <OrderItems
+            orderId={selectedOrder.order_id}
+          />
+        </Box>
       )}
-    </Box>
+    </>
   );
 };
 
-export default OrderHistory;
+export default OrdersTable;

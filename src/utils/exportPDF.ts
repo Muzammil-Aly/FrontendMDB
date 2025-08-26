@@ -3,15 +3,19 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 interface ExportRow {
-  name: string;
+  full_name: string;
   email: string;
-  phone_number: string;
-  organization: string;
-  order_history: number;
+  phone: string;
+  source: string;
+  customer_id: string;
   status: string;
-  country: string;
-  city: string;
+  join_type: string;
+  key: string;
 }
+
+
+
+
 
 export const exportProfilesToPDF = (
   rowData: ExportRow[],
@@ -33,20 +37,20 @@ export const exportProfilesToPDF = (
   doc.text(title, x, 30);
 
   const tableData = rowData.map((row) => [
-    row.name,
+    row.full_name,
     row.email,
-    row.phone_number,
-    row.organization,
-    row.order_history,
+    row.phone,
+    row.source,
+    row.customer_id,
     row.status,
-    row.country,
-    row.city,
+    row.key,
+    row.join_type
   ]);
 
   autoTable(doc, {
     startY: 50,
     head: [
-      ["Name", "Email", "Phone", "Org", "Orders", "Status", "Country", "City"],
+      ["Full Name", "Email", "Phone", "Source", "Customer ID", "Status", "Key", "Join Type"],
     ],
     body: tableData,
     styles: {

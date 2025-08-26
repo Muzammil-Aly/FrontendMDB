@@ -1,4 +1,5 @@
 "use client";
+import AgGridTable from "@/components/ag-grid";
 import {
   users,
 
@@ -18,25 +19,22 @@ import {
   ListSubheader,
 } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
+import UserDetailsModal from "./UserDetailsModal";
 import CustomSearchField from "@/components/Common/CustomSearch";
 import { Phone, Send } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
 
-import Orders from "./Orders";
-import SupportTickets from "./SupportTickets";
 
-import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
-import MarketingEvents from "./MarketingEvents";
-import DetailedInfo from "./DetailedInfo";
 interface SegmentOption {
   id: string;
   name: string;
 }
-const Profile = () => {
+const DetailedInfo = () => {
   const userCol = useUsersColumn(users);
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,23 +42,14 @@ const Profile = () => {
   const [pageSize, setPageSize] = useState(10);
 
 
-  const [activeMenu, setActiveMenu] = useState("Customer Profilies");
-  const menuItems = [
-    "Customer Profilies",
-    "Orders",
-    "Support Tickets",
-    "Marketing Events",
-    "Detailed Information",
-  ];
-
+  
   const [sourceFilter, setSourceFilter] = useState<string | undefined>(
     undefined
   );
   const [customerIdFilter, setCustomerIdFilter] = useState<string | undefined>(
     undefined
   );
-
-
+ 
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
     {
       page,
@@ -89,18 +78,11 @@ const Profile = () => {
     });
   }, [data]);
 
-
-const onRowClicked = (params: any) => {
-  if (selectedUser?.customer_id === params.data.customer_id) {
-    // same row clicked again → clear & close
-    setSelectedUser(null);
-  } else {
-    // new row → set and open
+  
+  const onRowClicked = (params: any) => {
     setSelectedUser(params.data);
-  }
-};
-
-
+    setModalOpen(true);
+  };
 
   const debouncedSearch = useMemo(
     () =>
@@ -123,76 +105,10 @@ const onRowClicked = (params: any) => {
       debouncedSearch(value);
     }
   };
+  const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
 
-  const menuConfig: Record<string, {  component?: React.ReactNode;
-  }> = {
-    Orders: {
-      
-             component: <Orders />,
-
-            
-    },
- 
-    "Support Tickets": {
-     
-     
-       component: <  SupportTickets />,
-
-    },
-
-    "Marketing Events": {
-     
-       component: <  MarketingEvents />,
-
-
-    },
-    "Detailed Information": {
-     
-       component: <  DetailedInfo/>,
-
-
-    },
-
-  };
   
-
-
-const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
-
   return (
-    <Box display="flex">
-      <Box
-        sx={{
-          width: 200,
-          height: 800,
-          borderRight: "1px solid #ddd",
-          bgcolor: "#f9f9f9",
-          p: 2,
-        }}
-      >
-        <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-          UCP
-        </Typography>
-        {menuItems.map((item) => (
-          <Typography
-            key={item}
-            component="h2"
-            variant="subtitle2"
-            onClick={() => setActiveMenu(item)}
-            sx={{
-              p: 2,
-              cursor: "pointer",
-              fontWeight: activeMenu === item ? "bold" : "normal",
-              bgcolor: activeMenu === item ? "#e0e0e0" : "transparent",
-              borderRadius: "10px",
-            }}
-          >
-            {item}
-          </Typography>
-        ))}
-      </Box>
-
-      {activeMenu === "Customer Profilies" && (
         <Box flex={1} p={2}>
           <Box
             display={"flex"}
@@ -201,7 +117,7 @@ const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
             pr={3}
           >
             <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-              Profile
+              Detailed Info
             </Typography>
 
             <Box display={"flex"} alignItems={"center"} gap={3}>
@@ -247,22 +163,21 @@ const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
                 />
               </FormControl>
 
-            
-<FormControl size="small" sx={{ minWidth: 200, ml: 2 }}>
-  <Autocomplete
-    size="small"
-    options={sourceOptions}
-    value={sourceFilter ?? "All"}
-    onChange={(e, newValue) => {
-      setSourceFilter(!newValue || newValue === "All" ? undefined : newValue);
-
-      setPage(1);
-    }}
-    renderInput={(params) => (
-      <TextField {...params} label="Source" placeholder="Search by Source" />
-    )}
-  />
-</FormControl>
+             <FormControl size="small" sx={{ minWidth: 200, ml: 2 }}>
+               <Autocomplete
+                 size="small"
+                 options={sourceOptions}
+                 value={sourceFilter ?? "All"}
+                 onChange={(e, newValue) => {
+                   setSourceFilter(!newValue || newValue === "All" ? undefined : newValue);
+             
+                   setPage(1);
+                 }}
+                 renderInput={(params) => (
+                   <TextField {...params} label="Source" placeholder="Search by Source" />
+                 )}
+               />
+             </FormControl>
 
               <FormControl size="small">
                 <InputLabel>Page Size</InputLabel>
@@ -281,49 +196,39 @@ const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
                 </Select>
               </FormControl>
 
-             
 
-             
-            </Box>
+                       </Box>
           </Box>
 
           {isLoading || isFetching ? (
             <Loader />
           ) : (
+            <AgGridTable
+              rowData={rowData}
+              columnDefs={userCol}
+              onRowClicked={onRowClicked}
+              height={480}
+              enablePagination
+              currentPage={page}
+              totalPages={data?.total_pages || 1}
+              onPageChange={(newPage: any) => setPage(newPage)}
+              pagination={false}
+            />
 
-            <ResponsiveDashboard
-  rowData={rowData}
-  userCol={userCol}
-  onRowClicked={onRowClicked}
-  
-  selectedCustId={selectedUser?.customer_id}
-  enablePagination
-  currentPage={page}
-  totalPages={data?.total_pages || 1}
-  onPageChange={(newPage: any) => setPage(newPage)}
-  pagination={false}
-  currentMenu="profiles"
-              
-/>
 
           )}
-
-         
+<UserDetailsModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            userData={selectedUser}
+          />
+          
         </Box>
-      )}
-
       
-   {menuConfig[activeMenu] && (
-  <Box flex={1} p={1}>
-    {menuConfig[activeMenu]?.component
-      ? menuConfig[activeMenu].component
-      : null}
-  </Box>
-)}
 
 
-    </Box>
+    
   );
 };
 
-export default Profile;
+export default DetailedInfo;

@@ -53,35 +53,7 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-const AvatarCell = ({ value }: { value: string }) => {
-  if (!value) return null;
-  const initials = value
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
 
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Avatar
-        sx={{
-          bgcolor: "#D9D9D9",
-          color: "#555",
-          fontWeight: "bold",
-          fontSize: 14,
-          width: 36,
-          height: 36,
-        }}
-        aria-label={value}
-      >
-        {initials}
-      </Avatar>
-      <Typography sx={{ fontWeight: 600, textTransform: "capitalize" }}>
-        {value}
-      </Typography>
-    </Box>
-  );
-};
 
 const useMarketingEvents = (columns: Column[]) => {
   return useMemo(() => {

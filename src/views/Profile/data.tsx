@@ -1,13 +1,13 @@
 export const tabItems = [
   {
-    label: "Subscriptions",
+    label: "Customer Segments",
   },
   {
     label: "Activity log",
   },
 
   {
-    label: "Order History",
+    label: "Customer Orders",
   },
   {
     label: "Predictive Analytics",

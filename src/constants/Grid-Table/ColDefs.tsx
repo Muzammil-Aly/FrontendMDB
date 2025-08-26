@@ -16,6 +16,7 @@ export const orders = [
   { field: "order_date", headerName: "Order Date" },
   { field: "total_value", headerName: "Total Value" },
   { field: "discount_code", headerName: "Discount Code" },
+  { field: "profit_name", headerName: "Profit Name" },
   { field: "fulfillment_status", headerName: "Fulfillment Status" },
   { field: "shipping_address", headerName: "Shipping Address" },
   { field: "channel", headerName: "Channel" },
@@ -24,16 +25,17 @@ export const orders = [
 
 
 export const orderItems = [
-  { field: "order_item_id", headerName: "Order Item ID" },
+  { field: "line_no", headerName: "Order Item ID" },
   { field: "order_id", headerName: "Order ID" },
   { field: "sku", headerName: "SKU" },
   { field: "product_name", headerName: "Product Name" },
   { field: "quantity", headerName: "Quantity" },
-  { field: "gross_amount", headerName: "Gross Amount" },
+  { field: "amount", headerName: "Gross Amount" },
   { field: "item_type", headerName: "Item Type" },
   { field: "brand", headerName: "Brand" },
   { field: "collection", headerName: "Collection" },
 ];
+
 
 export const support_tickets = [
   { field: "ticket_id", headerName: "Ticket ID" },
@@ -51,14 +53,14 @@ export const support_tickets = [
 
 
 
-export const marketing_events= [
-  { field: "Field", headerName: "event_id" },
-  { field: "Customer ID", headerName: "customer_id" },
-  { field: "Event Type", headerName: "event_type" },
-  { field: "Campaign ID", headerName: "campaign_id" },
-  { field: "Campaign Name", headerName: "campaign_name" },
-  { field: "Event Timestamp", headerName: "event_timestamp" },
-]
+export const marketing_events = [
+  { headerName: "Event ID", field: "event_id" },
+  { headerName: "Event Type", field: "event_type" },
+  { headerName: "Customer ID", field: "customer_id" },
+  { headerName: "Timestamp", field: "event_timestamp" },
+  { headerName: "Campaign", field: "campaign_name" },
+];
+
 
 
 export const support_ticket_comments = [

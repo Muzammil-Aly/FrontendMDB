@@ -36,9 +36,7 @@ export const klaviyoApi = createApi({
         full_name,
         source,
         join_type,
-
-        customer_id
-        ,
+        customer_id,
         key
       }) => {
         const params = new URLSearchParams();
@@ -50,6 +48,7 @@ export const klaviyoApi = createApi({
         if (source) params.set("source", source);
         if (customer_id) params.set("customer_id", customer_id);
         if (join_type) params.set("join_type", join_type);
+        if (key) params.set("key", key);
         return `/customer_profiles/?${params.toString()}`;
       },
     }),
@@ -75,12 +74,86 @@ export const klaviyoApi = createApi({
     getZendeskTickets: builder.query<any, { email?: string }>({
       query: ({ email }) => `/zendesk_tickets?email=${email}`,
     }),
+    getCustomerSegment: builder.query<any, { custId: number }>({
+       query: ({ custId }) => `customer_segments?cust_id=${custId}`,
+}),
+getCustomerOrders: builder.query<any, {
+  page?: number;
+  page_size?: number;
+  email?: string;
+  source?: string;
+  order_id?: string;
+  customer_id?:string;
+}>({
+  query: ({ page = 1, page_size = 10,  order_id,customer_id }) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    params.set("page_size", page_size.toString());
+    if (order_id) params.set("order_id", order_id);
+    if (customer_id) params.set("customer_id", customer_id);
+    
+    return `/customer_orders?${params.toString()}`;
+  },
+}),
+
+getOrderItems: builder.query<any, { orderId: string }>({
+       query: ({ orderId }) => `customer_order_items?order_id=${orderId}`,
+}),
+
+getSupportTickets: builder.query<any, {
+  page?: number;
+  page_size?: number;
+  ticket_id?: string;
+  customer_id?: string;
+}>({
+  query: ({ page = 1, page_size = 10,  customer_id, ticket_id}) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    params.set("page_size", page_size.toString());
+    if (customer_id) params.set("customer_id", customer_id);
+    if (ticket_id) params.set("ticket_id", ticket_id);
+    return `/support_tickets?${params.toString()}`;
+  },
+}),
+
+getSupportTicketsCommnets: builder.query<any, { customerId: number }>({
+       query: ({ customerId }) => `support_ticket_comments?customer_id=${customerId}`,
+}),
+
+
+getCustomerEvents: builder.query<
+  any,
+  {
+    page?: number;
+    page_size?: number;
+    event_type?: string;
+    event_id?: string;
+    campaign_name?: string;
+    customer_id?: string;
+  }
+>({
+  query: ({ page = 1, page_size = 10, event_type, event_id, campaign_name, customer_id }) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    params.set("page_size", page_size.toString());
+    if (event_type) params.set("event_type", event_type);
+    if (event_id) params.set("event_id", event_id);
+    if (campaign_name) params.set("campaign_name", campaign_name);
+    if (customer_id) params.set("customer_id", customer_id);
+
+    return `customer_events?${params.toString()}`;
+  },
+}),
+
+
     getSegments: builder.query<any, { page?: number; page_size?: number }>({
       query: ({ page, page_size } = {}) => {
         return `/segments?page=${page}&page_size=${page_size}`;
       },
     }),
   }),
+    
+  
 });
 
 export const {
@@ -90,4 +163,10 @@ export const {
   useGetOrderHistoryQuery,
   useGetZendeskTicketsQuery,
   useGetSegmentsQuery,
+  useGetCustomerSegmentQuery,
+  useGetCustomerOrdersQuery,
+  useGetOrderItemsQuery,
+  useGetSupportTicketsQuery,
+  useGetSupportTicketsCommnetsQuery,
+  useGetCustomerEventsQuery,
 } = klaviyoApi;

@@ -53,90 +53,37 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-const AvatarCell = ({ value }: { value: string }) => {
-  if (!value) return null;
-  const initials = value
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
 
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Avatar
-        sx={{
-          bgcolor: "#D9D9D9",
-          color: "#555",
-          fontWeight: "bold",
-          fontSize: 14,
-          width: 36,
-          height: 36,
-        }}
-        aria-label={value}
-      >
-        {initials}
-      </Avatar>
-      <Typography sx={{ fontWeight: 600, textTransform: "capitalize" }}>
-        {value}
-      </Typography>
-    </Box>
-  );
-};
 
 const useOrdersColumn = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
         case "order_id":
-          return { ...col, headerName: "Order ID", width: 150 };
+          return { ...col, headerName: "Order ID", flex: 1, minWidth: 120 };
         case "customer_id":
-          return {
-            ...col,
-            headerName: "Customer",
-            flex: 1,
-            width: 250,
-            cellRenderer: (params: ICellRendererParams) => (
-              <AvatarCell value={params.value} />
-            ),
-          };
+          return { ...col, headerName: "Customer", flex: 1, minWidth: 180, cellStyle: { whiteSpace: 'normal' }, autoHeight: true };
+        case "profit_name":
+          return { ...col, headerName: "Profit Name", flex: 1, minWidth: 140 };
+        case "customer_no":
+          return { ...col, headerName: "Customer No", flex: 1, minWidth: 140 };
         case "order_date":
-          return { ...col, headerName: "Order Date", width: 160 };
+          return { ...col, headerName: "Order Date", flex: 1, minWidth: 150 };
         case "total_value":
-          return { ...col, headerName: "Total Value", width: 140 };
+          return { ...col, headerName: "Total Value", flex: 1, minWidth: 120 };
         case "discount_code":
-          return { ...col, headerName: "Discount Code", width: 160 };
+          return { ...col, headerName: "Discount Code", flex: 1, minWidth: 140 };
         case "fulfillment_status":
-          return {
-            ...col,
-            headerName: "Fulfillment Status",
-            width: 180,
-            cellRenderer: (params: ICellRendererParams) => (
-              <StatusCell value={params.value} />
-            ),
-          };
+          return { ...col, headerName: "Fulfillment Status", flex: 1, minWidth: 160, cellStyle: { whiteSpace: 'normal' } };
         case "shipping_address":
-          return { ...col, headerName: "Shipping Address", flex: 1.5 };
+          return { ...col, headerName: "Shipping Address", flex: 2, minWidth: 200, cellStyle: { whiteSpace: 'normal' } };
         case "channel":
-          return { ...col, headerName: "Channel", width: 140 };
-        // case "is_returned":
-        //   return {
-        //     ...col,
-        //     headerName: "Returned?",
-        //     width: 120,
-        //     cellRenderer: (params: ICellRendererParams) => (
-        //       <Box sx={{ fontWeight: 600 }}>
-        //         {params.value ? "Yes" : "No"}
-        //       </Box>
-        //     ),
-        //   };
-        // case "return_amount":
-        //   return { ...col, headerName: "Return Amount", width: 160 };
-        // case "net_order_value":
-        //   return { ...col, headerName: "Net Order Value",  width: 180 };
+          return { ...col, headerName: "Channel", minWidth: 140 };
         default:
           return col;
       }
     });
   }, [columns]);
 };
+
 export default useOrdersColumn;
