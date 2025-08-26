@@ -15,11 +15,10 @@ import Loader from "@/components/Common/Loader";
 import { marketing_events } from "@/constants/Grid-Table/ColDefs";
 import useMarketingEvents from "@/hooks/Ag-Grid/useMarketingItems";
 import AgGridTable from "@/components/ag-grid";
-interface OrdersProps {
+interface MarketingEventsProps {
   customerId?: string; // optional prop
 }
-
-const MarketingEvents: React.FC = ({ customerId }: { customerId?: string }) => {
+const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
   const eventCol = useMarketingEvents(marketing_events);
 
   const [page, setPage] = useState(1);

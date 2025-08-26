@@ -3,15 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { Box, Modal, Typography, Stack } from "@mui/material";
 
-import { tabItems } from "./data";
 
-import CustomTabs from "@/components/Common/CustomTabs";
-import ActivityLog from "./TabsContent/ActivityLog";
-import Subscription from "./TabsContent/Subscription";
 import OrderHistory from "./TabsContent/OrderHistory";
-import Predictive from "./TabsContent/Predictive";
 import CustomerSegmentCard from "./CustomerSegmentCard";
-import Orders from "./Orders";
 import SupportTickets from "./SupportTickets";
 import MarketingEvents from "./MarketingEvents";
 
