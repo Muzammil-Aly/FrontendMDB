@@ -173,28 +173,7 @@ const getRowStyle = (params: any) => {
                        </FormControl>
               
 
-              <FormControl size="small">
-                <button
-                  onClick={() =>
-                    exportProfilesToPDF(
-                      rowData,
-                      pageSize,
-                      storeFilter,
-                    )
-                  }
-                  style={{
-                    padding: "6px 12px",
-                    backgroundColor: "#004FA7",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Export PDF
-                </button>
-              </FormControl>
+              
 
             
             </Box>
