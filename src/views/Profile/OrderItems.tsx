@@ -2,7 +2,7 @@
 import AgGridTable from "@/components/ag-grid";
 import { orderItems } from "@/constants/Grid-Table/ColDefs";
 import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
-import { Box } from "@mui/material";
+import { Box ,Typography} from "@mui/material";
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
 import { useGetOrderItemsQuery } from "@/redux/services/profileApi";
@@ -39,22 +39,50 @@ const rowData = useMemo(() => {
     : [];
 }, [data]);
 
+  // return (
+  //   <Box display="flex" width="100%"
+  //   justifyContent="center"
+  // alignItems="center">
+  //     {isLoading || isFetching ? (
+  //       <Loader />
+  //     ) : (
+  //       <AgGridTable
+  //         rowData={rowData}
+  //         columnDefs={orderItemsCol}
+  //         height={480}
+  //         enablePagination={false}
+  //       />
+  //     )}
+  //   </Box>
+  // );
+
   return (
-    <Box display="flex" width="100%"
+  <Box 
+    display="flex" 
+    flexDirection="column"  // stack vertically
+    width="100%"
     justifyContent="center"
-  alignItems="center">
-      {isLoading || isFetching ? (
-        <Loader />
-      ) : (
-        <AgGridTable
-          rowData={rowData}
-          columnDefs={orderItemsCol}
-          height={480}
-          enablePagination={false}
-        />
-      )}
-    </Box>
-  );
+    alignItems="center"
+  >
+    {/* Show Order ID */}
+    <Typography variant="h6" sx={{ mb: 2 }}>
+      Order ID: {orderId ?? "N/A"}
+    </Typography>
+
+    {/* Loader or Table */}
+    {isLoading || isFetching ? (
+      <Loader />
+    ) : (
+      <AgGridTable
+        rowData={rowData}
+        columnDefs={orderItemsCol}
+        height={480}
+        enablePagination={false}
+      />
+    )}
+  </Box>
+);
+
 };
 
 export default OrderItems;

@@ -26,7 +26,7 @@ export const orders = [
 
 export const orderItems = [
   { field: "line_no", headerName: "Order Item ID" },
-  { field: "order_id", headerName: "Order ID" },
+  // { field: "order_id", headerName: "Order ID" },
   { field: "sku", headerName: "SKU" },
   { field: "product_name", headerName: "Product Name" },
   { field: "quantity", headerName: "Quantity" },

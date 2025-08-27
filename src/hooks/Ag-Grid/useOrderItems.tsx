@@ -66,13 +66,13 @@ const useOrderItems = (columns: Column[]) => {
             minWidth: 150,
           };
 
-        case "order_id":
-          return {
-            ...col,
-            headerName: "Order ID",
-            flex: 1,
-            minWidth: 150,
-          };
+        // case "order_id":
+        //   return {
+        //     ...col,
+        //     headerName: "Order ID",
+        //     flex: 1,
+        //     minWidth: 150,
+        //   };
 
         case "sku":
           return {
@@ -123,7 +123,7 @@ const useOrderItems = (columns: Column[]) => {
             ...col,
             headerName: "Quantity",
             flex: 0.8,
-            minWidth: 100,
+            minWidth: 110,
             cellStyle: { textAlign: "right", fontWeight: "600" },
           };
 
@@ -132,7 +132,7 @@ const useOrderItems = (columns: Column[]) => {
             ...col,
             headerName: "Gross Amount",
             flex: 1,
-            minWidth: 140,
+            minWidth: 160,
             cellStyle: { textAlign: "right", fontWeight: "600" },
             valueFormatter: (params: any) =>
               params.value !== null && params.value !== undefined
