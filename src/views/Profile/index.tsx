@@ -168,7 +168,7 @@ const getRowStyle = (params: any) => {
   
 
 
-const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
+const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo","Zendesk"];
 
   return (
     <Box display="flex" >

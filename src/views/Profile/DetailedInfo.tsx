@@ -105,7 +105,7 @@ const DetailedInfo = () => {
       debouncedSearch(value);
     }
   };
-  const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
+  const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo","Zendesk"];
 
   
   return (
