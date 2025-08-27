@@ -130,6 +130,7 @@ const getRowStyle = (params: any) => {
             onPageChange={(newPage: any) => setPage(newPage)}
             pagination={false}
             currentMenu="orders"
+   paginationPageSize={pageSize}
 
                         
           />

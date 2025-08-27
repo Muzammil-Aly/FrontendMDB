@@ -98,9 +98,9 @@ const useMarketingEvents = (columns: Column[]) => {
             ...col,
             headerName: "Campaign Name",
             flex: 1.5,
-            minWidth: 220,
+            minWidth: 180,
             cellRenderer: (params: ICellRendererParams) => (
-              <Typography sx={{ fontWeight: 600 }}>{params.value}</Typography>
+              <Typography sx={{ fontWeight: 400 }}>{params.value}</Typography>
             ),
           };
 

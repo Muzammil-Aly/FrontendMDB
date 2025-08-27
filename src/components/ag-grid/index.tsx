@@ -100,8 +100,9 @@ const AgGridTable: React.FC<any> = ({
             columnDefs={columnDefs}
             getRowStyle={getRowStyle}
                rowClassRules={rowClassRules as any}  
+               
             defaultColDef={{
-              // flex: 1,
+              flex: 1,
                resizable: true,
               sortable: true,
             }}

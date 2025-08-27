@@ -134,6 +134,8 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
             onPageChange={(newPage: any) => setPage(newPage)}
             pagination={false}
             style={{ width: '100%', overflowX: 'auto' }}
+   paginationPageSize={pageSize}
+
           />
          
         )}

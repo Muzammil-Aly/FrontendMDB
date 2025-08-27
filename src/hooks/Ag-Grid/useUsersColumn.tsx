@@ -58,7 +58,7 @@ const useUsersColumn = (columns: Column[]) => {
     return columns.map((col: any) => {
       switch (col.field) {
         case "customer_id":
-          return { ...col, headerName: "Customer ID", minWidth: 150 };
+          return { ...col, headerName: "Customer ID", minWidth: 100 };
         case "email":
           return { ...col, headerName: "Email", minWidth: 200 };
         case "phone":

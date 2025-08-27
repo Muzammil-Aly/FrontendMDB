@@ -44,13 +44,13 @@ const Profile = () => {
   const [pageSize, setPageSize] = useState(10);
 
 
-  const [activeMenu, setActiveMenu] = useState("Customer Profilies");
+  const [activeMenu, setActiveMenu] = useState("Customer Profiles");
   const menuItems = [
-    "Customer Profilies",
+    "Customer Profiles",
     "Orders",
     "Support Tickets",
     "Marketing Events",
-    "Detailed Information",
+    "Profile Information",
   ];
 
   const [sourceFilter, setSourceFilter] = useState<string | undefined>(
@@ -157,7 +157,7 @@ const getRowStyle = (params: any) => {
 
 
     },
-    "Detailed Information": {
+    "Profile Information": {
      
        component: <  DetailedInfo/>,
 
@@ -203,7 +203,7 @@ const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
         ))}
       </Box>
 
-      {activeMenu === "Customer Profilies" && (
+      {activeMenu === "Customer Profiles" && (
         <Box flex={1} p={2}>
           <Box
             display={"flex"}
@@ -314,6 +314,7 @@ const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo"];
   onPageChange={(newPage: any) => setPage(newPage)}
   pagination={false}
   currentMenu="profiles"
+   paginationPageSize={pageSize}
               
 />
 

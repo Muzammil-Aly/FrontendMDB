@@ -114,15 +114,16 @@ const DetailedInfo = () => {
             display={"flex"}
             justifyContent={"space-between"}
             alignItems={"center"}
-            pr={3}
+            pr={1}
           >
-            <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-              Detailed Info
-            </Typography>
+          <Typography variant="h1" ml={0} p={0} color="#0D0D12" fontWeight={700}>
+  Profile Information
+</Typography>
 
-            <Box display={"flex"} alignItems={"center"} gap={3}>
-              <Box mt={-1}>
-                <Box display={"flex"} alignItems="center" gap={1}>
+
+            <Box display={"flex"} alignItems={"center"} gap={3} >
+              <Box mt={-1}  >
+                <Box display={"flex"} alignItems="center" gap={1}  >
                   <CustomSearchField
                     value={searchInput}
                     onChange={handleSearchInput}
@@ -146,8 +147,10 @@ const DetailedInfo = () => {
                 </Box>
               </Box>
 
-              <FormControl size="small">
+              <FormControl size="small" sx={{ width: 150, ml: 0}}
+                >
                 <TextField
+                
                   label="Customer ID"
                   value={(customerIdFilter || "").toUpperCase()}
                   onChange={(e) => {
@@ -163,7 +166,7 @@ const DetailedInfo = () => {
                 />
               </FormControl>
 
-             <FormControl size="small" sx={{ minWidth: 200, ml: 2 }}>
+             <FormControl size="small" sx={{ minWidth: 150, ml: 0}}>
                <Autocomplete
                  size="small"
                  options={sourceOptions}

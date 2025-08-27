@@ -22,6 +22,7 @@ const ResponsiveDashboard = ({
   totalPages,
   onPageChange,
   currentMenu,
+  paginationPageSize,
     getRowStyle
 }: any) => {
 
@@ -94,7 +95,7 @@ const ResponsiveDashboard = ({
 const hasId = selectedCustId || selectedOrderId || selectedTicket;
 
   return (
-      <Box sx={{ width: "100%", minHeight: "100vh" }}>
+      <Box sx={{ width: "100%", minHeight: "100vh"  }}>
         <ResponsiveGridLayout
           className="layout"
           layouts={layouts}
@@ -118,19 +119,16 @@ const hasId = selectedCustId || selectedOrderId || selectedTicket;
               height: "100%",
               display: "flex",
               flexDirection: "column",
-              overflow: "hidden",
+              // overflow: "hidden",
               
             }}
           >
             <Box sx={{ flex: 1, minHeight: 0 ,
-              overflowX: "auto", 
+              overflow: "auto", 
 
             }}>
               <Box
              sx={ { minWidth: 1200 }} 
-
-
-
               >
 
               <AgGridTable
@@ -143,6 +141,8 @@ const hasId = selectedCustId || selectedOrderId || selectedTicket;
                 totalPages={totalPages}
                 onPageChange={onPageChange}
                 pagination={true}
+                 paginationPageSize={paginationPageSize}
+                // height={28 * 30}
                 
               />
               </Box>
