@@ -4,7 +4,7 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import AgGridTable from "@/components/ag-grid";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import CustomerSegmentCard from "../CustomerSegmentCard";
 import OrderItems from "../OrderItems";
 import SupportTicketComments from "../SupportTicketComments";
@@ -91,6 +91,7 @@ const ResponsiveDashboard = ({
       },
     ],
   };
+const hasId = selectedCustId || selectedOrderId || selectedTicket;
 
   return (
       <Box sx={{ width: "100%", minHeight: "100vh" }}>
@@ -150,7 +151,7 @@ const ResponsiveDashboard = ({
           </Paper> 
 
 
- {(selectedCustId || selectedOrderId || selectedTicket) && (
+ {hasId ? (
   <Paper
     key="customer_segments"
     elevation={3}
@@ -164,6 +165,11 @@ const ResponsiveDashboard = ({
       {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments customerId={selectedTicket} />}
     </Box>
   </Paper>
+):(
+
+
+  <Typography
+  >No id is found</Typography>
 )}
 
         </ResponsiveGridLayout>
