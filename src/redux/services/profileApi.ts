@@ -134,7 +134,7 @@ getSupportTicketsCommnets: builder.query<
   { customerId?: number; ticketId?: number; page?: number; page_size?: number }
 >({
   query: ({ customerId, ticketId, page = 1, page_size = 50 }) => {
-    let queryParams: string[] = [];
+    const queryParams: string[] = [];
     if (customerId) queryParams.push(`customer_id=${customerId}`);
     if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
     
