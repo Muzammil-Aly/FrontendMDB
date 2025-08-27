@@ -41,7 +41,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     "Orders",
     "Support Tickets",
     "Marketing Events",
-    "Detailed Information",
+    // "Detailed Information",
   ];
 
   useEffect(() => {
@@ -78,26 +78,26 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     "Marketing Events": {
       component: <MarketingEvents customerId={userData.customer_id} />  ,
     },
-    "Detailed Information": {
-      component: (
-        <Box>
-          {userDetails.map(({ label, value }) => (
-            <Stack
-              key={label}
-              direction="row"
-              justifyContent="space-between"
-              borderBottom="1px solid rgba(193, 199, 208, 0.3)"
-              pb={1}
-            >
-              <Typography fontWeight={600}>{label}:</Typography>
-              <Typography fontWeight={400} color="#666D80">
-                {value || "N/A"}
-              </Typography>
-            </Stack>
-          ))}
-        </Box>
-      ),
-    },
+    // "Detailed Information": {
+    //   component: (
+    //     <Box>
+    //       {userDetails.map(({ label, value }) => (
+    //         <Stack
+    //           key={label}
+    //           direction="row"
+    //           justifyContent="space-between"
+    //           borderBottom="1px solid rgba(193, 199, 208, 0.3)"
+    //           pb={1}
+    //         >
+    //           <Typography fontWeight={600}>{label}:</Typography>
+    //           <Typography fontWeight={400} color="#666D80">
+    //             {value || "N/A"}
+    //           </Typography>
+    //         </Stack>
+    //       ))}
+    //     </Box>
+    //   ),
+    // },
   };
 
   return (
