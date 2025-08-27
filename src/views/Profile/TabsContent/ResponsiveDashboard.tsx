@@ -128,7 +128,7 @@ const hasId = selectedCustId || selectedOrderId || selectedTicket;
 
             }}>
               <Box
-             sx={ { minWidth: 1200 }} 
+            //  sx={ { minWidth: 1000 }} 
               >
 
               <AgGridTable
@@ -142,7 +142,7 @@ const hasId = selectedCustId || selectedOrderId || selectedTicket;
                 onPageChange={onPageChange}
                 pagination={true}
                  paginationPageSize={paginationPageSize}
-                // height={28 * 30}
+                // height="100%"
                 
               />
               </Box>
@@ -162,7 +162,7 @@ const hasId = selectedCustId || selectedOrderId || selectedTicket;
     <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
       {selectedCustId && currentMenu === "profiles" && <CustomerSegmentCard custId={selectedCustId} />}
       {selectedOrderId && currentMenu === "orders" && <OrderItems orderId={selectedOrderId} />}
-      {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments customerId={selectedTicket} />}
+      {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments ticketId={selectedTicket} />}
     </Box>
   </Paper>
 ):(

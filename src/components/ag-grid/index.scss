@@ -44,7 +44,7 @@
 
 .ag-header-cell-text {
   font-size: 14px !important;
-  font-weight: 500;
+  font-weight: 800;
   line-height: 16.9px;
   letter-spacing: -0.06px;
   color: #344054;
@@ -83,7 +83,7 @@
   background-color: none;
 }
 .ag-body-horizontal-scroll-viewport {
-  overflow-x: hidden !important;
+  overflow-x: auto !important;
 }
 .ag-theme-material .ag-row {
   // cursor: pointer;

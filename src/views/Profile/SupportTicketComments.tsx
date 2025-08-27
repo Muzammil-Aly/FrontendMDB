@@ -26,15 +26,23 @@ interface CommentProps {
 }
 
 interface SupportTicketCommentsProps {
-  customerId: string;
+  // customerId: string;
+    ticketId?: string;
 }
 
-const SupportTicketComments: React.FC<SupportTicketCommentsProps> = ({ customerId }) => {
-  const numericCustId = parseInt(String(customerId).replace(/\D/g, ""), 10);
+const SupportTicketComments: React.FC<SupportTicketCommentsProps> = ({ ticketId }) => {
+  // const numericCustId = parseInt(String(customerId).replace(/\D/g, ""), 10);
+const numericTicketId = ticketId ? parseInt(String(ticketId).replace(/\D/g, ""), 10) : undefined;
 
   const { data, error, isLoading, isFetching } = useGetSupportTicketsCommnetsQuery(
-    { customerId: numericCustId },
-    { skip: !customerId }
+
+    // { customerId: numericCustId },
+    // { skip: !customerId }
+    
+    {  ticketId: numericTicketId,
+        page_size: 50, 
+     },
+    { skip: !ticketId }
   );
 
   if (isLoading  || isFetching) {

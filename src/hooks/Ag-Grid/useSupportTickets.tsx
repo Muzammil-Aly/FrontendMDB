@@ -129,7 +129,7 @@ const useSupportTicket = (columns: Column[]) => {
             ...col,
             headerName: "Sentiment Score",
             flex: 1,
-            minWidth: 160,
+            minWidth: 100,
             cellStyle: { textAlign: "center", fontWeight: 600 },
             valueFormatter: (params: any) =>
               params.value !== null ? params.value : "-",

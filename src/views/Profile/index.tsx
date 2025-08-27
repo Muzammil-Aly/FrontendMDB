@@ -79,7 +79,7 @@ const Profile = () => {
 
       return {
         email: item.email,
-        Phone: item.phone || "",
+        phone: item.phone || "",
         full_name: item.full_name || "",
         source: item.source || "",
         customer_id: item.customer_id || "",

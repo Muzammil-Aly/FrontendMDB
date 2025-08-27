@@ -90,7 +90,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
               size="small"
             />
 
-            <TextField
+            {/* <TextField
               label="Event Type"
               value={eventTypeFilter || ""}
               onChange={(e) => {
@@ -98,7 +98,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                 setPage(1);
               }}
               size="small"
-            />
+            /> */}
 
             <FormControl size="small">
               <InputLabel>Page Size</InputLabel>

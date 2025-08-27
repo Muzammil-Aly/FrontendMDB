@@ -100,7 +100,7 @@ const useMarketingEvents = (columns: Column[]) => {
             flex: 1.5,
             minWidth: 180,
             cellRenderer: (params: ICellRendererParams) => (
-              <Typography sx={{ fontWeight: 400 }}>{params.value}</Typography>
+              <Typography sx={{ fontSize:"12px"  }}>{params.value}</Typography>
             ),
           };
 

@@ -79,7 +79,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
  
 
     const onRowClicked = (params: any) => {
-  if (selectedTicket?.customer_id=== params.data.customer_id) {
+  if (selectedTicket?.ticket_id=== params.data.ticket_id) {
     setSelectedTicket(null);
   } else {
     setSelectedTicket(params.data);
@@ -89,7 +89,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
 
  
 const getRowStyle = (params: any) => {
-  if (selectedTicket?.customer_id=== params.data.customer_id) {
+  if (selectedTicket?.ticket_id=== params.data.ticket_id) {
    return {
   backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
    color: "#fff !important",      //           // white text for contrast
@@ -151,7 +151,7 @@ const getRowStyle = (params: any) => {
                     setPage(1);
                   }}
                   size="small"
-                  placeholder="Search by Customer ID"
+                  placeholder="Search by Ticket ID"
                 />
               </FormControl>
 
@@ -189,7 +189,7 @@ const getRowStyle = (params: any) => {
                         onRowClicked={onRowClicked}
             getRowStyle={getRowStyle} 
 
-                        selectedTicket={selectedTicket?.customer_id}
+                        selectedTicket={selectedTicket?.ticket_id}
                         enablePagination
                         currentPage={page}
                         totalPages={data?.total_pages || 1}

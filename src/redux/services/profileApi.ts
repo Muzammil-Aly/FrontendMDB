@@ -116,8 +116,34 @@ getSupportTickets: builder.query<any, {
   },
 }),
 
-getSupportTicketsCommnets: builder.query<any, { customerId: number }>({
-       query: ({ customerId }) => `support_ticket_comments?customer_id=${customerId}`,
+// getSupportTicketsCommnets: builder.query<any, { customerId: number }>({
+//        query: ({ customerId }) => `support_ticket_comments?customer_id=${customerId}`,
+// }),
+
+// getSupportTicketsCommnets: builder.query<any, { customerId?: number; ticketId?: number,  page?: number;
+//   page_size?: number; }>({
+//   query: ({ customerId, ticketId, page = 1, page_size = 50, }) => {
+//     let queryParams: string[] = [];
+//     if (customerId) queryParams.push(`customer_id=${customerId}`);
+//     if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
+//     return `support_ticket_comments?${queryParams.join("&")}`;
+//   },
+// }),
+getSupportTicketsCommnets: builder.query<
+  any,
+  { customerId?: number; ticketId?: number; page?: number; page_size?: number }
+>({
+  query: ({ customerId, ticketId, page = 1, page_size = 50 }) => {
+    let queryParams: string[] = [];
+    if (customerId) queryParams.push(`customer_id=${customerId}`);
+    if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
+    
+    
+    queryParams.push(`page=${page}`);
+    queryParams.push(`page_size=${page_size}`);
+
+    return `support_ticket_comments?${queryParams.join("&")}`;
+  },
 }),
 
 

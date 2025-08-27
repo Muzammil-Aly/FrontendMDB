@@ -59,12 +59,12 @@ const AgGridTable: React.FC<any> = ({
 
   return (
     <>
-      <Box sx={{ width: width || "100%", overflowX: "auto" }}>
+      <Box sx={{ width: width || "100%", overflowX: "hidden" }}>
         <div
           className={`ag-theme-material ${noTopBorder ? "no-top-border" : ""}`}
           style={{
             height: height,
-            // width: width || "100%",
+            width: width || "100%",
             minWidth: '1000px',
           }}
         >
@@ -102,7 +102,8 @@ const AgGridTable: React.FC<any> = ({
                rowClassRules={rowClassRules as any}  
                
             defaultColDef={{
-              flex: 1,
+              // flex: 1,
+                suppressSizeToFit: true,
                resizable: true,
               sortable: true,
             }}
