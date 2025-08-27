@@ -164,7 +164,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               borderRight: "1px solid #ddd",
             }}
           >
-            {menuItems.map((item) => (
+            {/* {menuItems.map((item) => (
+              
               <Typography
                 key={item}
                 component="h2"
@@ -180,7 +181,32 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               >
                 {item}
               </Typography>
-            ))}
+            ))} */}
+            {menuItems.map((item) => {
+  // Skip the Orders tab if the user is not from Wismo
+  if (item === "Orders" && userData.source !== "Wismo") {
+    return null;
+  }
+
+  return (
+    <Typography
+      key={item}
+      component="h2"
+      variant="subtitle2"
+      onClick={() => setActiveMenu(item)}
+      sx={{
+        p: 2,
+        cursor: "pointer",
+        fontWeight: activeMenu === item ? "bold" : "normal",
+        bgcolor: activeMenu === item ? "#e0e0e0" : "transparent",
+        borderRadius: "10px",
+      }}
+    >
+      {item}
+    </Typography>
+  );
+})}
+
           </Stack>
 
           <Box
