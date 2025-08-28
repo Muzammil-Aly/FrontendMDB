@@ -86,7 +86,7 @@ const getRowStyle = (params: any) => {
                   setPage(1);
                 }}
                 size="small"
-                placeholder="Search by Customer ID"
+                placeholder="Search by Order ID"
               />
             </FormControl>
 
