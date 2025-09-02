@@ -1,4 +1,3 @@
-
 import CustomButton from "@/components/Common/CustomButton";
 import { ICellRendererParams } from "ag-grid-community";
 import { useMemo } from "react";
@@ -54,12 +53,6 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-
-
-
-
-
-
 const useSupportTicket = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
@@ -70,11 +63,16 @@ const useSupportTicket = (columns: Column[]) => {
         case "customer_id":
           return {
             ...col,
-            headerName: "Customer",
+            headerName: "Customer ID",
             flex: 1.2,
             minWidth: 200,
-          
           };
+        case "email":
+          return { ...col, headerName: "Email", minWidth: 150 };
+        case "phone":
+          return { ...col, headerName: "Phone", minWidth: 150 };
+        case "customer_name":
+          return { ...col, headerName: "Customer Name", minWidth: 150 };
 
         case "created_at":
           return {
@@ -98,7 +96,6 @@ const useSupportTicket = (columns: Column[]) => {
             headerName: "Status",
             flex: 1,
             minWidth: 130,
-            
           };
 
         case "channel":
@@ -129,7 +126,7 @@ const useSupportTicket = (columns: Column[]) => {
             ...col,
             headerName: "Sentiment Score",
             flex: 1,
-            minWidth: 100,
+            minWidth: 160,
             cellStyle: { textAlign: "center", fontWeight: 600 },
             valueFormatter: (params: any) =>
               params.value !== null ? params.value : "-",
@@ -149,7 +146,7 @@ const useSupportTicket = (columns: Column[]) => {
             ...col,
             headerName: "Comment Count",
             flex: 1,
-            minWidth: 140,
+            minWidth: 160,
             cellStyle: { textAlign: "right", fontWeight: 600 },
             valueFormatter: (params: any) =>
               params.value !== null ? params.value : "0",
@@ -161,6 +158,5 @@ const useSupportTicket = (columns: Column[]) => {
     });
   }, [columns]);
 };
-
 
 export default useSupportTicket;

@@ -37,7 +37,7 @@ export const klaviyoApi = createApi({
         source,
         join_type,
         customer_id,
-        key
+        key,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -74,103 +74,168 @@ export const klaviyoApi = createApi({
     getZendeskTickets: builder.query<any, { email?: string }>({
       query: ({ email }) => `/zendesk_tickets?email=${email}`,
     }),
-    getCustomerSegment: builder.query<any, { custId: number }>({
-       query: ({ custId }) => `customer_segments?cust_id=${custId}`,
-}),
-getCustomerOrders: builder.query<any, {
-  page?: number;
-  page_size?: number;
-  email?: string;
-  source?: string;
-  order_id?: string;
-  customer_id?:string;
-}>({
-  query: ({ page = 1, page_size = 10,  order_id,customer_id }) => {
-    const params = new URLSearchParams();
-    params.set("page", page.toString());
-    params.set("page_size", page_size.toString());
-    if (order_id) params.set("order_id", order_id);
-    if (customer_id) params.set("customer_id", customer_id);
-    
-    return `/customer_orders?${params.toString()}`;
-  },
-}),
+    getCustomerSegment: builder.query<any, { custId: string }>({
+      query: ({ custId }) => `customer_segments?cust_id=${custId}`,
+    }),
+    getCustomerOrders: builder.query<
+      any,
+      {
+        page?: number;
+        page_size?: number;
+        email?: string;
+        source?: string;
+        order_id?: string;
+        customer_id?: string;
+        customer_name?: string;
+        customer_reference_no?: string;
+        shipping_address?: string;
+        tracking?: string;
+      }
+    >({
+      query: ({
+        page = 1,
+        page_size = 10,
+        order_id,
+        customer_id,
+        customer_name,
+        customer_reference_no,
+        shipping_address,
+        tracking,
+      }) => {
+        const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+        if (order_id) params.set("order_id", order_id);
+        if (customer_id) params.set("customer_id", customer_id);
+        if (customer_name) params.set("customer_name", customer_name);
+        if (customer_reference_no)
+          params.set("customer_reference_no", customer_reference_no);
+        if (shipping_address) params.set("shipping_address", shipping_address);
+        if (tracking) params.set("tracking", tracking);
 
-getOrderItems: builder.query<any, { orderId: string }>({
-       query: ({ orderId }) => `customer_order_items?order_id=${orderId}`,
-}),
+        return `/customer_orders?${params.toString()}`;
+      },
+    }),
 
-getSupportTickets: builder.query<any, {
-  page?: number;
-  page_size?: number;
-  ticket_id?: string;
-  customer_id?: string;
-}>({
-  query: ({ page = 1, page_size = 10,  customer_id, ticket_id}) => {
-    const params = new URLSearchParams();
-    params.set("page", page.toString());
-    params.set("page_size", page_size.toString());
-    if (customer_id) params.set("customer_id", customer_id);
-    if (ticket_id) params.set("ticket_id", ticket_id);
-    return `/support_tickets?${params.toString()}`;
-  },
-}),
+    getOrderItems: builder.query<any, { orderId: string }>({
+      query: ({ orderId }) => `customer_order_items?order_id=${orderId}`,
+    }),
 
-// getSupportTicketsCommnets: builder.query<any, { customerId: number }>({
-//        query: ({ customerId }) => `support_ticket_comments?customer_id=${customerId}`,
-// }),
+    getSupportTickets: builder.query<
+      any,
+      {
+        page?: number;
+        page_size?: number;
+        ticket_id?: string;
+        customer_id?: string;
+        customer_name?: string;
+        phone_no?: string;
+        email?: string;
+        status?: string;
+        tags?: string;
+        created_at?: string;
+      }
+    >({
+      query: ({
+        page = 1,
+        page_size = 10,
+        customer_id,
+        ticket_id,
+        customer_name,
+        phone_no,
+        email,
+        status,
+        tags,
+        created_at,
+      }) => {
+        const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+        if (customer_id) params.set("customer_id", customer_id);
+        if (ticket_id) params.set("ticket_id", ticket_id);
+        if (customer_name) params.set("customer_name", customer_name);
+        if (phone_no) params.set("phone_no", phone_no);
+        if (email) params.set("email", email);
+        if (status) params.set("status", status);
+        if (tags) params.set("tags", tags);
+        if (created_at) params.set("created_at", created_at);
+        return `/support_tickets?${params.toString()}`;
+      },
+    }),
 
-// getSupportTicketsCommnets: builder.query<any, { customerId?: number; ticketId?: number,  page?: number;
-//   page_size?: number; }>({
-//   query: ({ customerId, ticketId, page = 1, page_size = 50, }) => {
-//     let queryParams: string[] = [];
-//     if (customerId) queryParams.push(`customer_id=${customerId}`);
-//     if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
-//     return `support_ticket_comments?${queryParams.join("&")}`;
-//   },
-// }),
-getSupportTicketsCommnets: builder.query<
-  any,
-  { customerId?: number; ticketId?: number; page?: number; page_size?: number }
->({
-  query: ({ customerId, ticketId, page = 1, page_size = 50 }) => {
-    const queryParams: string[] = [];
-    if (customerId) queryParams.push(`customer_id=${customerId}`);
-    if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
-    
-    
-    queryParams.push(`page=${page}`);
-    queryParams.push(`page_size=${page_size}`);
+    // getSupportTicketsCommnets: builder.query<any, { customerId: number }>({
+    //        query: ({ customerId }) => `support_ticket_comments?customer_id=${customerId}`,
+    // }),
 
-    return `support_ticket_comments?${queryParams.join("&")}`;
-  },
-}),
+    // getSupportTicketsCommnets: builder.query<any, { customerId?: number; ticketId?: number,  page?: number;
+    //   page_size?: number; }>({
+    //   query: ({ customerId, ticketId, page = 1, page_size = 50, }) => {
+    //     let queryParams: string[] = [];
+    //     if (customerId) queryParams.push(`customer_id=${customerId}`);
+    //     if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
+    //     return `support_ticket_comments?${queryParams.join("&")}`;
+    //   },
+    // }),
+    getSupportTicketsCommnets: builder.query<
+      any,
+      {
+        customerId?: number;
+        ticketId?: number;
+        page?: number;
+        page_size?: number;
+      }
+    >({
+      query: ({ customerId, ticketId, page = 1, page_size = 50 }) => {
+        const queryParams: string[] = [];
+        if (customerId) queryParams.push(`customer_id=${customerId}`);
+        if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
 
+        queryParams.push(`page=${page}`);
+        queryParams.push(`page_size=${page_size}`);
 
-getCustomerEvents: builder.query<
-  any,
-  {
-    page?: number;
-    page_size?: number;
-    event_type?: string;
-    event_id?: string;
-    campaign_name?: string;
-    customer_id?: string;
-  }
->({
-  query: ({ page = 1, page_size = 10, event_type, event_id, campaign_name, customer_id }) => {
-    const params = new URLSearchParams();
-    params.set("page", page.toString());
-    params.set("page_size", page_size.toString());
-    if (event_type) params.set("event_type", event_type);
-    if (event_id) params.set("event_id", event_id);
-    if (campaign_name) params.set("campaign_name", campaign_name);
-    if (customer_id) params.set("customer_id", customer_id);
+        return `support_ticket_comments?${queryParams.join("&")}`;
+      },
+    }),
 
-    return `customer_events?${params.toString()}`;
-  },
-}),
+    getCustomerEvents: builder.query<
+      any,
+      {
+        page?: number;
+        page_size?: number;
+        event_type?: string;
+        event_id?: string;
+        campaign_name?: string;
+        customer_id?: string;
+        email?: string;
+        customer_name?: string;
+        event_timestamp?: string;
+      }
+    >({
+      query: ({
+        page = 1,
+        page_size = 10,
+        event_type,
+        event_id,
+        campaign_name,
+        customer_id,
+        email,
+        customer_name,
+        event_timestamp,
+      }) => {
+        const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+        if (event_type) params.set("event_type", event_type);
+        if (event_id) params.set("event_id", event_id);
+        if (campaign_name) params.set("campaign_name", campaign_name);
+        if (customer_id) params.set("customer_id", customer_id);
+        if (email) params.set("email", email);
+        if (customer_name) params.set("customer_name", customer_name);
+        if (event_timestamp) params.set("event_timestamp", event_timestamp);
 
+        return `customer_events?${params.toString()}`;
+      },
+    }),
 
     getSegments: builder.query<any, { page?: number; page_size?: number }>({
       query: ({ page, page_size } = {}) => {
@@ -178,8 +243,6 @@ getCustomerEvents: builder.query<
       },
     }),
   }),
-    
-  
 });
 
 export const {

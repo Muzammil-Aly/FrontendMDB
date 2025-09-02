@@ -53,8 +53,6 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-
-
 const useMarketingEvents = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
@@ -64,6 +62,13 @@ const useMarketingEvents = (columns: Column[]) => {
 
         case "customer_id":
           return { ...col, headerName: "Customer ID", flex: 1, minWidth: 160 };
+        case "customer_name":
+          return {
+            ...col,
+            headerName: "Customer Name",
+            flex: 1,
+            minWidth: 200,
+          };
 
         case "event_type":
           return {
@@ -74,15 +79,18 @@ const useMarketingEvents = (columns: Column[]) => {
             cellRenderer: (params: ICellRendererParams) => (
               <Box
                 sx={{
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: "12px",
+                  padding: " 1px",
+
+                  // p:0.5,
+                  border: "1px solid black",
+                  borderRadius: "2px",
                   fontWeight: 600,
                   fontSize: 13,
                   display: "inline-block",
                   bgcolor: "#E3E8EB",
                   color: "#555",
                   textTransform: "capitalize",
+                  textAlign: "center",
                 }}
               >
                 {params.value}
@@ -92,15 +100,17 @@ const useMarketingEvents = (columns: Column[]) => {
 
         case "campaign_id":
           return { ...col, headerName: "Campaign ID", flex: 1, minWidth: 160 };
+        case "email":
+          return { ...col, headerName: "Email", flex: 1, minWidth: 250 };
 
         case "campaign_name":
           return {
             ...col,
             headerName: "Campaign Name",
             flex: 1.5,
-            minWidth: 180,
+            minWidth: 300,
             cellRenderer: (params: ICellRendererParams) => (
-              <Typography sx={{ fontSize:"12px"  }}>{params.value}</Typography>
+              <Typography sx={{ fontSize: "12px" }}>{params.value}</Typography>
             ),
           };
 
@@ -111,9 +121,7 @@ const useMarketingEvents = (columns: Column[]) => {
             flex: 1.2,
             minWidth: 180,
             valueFormatter: (params: any) =>
-              params.value
-                ? new Date(params.value).toLocaleString()
-                : "-",
+              params.value ? new Date(params.value).toLocaleString() : "-",
           };
 
         default:
@@ -122,7 +130,5 @@ const useMarketingEvents = (columns: Column[]) => {
     });
   }, [columns]);
 };
-
-
 
 export default useMarketingEvents;

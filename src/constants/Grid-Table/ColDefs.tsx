@@ -6,13 +6,19 @@ export const users = [
   { field: "source", headerName: "Source" },
   { field: "join_type", headerName: "Join Type" },
   { field: "key", headerName: "Key" },
-
 ];
-
 
 export const orders = [
   { field: "order_id", headerName: "Order ID" },
-  { field: "customer_id", headerName: "Customer" },
+  { field: "customer_id", headerName: "Customer ID" },
+  { field: "customer_name", headerName: "Customer Name" },
+  { field: "phone_no", headerName: "Phone No" },
+  { field: "customer_email", headerName: "Email" },
+
+  { field: "customer_reference_no", headerName: "Customer Reference No" },
+  { field: "tracking", headerName: "Tracking" },
+  { field: "retailer", headerName: "Retailer" },
+
   { field: "order_date", headerName: "Order Date" },
   { field: "total_value", headerName: "Total Value" },
   { field: "discount_code", headerName: "Discount Code" },
@@ -20,9 +26,7 @@ export const orders = [
   { field: "fulfillment_status", headerName: "Fulfillment Status" },
   { field: "shipping_address", headerName: "Shipping Address" },
   { field: "channel", headerName: "Channel" },
-
 ];
-
 
 export const orderItems = [
   { field: "line_no", headerName: "Order Item ID" },
@@ -36,13 +40,15 @@ export const orderItems = [
   { field: "collection", headerName: "Collection" },
 ];
 
-
 export const support_tickets = [
   { field: "ticket_id", headerName: "Ticket ID" },
   { field: "customer_id", headerName: "Customer ID" },
+  { field: "customer_name", headerName: "Customer Name" },
+  { field: "email", headerName: "Email" },
+  { field: "status", headerName: "Status" },
+  { field: "phone_no", headerName: "Phone" },
   { field: "created_at", headerName: "Created At" },
   { field: "resolved_at", headerName: "Resolved At" },
-  { field: "status", headerName: "Status" },
   { field: "channel", headerName: "Channel" },
   { field: "tags", headerName: "Tags" },
   { field: "csat_score", headerName: "CSAT Score" },
@@ -51,17 +57,16 @@ export const support_tickets = [
   { field: "comment_count", headerName: "Comment Count" },
 ];
 
-
-
 export const marketing_events = [
   { headerName: "Event ID", field: "event_id" },
   { headerName: "Event Type", field: "event_type" },
   { headerName: "Customer ID", field: "customer_id" },
+  { headerName: "Customer Name", field: "customer_name" },
+  { headerName: "Email", field: "email" },
+
   { headerName: "Timestamp", field: "event_timestamp" },
   { headerName: "Campaign", field: "campaign_name" },
 ];
-
-
 
 export const support_ticket_comments = [
   { field: "comment_id", headerName: "Comment ID" },

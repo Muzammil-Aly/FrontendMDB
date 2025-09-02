@@ -53,6 +53,7 @@
 .ag-header-cell.text-center {
   .ag-header-cell-label {
     justify-content: center;
+    // align-items: center;
   }
 }
 
@@ -66,15 +67,16 @@
   color: #101928;
   font-family: "Mulish", sans-serif !important;
 
-  // padding-left: 24px;
+  // padding: 4px !important;
 }
 .ag-theme-material .ag-row {
   border: 1px solid #e5e7eb !important;
+  padding: 0 !important;
 }
 
 .ag-header {
   min-height: 48px !important;
-  padding: 0 0 0 0;
+  padding: 0 0 0 0 !important;
   border-top: 1px solid rgba(17, 17, 17, 0.1);
   border-bottom: 1px solid rgba(17, 17, 17, 0.1);
 }
@@ -133,6 +135,7 @@
   color: #344054;
   font-weight: 500;
   font-size: 12px;
+  // padding: 0 !important;
 }
 .agRootWrapper {
   border-bottom-left-radius: 12px;

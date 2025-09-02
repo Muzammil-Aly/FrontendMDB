@@ -58,17 +58,19 @@ const useUsersColumn = (columns: Column[]) => {
     return columns.map((col: any) => {
       switch (col.field) {
         case "customer_id":
-          return { ...col, headerName: "Customer ID", minWidth: 100 };
+          return { ...col, headerName: "Customer ID", width: 140 };
         case "email":
-          return { ...col, headerName: "Email", minWidth: 200 };
+          return { ...col, headerName: "Email", width: 240 };
         case "phone":
-          return { ...col, headerName: "Phone", minWidth: 140 };
+          return { ...col, headerName: "Phone", width: 135 };
         case "full_name":
-          return { ...col, headerName: "Full Name", minWidth: 200 };
+          return { ...col, headerName: "Full Name", width: 180 };
         case "source":
-          return { ...col, headerName: "Source", minWidth: 150 };
+          return { ...col, headerName: "Source", width: 95 };
         case "join_type":
-          return { ...col, headerName: "Join Type", minWidth: 150 };
+          return { ...col, headerName: "Join Type", width: 110 };
+        case "key":
+          return { ...col, headerName: "Key", width: 240 };
         default:
           return col;
       }

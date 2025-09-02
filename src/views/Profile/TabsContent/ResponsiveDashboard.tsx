@@ -23,9 +23,8 @@ const ResponsiveDashboard = ({
   onPageChange,
   currentMenu,
   paginationPageSize,
-    getRowStyle
+  getRowStyle,
 }: any) => {
-
   const layouts = {
     lg: [
       {
@@ -57,7 +56,7 @@ const ResponsiveDashboard = ({
         x: 0,
         y: 0,
         w: selectedCustId || selectedOrderId || selectedTicket ? 6 : 12,
-        h: 18,
+        h: 16,
         maxH: 40,
       },
       {
@@ -65,7 +64,7 @@ const ResponsiveDashboard = ({
         x: 6,
         y: 0,
         w: 6,
-        h: 18,
+        h: 16,
         maxH: 40,
         isDraggable: !!(selectedCustId || selectedOrderId || selectedTicket),
         static: !(selectedCustId || selectedOrderId || selectedTicket),
@@ -92,88 +91,88 @@ const ResponsiveDashboard = ({
       },
     ],
   };
-const hasId = selectedCustId || selectedOrderId || selectedTicket;
+
+  const hasId = selectedCustId || selectedOrderId || selectedTicket;
 
   return (
-      <Box sx={{ width: "100%", minHeight: "100vh"  }}>
-        <ResponsiveGridLayout
-          className="layout"
-          layouts={layouts}
-          
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 12, md: 12, sm: 12, xs: 4, xxs: 2 }}
-          rowHeight={30}
-          draggableHandle=".drag-handle"
-          isDraggable
-          isResizable
-          resizeHandles={["se", "e", "s"]}
+    <Box sx={{ width: "100%", minHeight: "100vh" }}>
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={layouts}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 4, xxs: 2 }}
+        rowHeight={30}
+        draggableHandle=".drag-handle"
+        isDraggable
+        isResizable
+        resizeHandles={["se", "e", "s"]}
+      >
+        <Paper
+          key="profiles"
+          elevation={3}
+          onClick={(e) => e.stopPropagation()}
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            // height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            // overflow: "hidden",
+          }}
         >
-           <Paper
-            key="profiles"
+          <Box sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
+            <Box
+            //  sx={ { minWidth: 1000 }}
+            >
+              <AgGridTable
+                rowData={rowData}
+                columnDefs={userCol}
+                onRowClicked={onRowClicked}
+                getRowStyle={getRowStyle}
+                enablePagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={onPageChange}
+                pagination={true}
+                paginationPageSize={paginationPageSize}
+                // height="100%"
+              />
+            </Box>
+          </Box>
+        </Paper>
+
+        {hasId ? (
+          <Paper
+            key="customer_segments"
             elevation={3}
-            onClick={(e) => e.stopPropagation()} 
-            
+            className="drag-handle"
+            onClick={(e) => e.stopPropagation()}
             sx={{
               p: 2,
               borderRadius: 3,
               height: "100%",
               display: "flex",
               flexDirection: "column",
-              // overflow: "hidden",
-              
+              overflow: "hidden",
             }}
           >
-            <Box sx={{ flex: 1, minHeight: 0 ,
-              overflow: "auto", 
-
-            }}>
-              <Box
-            //  sx={ { minWidth: 1000 }} 
-              >
-
-              <AgGridTable
-                rowData={rowData}
-                columnDefs={userCol}
-                onRowClicked={onRowClicked}
-                  getRowStyle={getRowStyle}
-                enablePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={onPageChange}
-                pagination={true}
-                 paginationPageSize={paginationPageSize}
-                // height="100%"
-                
-              />
-              </Box>
-
+            <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
+              {selectedCustId && currentMenu === "profiles" && (
+                <CustomerSegmentCard custId={selectedCustId} />
+              )}
+              {selectedOrderId && currentMenu === "orders" && (
+                <OrderItems orderId={selectedOrderId} />
+              )}
+              {selectedTicket && currentMenu === "support_tickets" && (
+                <SupportTicketComments ticketId={selectedTicket} />
+              )}
             </Box>
-          </Paper> 
-
-
- {hasId ? (
-  <Paper
-    key="customer_segments"
-    elevation={3}
-    className="drag-handle"
-    onClick={(e) => e.stopPropagation()}
-    sx={{ p: 2, borderRadius: 3, height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}
-  >
-    <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
-      {selectedCustId && currentMenu === "profiles" && <CustomerSegmentCard custId={selectedCustId} />}
-      {selectedOrderId && currentMenu === "orders" && <OrderItems orderId={selectedOrderId} />}
-      {selectedTicket && currentMenu === "support_tickets" && <SupportTicketComments ticketId={selectedTicket} />}
+          </Paper>
+        ) : (
+          <Typography>No id is found</Typography>
+        )}
+      </ResponsiveGridLayout>
     </Box>
-  </Paper>
-):(
-
-
-  <Typography
-  >No id is found</Typography>
-)}
-
-        </ResponsiveGridLayout>
-      </Box>
   );
 };
 

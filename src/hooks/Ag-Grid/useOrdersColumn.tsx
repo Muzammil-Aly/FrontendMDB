@@ -53,8 +53,6 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-
-
 const useOrdersColumn = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
@@ -62,21 +60,61 @@ const useOrdersColumn = (columns: Column[]) => {
         case "order_id":
           return { ...col, headerName: "Order ID", flex: 1, minWidth: 120 };
         case "customer_id":
-          return { ...col, headerName: "Customer", flex: 1, minWidth: 180, cellStyle: { whiteSpace: 'normal' }, autoHeight: true };
+          return {
+            ...col,
+            headerName: "Customer",
+            flex: 1,
+            minWidth: 180,
+            cellStyle: { whiteSpace: "normal" },
+            autoHeight: true,
+          };
         case "profit_name":
           return { ...col, headerName: "Profit Name", flex: 1, minWidth: 140 };
-        case "customer_no":
-          return { ...col, headerName: "Customer No", flex: 1, minWidth: 140 };
+        case "customer_name":
+          return {
+            ...col,
+            headerName: "Customer Name",
+            flex: 1,
+            minWidth: 160,
+          };
+        // customer_reference_no
+        // tracking
+        case "tracking":
+          return { ...col, headerName: "Tracking", flex: 1, minWidth: 140 };
+        case "customer_reference_no":
+          return {
+            ...col,
+            headerName: "Customer Reference No",
+            flex: 1,
+            minWidth: 220,
+          };
         case "order_date":
           return { ...col, headerName: "Order Date", flex: 1, minWidth: 150 };
         case "total_value":
-          return { ...col, headerName: "Total Value", flex: 1, minWidth: 120 };
+          return { ...col, headerName: "Total Value", flex: 1, minWidth: 160 };
         case "discount_code":
-          return { ...col, headerName: "Discount Code", flex: 1, minWidth: 140 };
+          return {
+            ...col,
+            headerName: "Discount Code",
+            flex: 1,
+            minWidth: 180,
+          };
         case "fulfillment_status":
-          return { ...col, headerName: "Fulfillment Status", flex: 1, minWidth: 160, cellStyle: { whiteSpace: 'normal' } };
+          return {
+            ...col,
+            headerName: "Fulfillment Status",
+            flex: 1,
+            minWidth: 180,
+            cellStyle: { whiteSpace: "normal" },
+          };
         case "shipping_address":
-          return { ...col, headerName: "Shipping Address", flex: 2, minWidth: 200, cellStyle: { whiteSpace: 'normal' } };
+          return {
+            ...col,
+            headerName: "Shipping Address",
+            flex: 2,
+            minWidth: 200,
+            cellStyle: { whiteSpace: "normal" },
+          };
         case "channel":
           return { ...col, headerName: "Channel", minWidth: 140 };
         default:

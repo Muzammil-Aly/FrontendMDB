@@ -1,5 +1,5 @@
 import CustomButton from "@/components/Common/CustomButton";
-import { ICellRendererParams,ValidationModule} from "ag-grid-community";
+import { ICellRendererParams, ValidationModule } from "ag-grid-community";
 import { useMemo } from "react";
 import { Avatar, Box, Typography } from "@mui/material";
 
@@ -53,7 +53,6 @@ const StatusCell = ({ value }: { value: string }) => {
   );
 };
 
-
 const useOrderItems = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
@@ -88,7 +87,6 @@ const useOrderItems = (columns: Column[]) => {
             headerName: "Product Name",
             flex: 1.5,
             minWidth: 220,
-          
           };
 
         case "item_type":
@@ -146,8 +144,5 @@ const useOrderItems = (columns: Column[]) => {
     });
   }, [columns]);
 };
-
-
-
 
 export default useOrderItems;

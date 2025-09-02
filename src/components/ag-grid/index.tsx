@@ -10,10 +10,10 @@ import {
   RowSelectionOptions,
   ValidationModule,
   CellStyleModule,
-  ModuleRegistry ,
-  PaginationModule ,
+  ModuleRegistry,
+  PaginationModule,
   RowAutoHeightModule,
-   RowStyleModule
+  RowStyleModule,
 } from "ag-grid-community";
 import Pagination from "./Pagination";
 ModuleRegistry.registerModules([
@@ -23,7 +23,7 @@ ModuleRegistry.registerModules([
   CellStyleModule,
   PaginationModule,
   RowAutoHeightModule,
-   RowStyleModule
+  RowStyleModule,
 ]);
 
 const AgGridTable: React.FC<any> = ({
@@ -32,10 +32,10 @@ const AgGridTable: React.FC<any> = ({
   columnDefs,
   height = 500,
   width,
-  rowHeight = 60,
+  rowHeight = 45,
   paginationPageSize = 10,
   onRowClicked,
-  
+
   enablePagination = false,
   rowSelection = false,
   handleRowSelection = () => {},
@@ -46,7 +46,7 @@ const AgGridTable: React.FC<any> = ({
   rowClassRules,
   className,
   noTopBorder,
-  
+
   ...gridProps
 }) => {
   const rowSelectionMemo = useMemo<
@@ -65,7 +65,7 @@ const AgGridTable: React.FC<any> = ({
           style={{
             height: height,
             width: width || "100%",
-            minWidth: '1000px',
+            // minWidth: '1000px',
           }}
         >
           {/* <AgGridReact
@@ -99,12 +99,11 @@ const AgGridTable: React.FC<any> = ({
             rowData={rowData}
             columnDefs={columnDefs}
             getRowStyle={getRowStyle}
-               rowClassRules={rowClassRules as any}  
-               
+            rowClassRules={rowClassRules as any}
             defaultColDef={{
               // flex: 1,
-                suppressSizeToFit: true,
-               resizable: true,
+              suppressSizeToFit: true,
+              resizable: true,
               sortable: true,
             }}
             modules={[
@@ -113,7 +112,6 @@ const AgGridTable: React.FC<any> = ({
               ValidationModule,
               CellStyleModule,
               PaginationModule,
-
             ]}
             pagination={enablePagination}
             paginationPageSize={
@@ -123,7 +121,7 @@ const AgGridTable: React.FC<any> = ({
             rowHeight={rowHeight}
             onRowClicked={onRowClicked}
             suppressPaginationPanel={true}
-            //  suppressHorizontalScroll={true} 
+            //  suppressHorizontalScroll={true}
             rowSelection={rowSelection ? rowSelectionMemo : undefined}
             onRowSelected={handleRowSelection}
             {...gridProps}
