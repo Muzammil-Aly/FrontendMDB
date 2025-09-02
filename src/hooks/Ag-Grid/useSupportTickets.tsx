@@ -69,7 +69,7 @@ const useSupportTicket = (columns: Column[]) => {
           };
         case "email":
           return { ...col, headerName: "Email", minWidth: 150 };
-        case "phone":
+        case "phone_no":
           return { ...col, headerName: "Phone", minWidth: 150 };
         case "customer_name":
           return { ...col, headerName: "Customer Name", minWidth: 150 };

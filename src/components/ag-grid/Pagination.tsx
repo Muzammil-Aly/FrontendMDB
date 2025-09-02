@@ -23,7 +23,7 @@ const Pagination: React.FC<PaginationProps> = ({
       }}
     >
       <Typography variant="body2" sx={{ fontSize: "14px", color: "#667185" }}>
-        {"page"} {currentPage } {"of"} {totalPages}
+        {"page"} {currentPage} {"of"} {totalPages}
       </Typography>
 
       {/* <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -81,7 +81,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <NavButton
           text={"Next"}
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage + 1 === totalPages || totalPages === 1}
+          disabled={currentPage === totalPages || totalPages === 1}
         />
       </Box>
     </Box>
