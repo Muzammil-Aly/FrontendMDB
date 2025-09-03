@@ -143,7 +143,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
             }}
           >
             {menuItems.map((item) => {
-              if (item === "Orders" && userData.source !== "Wismo") return null;
+              // if (item === "Orders" && userData.source !== "Wismo") return null;
+
               const isActive = activeMenu === item;
               return (
                 <Typography
