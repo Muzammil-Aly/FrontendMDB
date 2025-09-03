@@ -8,6 +8,8 @@ import {
   MenuItem,
   Select,
   TextField,
+  InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 
 import Loader from "@/components/Common/Loader";
@@ -48,7 +50,12 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const [shippingAddressInput, setShippingAddressInput] = useState("");
   const [customerReferenceNoInput, setCustomerReferenceNoInput] = useState("");
   const [trackingInput, setTrackingInput] = useState("");
-
+  const [orderIdtyping, setIsOrderIdTyping] = useState(false);
+  const [customerNametyping, setIsCustomerNameTyping] = useState(false);
+  const [shippingAddresstyping, setIsShippingAddressTyping] = useState(false);
+  const [customerReferenceNotyping, setIsCustomerReferenceNoTyping] =
+    useState(false);
+  const [trackingtyping, setIsTrackingTyping] = useState(false);
   const { data, isLoading, isFetching } = useGetCustomerOrdersQuery({
     page,
     page_size: pageSize,
@@ -106,6 +113,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setOrderIdFilter(value ? value.toUpperCase() : undefined);
         setPage(1);
+        setIsOrderIdTyping(false);
       }, 5000),
     []
   );
@@ -115,6 +123,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setCustomerNameFilter(value || undefined);
         setPage(1);
+        setIsCustomerNameTyping(false);
       }, 5000),
     []
   );
@@ -123,6 +132,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setShippingAddressFilter(value || undefined);
         setPage(1);
+        setIsShippingAddressTyping(false);
       }, 5000),
     []
   );
@@ -131,6 +141,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setCustomerReferenceNoFilter(value || undefined);
         setPage(1);
+        setIsCustomerReferenceNoTyping(false);
       }, 5000),
     []
   );
@@ -139,6 +150,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setTrackingFilter(value || undefined);
         setPage(1);
+        setIsTrackingTyping(false);
       }, 5000),
     []
   );
@@ -187,10 +199,19 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       debouncedOrderId.cancel(); // cancel pending debounce
                     } else {
                       debouncedOrderId(value);
+                      setIsOrderIdTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Order ID"
+                  InputProps={{
+                    endAdornment: orderIdInput.trim() !== "" &&
+                      orderIdtyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
 
@@ -207,10 +228,19 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       debouncedCustomerName.cancel(); // cancel pending debounce
                     } else {
                       debouncedCustomerName(value);
+                      setIsCustomerNameTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Customer Name"
+                  InputProps={{
+                    endAdornment: customerNameInput.trim() !== "" &&
+                      customerNametyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
               <FormControl size="small" sx={{ width: 210 }}>
@@ -225,11 +255,20 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       setShippingAddressFilter(undefined);
                       debouncedShippingAddress.cancel(); // cancel pending debounce
                     } else {
+                      setIsShippingAddressTyping(true);
                       debouncedShippingAddress(value);
                     }
                   }}
                   size="small"
                   placeholder="Shipping Address"
+                  InputProps={{
+                    endAdornment: shippingAddressInput.trim() !== "" &&
+                      shippingAddresstyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
               <FormControl size="small" sx={{ width: 230 }}>
@@ -243,11 +282,20 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       setCustomerReferenceNoFilter(undefined);
                       debouncedcustomerReferenceNo.cancel(); // cancel pending debounce
                     } else {
+                      setIsCustomerReferenceNoTyping(true);
                       debouncedcustomerReferenceNo(value);
                     }
                   }}
                   size="small"
                   placeholder="Customer Reference No"
+                  InputProps={{
+                    endAdornment: customerReferenceNoInput.trim() !== "" &&
+                      customerReferenceNotyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
 
@@ -263,10 +311,19 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       debouncedTracking.cancel(); // cancel pending debounce
                     } else {
                       debouncedTracking(value);
+                      setIsTrackingTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Tracking"
+                  InputProps={{
+                    endAdornment: trackingInput.trim() !== "" &&
+                      trackingtyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
 

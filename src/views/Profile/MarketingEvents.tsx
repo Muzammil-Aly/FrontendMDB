@@ -9,6 +9,8 @@ import {
   Select,
   TextField,
   IconButton,
+  InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import { useGetCustomerEventsQuery } from "@/redux/services/profileApi";
 import CloseIcon from "@mui/icons-material/Close";
@@ -50,7 +52,10 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
   const [dateInput, setDateInput] = useState<any>(null);
   const [eventIdInput, setEventIdInput] = useState("");
   const [customerIdInput, setCustomerIdInput] = useState("");
-  const [campaignNameInput, setCampaignNameInput] = useState("");
+  const [isEventIdTyping, setIsEventIdTyping] = useState(false);
+  const [isCustomerIdTyping, setIsCustomerIdTyping] = useState(false);
+  const [isCustomerNameTyping, setIsCustomerNameTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const { data, isLoading, isFetching } = useGetCustomerEventsQuery({
     page,
@@ -86,6 +91,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       debouncedSearch.cancel(); // cancel pending debounce
     } else {
       debouncedSearch(value);
+      setIsTyping(true);
     }
   };
   const debouncedSearch = useMemo(
@@ -93,14 +99,17 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       debounce((value: string) => {
         setSearchTerm(value);
         setPage(1);
+        setIsTyping(false);
       }, 5000),
     []
   );
+
   const debouncedCustomerName = useMemo(
     () =>
       debounce((value: string) => {
         setCustomerNameFilter(value ? value : undefined);
         setPage(1);
+        setIsCustomerNameTyping(false);
       }, 5000),
     []
   );
@@ -109,6 +118,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       debounce((value: string) => {
         setEventIdFilter(value);
         setPage(1);
+        setIsEventIdTyping(false);
       }, 5000),
     []
   );
@@ -117,6 +127,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       debounce((value: string) => {
         setCustomerIdFilter(value ? value.toUpperCase() : undefined);
         setPage(1);
+        setIsCustomerIdTyping(false);
       }, 5000),
     []
   );
@@ -125,6 +136,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       debounce((value: string) => {
         setCustomerNameFilter(value ? value : undefined);
         setPage(1);
+        setIsCustomerNameTyping(false);
       }, 5000),
     []
   );
@@ -155,6 +167,13 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                     value={searchInput}
                     onChange={handleSearchInput}
                     placeholder="Search by Email"
+                    InputProps={{
+                      endAdornment: searchInput.trim() !== "" && isTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
 
                   {
@@ -317,9 +336,9 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
               alignItems="flex-start"
               gap={2}
               mb={2}
-              pr={35}
+              pr={55}
             >
-              <FormControl size="small">
+              <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Customer Name"
                   value={customerNameInput || ""}
@@ -331,13 +350,22 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                       debouncedCustomerName.cancel(); // cancel pending debounce
                     } else {
                       debouncedCustomerName(value);
+                      setIsCustomerNameTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Customer Name"
+                  InputProps={{
+                    endAdornment: customerNameInput.trim() !== "" &&
+                      isCustomerNameTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Event ID"
                   value={eventIdInput}
@@ -349,13 +377,22 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                       debouncedEventId.cancel(); // cancel pending debounce
                     } else {
                       debouncedEventId(value);
+                      setIsEventIdTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Event ID"
+                  InputProps={{
+                    endAdornment: eventIdInput.trim() !== "" &&
+                      isEventIdTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Customer ID"
                   value={customerIdInput.toUpperCase()}
@@ -368,10 +405,19 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                       debouncedCustomerId.cancel(); // cancel pending debounce
                     } else {
                       debouncedCustomerId(value);
+                      setIsCustomerIdTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Customer ID"
+                  InputProps={{
+                    endAdornment: customerIdInput.trim() !== "" &&
+                      isCustomerIdTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
 

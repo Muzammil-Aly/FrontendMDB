@@ -12,6 +12,8 @@ import {
   Typography,
   TextField,
   Autocomplete,
+  CircularProgress,
+  InputAdornment,
   ListSubheader,
 } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
@@ -72,6 +74,10 @@ const Profile = () => {
   const [customerIdInput, setCustomerIdInput] = useState("");
   const [fullNameInput, setFullNameInput] = useState("");
   const [phoneNumberInput, setPhoneNumberInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
+  const [isFullNameTyping, setIsFullNameTyping] = useState(false);
+  const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
     {
       page,
@@ -97,6 +103,9 @@ const Profile = () => {
         customer_id: item.customer_id || "",
         join_type: item.join_type || "",
         key: item.key || "",
+        created_at: item.created_at || "",
+        last_order_date: item.last_order_date || "",
+        total_orders: item.total_orders || "",
       };
     });
   }, [data]);
@@ -182,6 +191,7 @@ const Profile = () => {
       debounce((value: string) => {
         setCustomerIdFilter(value ? value.toUpperCase() : undefined);
         setPage(1);
+        setIsCustomerIDTyping(false);
       }, 5000),
     []
   );
@@ -191,6 +201,7 @@ const Profile = () => {
       debounce((value: string) => {
         setFullNameFilter(value ? value : undefined);
         setPage(1);
+        setIsFullNameTyping(false);
       }, 5000),
     []
   );
@@ -200,6 +211,7 @@ const Profile = () => {
       debounce((value: string) => {
         setPhoneNumberFilter(value ? value : undefined);
         setPage(1);
+        setIsPhoneNumberTyping(false);
       }, 5000),
     []
   );
@@ -209,6 +221,7 @@ const Profile = () => {
       debounce((value: string) => {
         setSearchTerm(value);
         setPage(1);
+        setIsTyping(false);
       }, 5000),
     []
   );
@@ -223,6 +236,7 @@ const Profile = () => {
       debouncedSearch.cancel(); // cancel pending debounce
     } else {
       debouncedSearch(value);
+      setIsTyping(true);
     }
   };
 
@@ -327,6 +341,14 @@ const Profile = () => {
                         value={searchInput}
                         onChange={handleSearchInput}
                         placeholder="Search by Email"
+                        InputProps={{
+                          endAdornment: searchInput.trim() !== "" &&
+                            isTyping && (
+                              <InputAdornment position="end">
+                                <CircularProgress size={20} />
+                              </InputAdornment>
+                            ),
+                        }}
                       />
 
                       {
@@ -346,7 +368,7 @@ const Profile = () => {
                     </Box>
                   </Box>
                   <Box ml={0}>
-                    <FormControl size="small" sx={{ width: 140 }}>
+                    {/* <FormControl size="small" sx={{ width: 140 }}>
                       <TextField
                         label="Customer ID"
                         value={customerIdInput.toUpperCase()}
@@ -364,6 +386,35 @@ const Profile = () => {
                         size="small"
                         placeholder="Customer ID"
                       />
+                    </FormControl> */}
+
+                    <FormControl size="small" sx={{ width: 140 }}>
+                      <TextField
+                        label="Customer ID"
+                        value={customerIdInput.toUpperCase()}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setCustomerIdInput(value);
+
+                          if (value.trim() === "") {
+                            setCustomerIdFilter(undefined);
+                            debouncedCustomerId.cancel(); // cancel pending debounce
+                          } else {
+                            setIsCustomerIDTyping(true);
+                            debouncedCustomerId(value);
+                          }
+                        }}
+                        size="small"
+                        placeholder="Customer ID"
+                        InputProps={{
+                          endAdornment: customerIdInput.trim() !== "" &&
+                            isCustomerIDTyping && (
+                              <InputAdornment position="end">
+                                <CircularProgress size={20} />
+                              </InputAdornment>
+                            ),
+                        }}
+                      />
                     </FormControl>
                   </Box>
                   <FormControl size="small" sx={{ width: 150 }}>
@@ -378,11 +429,20 @@ const Profile = () => {
                           setFullNameFilter(undefined);
                           debouncedFullName.cancel();
                         } else {
+                          setIsFullNameTyping(true);
                           debouncedFullName(value);
                         }
                       }}
                       size="small"
                       placeholder="Full Name"
+                      InputProps={{
+                        endAdornment: fullNameInput.trim() !== "" &&
+                          isFullNameTyping && (
+                            <InputAdornment position="end">
+                              <CircularProgress size={20} />
+                            </InputAdornment>
+                          ),
+                      }}
                     />
                   </FormControl>
                   <FormControl size="small" sx={{ width: 200, ml: 2 }}>
@@ -397,11 +457,20 @@ const Profile = () => {
                           setPhoneNumberFilter(undefined);
                           debouncedPhoneNumber.cancel();
                         } else {
+                          setIsPhoneNumberTyping(true);
                           debouncedPhoneNumber(value);
                         }
                       }}
                       size="small"
                       placeholder="Phone Number"
+                      InputProps={{
+                        endAdornment: phoneNumberInput.trim() !== "" &&
+                          isPhoneNumberTyping && (
+                            <InputAdornment position="end">
+                              <CircularProgress size={20} />
+                            </InputAdornment>
+                          ),
+                      }}
                     />
                   </FormControl>
                   <Box

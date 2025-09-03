@@ -14,6 +14,8 @@ import {
   TextField,
   Autocomplete,
   ListSubheader,
+  InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
@@ -52,6 +54,10 @@ const DetailedInfo = () => {
   const [customerIdInput, setCustomerIdInput] = useState("");
   const [fullNameInput, setFullNameInput] = useState("");
   const [phoneNumberInput, setPhoneNumberInput] = useState("");
+  const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
+  const [isFullNameTyping, setIsFullNameTyping] = useState(false);
+  const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
     {
       page,
@@ -77,6 +83,9 @@ const DetailedInfo = () => {
         customer_id: item.customer_id || "",
         join_type: item.join_type || "",
         key: item.key || "",
+        created_at: item.created_at || "",
+        last_order_date: item.last_order_date || "",
+        total_orders: item.total_orders || "",
       };
     });
   }, [data]);
@@ -96,14 +105,17 @@ const DetailedInfo = () => {
       debouncedSearch.cancel(); // cancel pending debounce
     } else {
       debouncedSearch(value);
+      setIsTyping(true);
     }
   };
+
   const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo", "Zendesk"];
   const debouncedCustomerId = useMemo(
     () =>
       debounce((value: string) => {
         setCustomerIdFilter(value ? value.toUpperCase() : undefined);
         setPage(1);
+        setIsCustomerIDTyping(false);
       }, 5000),
     []
   );
@@ -113,6 +125,7 @@ const DetailedInfo = () => {
       debounce((value: string) => {
         setFullNameFilter(value ? value : undefined);
         setPage(1);
+        setIsFullNameTyping(false);
       }, 5000),
     []
   );
@@ -122,6 +135,7 @@ const DetailedInfo = () => {
       debounce((value: string) => {
         setPhoneNumberFilter(value ? value : undefined);
         setPage(1);
+        setIsPhoneNumberTyping(false);
       }, 5000),
     []
   );
@@ -131,6 +145,7 @@ const DetailedInfo = () => {
       debounce((value: string) => {
         setSearchTerm(value);
         setPage(1);
+        setIsTyping(false);
       }, 5000),
     []
   );
@@ -167,6 +182,13 @@ const DetailedInfo = () => {
                     value={searchInput}
                     onChange={handleSearchInput}
                     placeholder="Search by Email"
+                    InputProps={{
+                      endAdornment: searchInput.trim() !== "" && isTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
 
                   {
@@ -215,10 +237,19 @@ const DetailedInfo = () => {
                         debouncedCustomerId.cancel(); // cancel pending debounce
                       } else {
                         debouncedCustomerId(value);
+                        setIsCustomerIDTyping(true);
                       }
                     }}
                     size="small"
                     placeholder="Customer ID"
+                    InputProps={{
+                      endAdornment: customerIdInput.trim() !== "" &&
+                        isCustomerIDTyping && (
+                          <InputAdornment position="end">
+                            <CircularProgress size={20} />
+                          </InputAdornment>
+                        ),
+                    }}
                   />
                 </FormControl>
               </Box>
@@ -235,10 +266,19 @@ const DetailedInfo = () => {
                       debouncedFullName.cancel();
                     } else {
                       debouncedFullName(value);
+                      setIsFullNameTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Full Name"
+                  InputProps={{
+                    endAdornment: fullNameInput.trim() !== "" &&
+                      isFullNameTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
               <FormControl size="small" sx={{ width: 200, ml: 2 }}>
@@ -254,10 +294,19 @@ const DetailedInfo = () => {
                       debouncedPhoneNumber.cancel();
                     } else {
                       debouncedPhoneNumber(value);
+                      setIsPhoneNumberTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Phone Number"
+                  InputProps={{
+                    endAdornment: phoneNumberInput.trim() !== "" &&
+                      isPhoneNumberTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
               <Box display={"flex"} justifyContent={"space-between"} gap={2}>

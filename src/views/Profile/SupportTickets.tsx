@@ -15,6 +15,7 @@ import {
   Button,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -62,6 +63,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(
     undefined
   );
+
   const [tagsFilter, setTagsFilter] = useState<string | undefined>(undefined);
   const [customerNameInput, setCustomerNameInput] = useState("");
   const [ticketIdInput, setTicketIdInput] = useState("");
@@ -70,12 +72,18 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
   const [tagsInput, setTagsInput] = useState("");
   const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
   const [dateInput, setDateInput] = useState<any>(null);
-
+  const [isCustomerIdTyping, setIsCustomerIdTyping] = useState(false);
+  const [isCustomerNameTyping, setIsCustomerNameTyping] = useState(false);
+  const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
+  const [isTicketIdTyping, setIsTicketIdTyping] = useState(false);
+  const [isTagsTyping, setIsTagsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const debouncedCustomerId = useMemo(
     () =>
       debounce((value: string) => {
         setCustomerIdFilter(value ? value.toUpperCase() : undefined);
         setPage(1);
+        setIsCustomerIdTyping(false);
       }, 5000),
     []
   );
@@ -85,6 +93,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setCustomerNameFilter(value ? value : undefined);
         setPage(1);
+        setIsCustomerNameTyping(false);
       }, 5000),
     []
   );
@@ -94,6 +103,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setPhoneNumberFilter(value ? value : undefined);
         setPage(1);
+        setIsPhoneNumberTyping(false);
       }, 5000),
     []
   );
@@ -102,6 +112,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setTicketIdFilter(value ? value.toUpperCase() : undefined);
         setPage(1);
+        setIsTicketIdTyping(false);
       }, 5000),
     []
   );
@@ -110,6 +121,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       debounce((value: string) => {
         setTagsFilter(value || undefined);
         setPage(1);
+        setIsTagsTyping(false);
       }, 5000),
     []
   );
@@ -133,13 +145,16 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       debouncedSearch.cancel(); // cancel pending debounce
     } else {
       debouncedSearch(value);
+      setIsTyping(true);
     }
   };
+
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
         setSearchTerm(value);
         setPage(1);
+        setIsTyping(false);
       }, 5000),
     []
   );
@@ -230,6 +245,13 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       value={searchInput}
                       onChange={handleSearchInput}
                       placeholder="Search by Email"
+                      InputProps={{
+                        endAdornment: searchInput.trim() !== "" && isTyping && (
+                          <InputAdornment position="end">
+                            <CircularProgress size={20} />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
 
                     {
@@ -441,7 +463,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
               </Box>
             </Box>
             <Box display={"flex"} alignItems={"center"} gap={2} ml={2}>
-              <FormControl size="small">
+              <FormControl size="small" sx={{ width: 150 }}>
                 <TextField
                   label="Customer ID"
                   value={customerIdInput.toUpperCase()}
@@ -451,17 +473,27 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                     setCustomerIdInput(value);
                     if (value.trim() === "") {
                       setCustomerIdFilter(undefined);
+
                       debouncedCustomerId.cancel(); // cancel pending debounce
                     } else {
                       debouncedCustomerId(value);
+                      setIsCustomerIdTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Customer ID"
+                  InputProps={{
+                    endAdornment: customerIdInput.trim() !== "" &&
+                      isCustomerIdTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
 
-              <FormControl size="small">
+              <FormControl size="small" sx={{ width: 150 }}>
                 <TextField
                   label="Ticket ID"
                   value={ticketIdInput || ""}
@@ -473,14 +505,23 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       debouncedTicketId.cancel(); // cancel pending debounce
                     } else {
                       debouncedTicketId(value);
+                      setIsTicketIdTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Ticket ID"
+                  InputProps={{
+                    endAdornment: ticketIdInput.trim() !== "" &&
+                      isTicketIdTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
 
-              <FormControl size="small">
+              <FormControl size="small" sx={{ width: 180 }}>
                 <TextField
                   label="Tags"
                   value={tagsInput}
@@ -492,14 +533,22 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       debouncedTags.cancel(); // cancel pending debounce
                     } else {
                       debouncedTags(value);
+                      setIsTagsTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Tags"
+                  InputProps={{
+                    endAdornment: tagsInput.trim() !== "" && isTagsTyping && (
+                      <InputAdornment position="end">
+                        <CircularProgress size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </FormControl>
 
-              <FormControl size="small" sx={{ ml: 2 }}>
+              <FormControl size="small" sx={{ ml: 2, width: 200 }}>
                 <TextField
                   label="Customer Name"
                   value={customerNameInput || ""}
@@ -511,10 +560,19 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       debouncedCustomerName.cancel(); // cancel pending debounce
                     } else {
                       debouncedCustomerName(value);
+                      setIsCustomerNameTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Customer Name"
+                  InputProps={{
+                    endAdornment: customerNameInput.trim() !== "" &&
+                      isCustomerNameTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
               <FormControl size="small" sx={{ width: 190 }}>
@@ -529,10 +587,19 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       debouncedPhoneNumber.cancel(); // cancel pending debounce
                     } else {
                       debouncedPhoneNumber(value);
+                      setIsPhoneNumberTyping(true);
                     }
                   }}
                   size="small"
                   placeholder="Phone Number"
+                  InputProps={{
+                    endAdornment: phoneNumberInput.trim() !== "" &&
+                      isPhoneNumberTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                  }}
                 />
               </FormControl>
             </Box>

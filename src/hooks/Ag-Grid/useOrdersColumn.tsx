@@ -58,7 +58,7 @@ const useOrdersColumn = (columns: Column[]) => {
     return columns.map((col: any) => {
       switch (col.field) {
         case "order_id":
-          return { ...col, headerName: "Order ID", flex: 1, minWidth: 120 };
+          return { ...col, headerName: "Order ID", flex: 1, minWidth: 150 };
         case "customer_id":
           return {
             ...col,
