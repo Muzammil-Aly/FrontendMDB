@@ -159,8 +159,14 @@ const DetailedInfo = () => {
         pr={3}
       >
         <Box display={"flex"} flexDirection={"column"}>
-          <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-            Profile
+          <Typography
+            variant="h2"
+            p={2}
+            mb={1}
+            color="#0D0D12"
+            fontWeight={700}
+          >
+            Profile Information
           </Typography>
           <Box
             display={"flex"}
