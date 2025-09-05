@@ -1,6 +1,6 @@
 "use client";
 import { users } from "@/constants/Grid-Table/ColDefs";
-
+import { useRouter } from "next/navigation";
 import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
 import PeopleIcon from "@mui/icons-material/People";
 import {
@@ -15,7 +15,11 @@ import {
   CircularProgress,
   InputAdornment,
   ListSubheader,
+  AppBar,
+  Toolbar,
+  Button,
 } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomSearchField from "@/components/Common/CustomSearch";
 import { Phone, Send } from "@mui/icons-material";
@@ -78,6 +82,7 @@ const Profile = () => {
   const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
   const [isFullNameTyping, setIsFullNameTyping] = useState(false);
   const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
+  const router = useRouter();
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
     {
       page,
@@ -109,6 +114,13 @@ const Profile = () => {
       };
     });
   }, [data]);
+
+  // useEffect(() => {
+  //   const loggedIn = localStorage.getItem("loggedIn");
+  //   if (!loggedIn) {
+  //     router.push("/sign-in"); // redirect if not signed in
+  //   }
+  // }, [router]);
 
   // const onRowClicked = (params: any) => {
   //   if (selectedUser?.customer_id === params.data.customer_id) {
@@ -154,7 +166,17 @@ const Profile = () => {
   //   }
   //   return {};
   // };
+  // useEffect(() => {
+  //   const isLoggedIn = localStorage.getItem("loggedIn");
+  //   if (!isLoggedIn) {
+  //     router.replace("/sign-in"); // redirect if not logged in
+  //   }
+  // }, [router]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("loggedIn");
+    router.push("/sign-in");
+  };
   const onRowClicked = (params: any) => {
     const { customer_id } = params.data;
 
@@ -307,6 +329,15 @@ const Profile = () => {
             {item}
           </Typography>
         ))}
+        <Button
+          sx={{ mt: 10, ml: 2 }}
+          color="inherit"
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+          variant="outlined" // or "contained" for a filled button
+        >
+          Logout
+        </Button>
       </Box>
 
       {activeMenu === "Customer Profiles" && (

@@ -5,6 +5,8 @@ export const users = [
   { field: "full_name", headerName: "Full Name" },
   { field: "source", headerName: "Source" },
   { field: "join_type", headerName: "Join Type" },
+  { field: "key", headerName: "Key" },
+
   { field: "created_at", headerName: "Created At" },
   { field: "last_order_date", headerName: "Last Order Date" },
   { field: "total_orders", headerName: "Total Orders" },

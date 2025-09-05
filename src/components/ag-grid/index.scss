@@ -187,3 +187,11 @@
 .ag-theme-material .ag-header-cell {
   cursor: text;
 }
+.ag-header-cell-resize {
+  right: -3px;
+  border: 2px solid #f9f9f9;
+  margin-top: 10px;
+}
+.ag-header-cell:last-child .ag-header-cell-resize {
+  display: none;
+}

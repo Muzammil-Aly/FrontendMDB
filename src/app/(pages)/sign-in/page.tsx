@@ -8,6 +8,7 @@ import {
   Container,
   Alert,
   Stack,
+  CircularProgress,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import CustomTextField from "@/components/Common/CustomTextField";
@@ -15,30 +16,40 @@ import CustomTextField from "@/components/Common/CustomTextField";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<
     "error" | "success" | "info" | "warning"
   >("info");
+  const [loading, setLoading] = useState(false);
 
   const dummyUser = {
-    email: "hamid@gmail.com",
-    password: "password123",
+    email: "drivera@mdbmail.com",
+    password: "drivera123",
   };
   const router = useRouter();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (email === dummyUser.email && password === dummyUser.password) {
-      setSeverity("success");
-      setMessage("Congratulations! You have successfully signed in");
-      setTimeout(() => {
-        router.push("dashboard");
-      }, 500);
-    } else {
-      setSeverity("error");
-      setMessage("Error: Invalid email or password");
-    }
+    if (loading) return;
+    setLoading(true);
+    setMessage("");
+
+    setTimeout(() => {
+      if (email === dummyUser.email && password === dummyUser.password) {
+        setSeverity("success");
+        setMessage("Signed in successfully!");
+        localStorage.setItem("loggedIn", "true");
+
+        setTimeout(() => {
+          router.push("/customer-profile");
+        }, 500);
+      } else {
+        setSeverity("error");
+        setMessage("Invalid email or password");
+      }
+      setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -66,38 +77,27 @@ export default function SignIn() {
           flexDirection: "column",
         }}
       >
-        <Typography
-          variant="h5"
-          align="center"
-          sx={{
-            marginBottom: {
-              xs: "4px",
-              sm: 2,
-            },
-          }}
-        >
+        <Typography variant="h5" align="center" sx={{ mb: 2 }}>
           Sign in
         </Typography>
+
         <Typography
           variant="body2"
           align="center"
-          sx={{
-            marginBottom: {
-              xs: 2,
-              sm: 3,
-            },
-            color: "gray",
-          }}
+          sx={{ mb: 3, color: "gray" }}
         >
           Stay updated on your professional world
         </Typography>
+
         <Stack gap={2}>
           <CustomTextField
             label="Email or Phone"
             fullWidth
             value={email}
-            onChange={(e: any) => setEmail(e.target.value)}
-            placeholder="write your mail"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
+            placeholder="Email address "
           />
 
           <CustomTextField
@@ -105,8 +105,10 @@ export default function SignIn() {
             type="password"
             fullWidth
             value={password}
-            onChange={(e: any) => setPassword(e.target.value)}
-            placeholder="write your password"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
+            placeholder=" password"
           />
 
           <Button
@@ -114,9 +116,14 @@ export default function SignIn() {
             fullWidth
             variant="contained"
             color="primary"
-            sx={{ padding: "12px", marginBottom: 2, marginTop: 2 }}
+            sx={{ py: 1.5, mt: 2, mb: 2 }}
+            disabled={loading}
           >
-            Sign in
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Sign in"
+            )}
           </Button>
         </Stack>
 
@@ -126,11 +133,11 @@ export default function SignIn() {
           </Alert>
         )}
 
-        <Typography variant="body2" align="center" mt={4}>
+        {/* <Typography variant="body2" align="center" mt={4}>
           <Link href="forgot-password" variant="body2">
             Forgot password?
           </Link>
-        </Typography>
+        </Typography> */}
       </Box>
     </Container>
   );
