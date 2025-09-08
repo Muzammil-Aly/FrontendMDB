@@ -83,7 +83,7 @@ const CustomerSegmentCard: React.FC<Props> = ({ custId }) => {
               ["Segment", customer.customer_segments],
               ["CLV", `$${customer.clv}`],
               ["Total Revenue", `$${customer.total_revenue}`],
-              ["Purchases", customer.num_total_purchases],
+              ["Purchased No Of Items", customer.num_total_purchases],
             ].map(([label, value]) => (
               <TableRow key={label}>
                 <TableCell sx={{ fontSize: 14, fontWeight: 500 }}>

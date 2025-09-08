@@ -16,6 +16,7 @@ export const orders = [
   { field: "order_id", headerName: "Order ID" },
   { field: "customer_id", headerName: "Customer ID" },
   { field: "customer_name", headerName: "Customer Name" },
+  // { field: "customer_no", headerName: "Customer No" },
   { field: "phone_no", headerName: "Phone No" },
   { field: "customer_email", headerName: "Email" },
 
@@ -25,7 +26,7 @@ export const orders = [
 
   { field: "order_date", headerName: "Order Date" },
   { field: "total_value", headerName: "Total Value" },
-  { field: "discount_code", headerName: "Discount Code" },
+  // { field: "discount_code", headerName: "Discount Code" },
   { field: "profit_name", headerName: "Profit Name" },
   { field: "fulfillment_status", headerName: "Fulfillment Status" },
   { field: "shipping_address", headerName: "Shipping Address" },
