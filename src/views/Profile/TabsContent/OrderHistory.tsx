@@ -167,9 +167,8 @@ interface Order {
   profit_name: string;
   channel: string;
   shipping_address: string;
-  customer_no: string;
+  // customer_no: string;
   fulfillment_status: string | null;
-  discount_code: string | null;
   total_value: number;
 }
 
@@ -223,12 +222,11 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ customerId, orderId }) => {
                 "Order ID",
                 "Order Date",
                 "Customer ID",
-                "Customer No",
+                // "Customer No",
                 "Profit Name",
                 "Channel",
                 "Shipping Address",
                 "Fulfillment Status",
-                "Discount Code",
                 "Total Value",
               ].map((head) => (
                 <TableCell
@@ -270,9 +268,9 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ customerId, orderId }) => {
                 <TableCell sx={{ fontSize: "0.75rem", padding: "4px 8px" }}>
                   {order.customer_id}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.75rem", padding: "4px 8px" }}>
+                {/* <TableCell sx={{ fontSize: "0.75rem", padding: "4px 8px" }}>
                   {order.customer_no}
-                </TableCell>
+                </TableCell> */}
                 <TableCell sx={{ fontSize: "0.75rem", padding: "4px 8px" }}>
                   {order.profit_name}
                 </TableCell>
@@ -293,9 +291,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ customerId, orderId }) => {
                     </Typography>
                   )}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.75rem", padding: "4px 8px" }}>
-                  {order.discount_code || "N/A"}
-                </TableCell>
+
                 <TableCell
                   align="right"
                   sx={{ fontSize: "0.75rem", padding: "4px 8px" }}
