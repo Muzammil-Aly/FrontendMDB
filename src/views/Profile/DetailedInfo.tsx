@@ -58,6 +58,10 @@ const DetailedInfo = () => {
   const [isFullNameTyping, setIsFullNameTyping] = useState(false);
   const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
     {
       page,
@@ -91,10 +95,24 @@ const DetailedInfo = () => {
   }, [data]);
 
   const onRowClicked = (params: any) => {
+    const { customer_id } = params.data;
+
     setSelectedUser(params.data);
+
+    setHighlightedId(customer_id);
+
     setModalOpen(true);
   };
-
+  const getRowStyle = (params: any) => {
+    if (highlightedId === params.data.customer_id) {
+      return {
+        backgroundColor: "#E0E0E0",
+        color: "#fff !important",
+        fontWeight: 600,
+      };
+    }
+    return {};
+  };
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput(value);
@@ -402,6 +420,7 @@ const DetailedInfo = () => {
           rowData={rowData}
           columnDefs={userCol}
           onRowClicked={onRowClicked}
+          getRowStyle={getRowStyle}
           height={465}
           enablePagination
           currentPage={page}

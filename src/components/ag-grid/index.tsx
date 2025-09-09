@@ -56,6 +56,11 @@ const AgGridTable: React.FC<any> = ({
       mode: "multiRow",
     };
   }, []);
+  const onCellClicked = (params: any) => {
+    navigator.clipboard.writeText(params.value).then(() => {
+      console.log("Copied:", params.value);
+    });
+  };
 
   return (
     <>
@@ -122,8 +127,11 @@ const AgGridTable: React.FC<any> = ({
             onRowClicked={onRowClicked}
             suppressPaginationPanel={true}
             //  suppressHorizontalScroll={true}
-            rowSelection={rowSelection ? rowSelectionMemo : undefined}
+            // rowSelection={rowSelection ? rowSelectionMemo : undefined}
+            rowSelection={"multiple"}
             onRowSelected={handleRowSelection}
+            // clipbord={true}
+            onCellClicked={onCellClicked}
             {...gridProps}
           />
         </div>
