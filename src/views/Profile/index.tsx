@@ -178,6 +178,10 @@ const Profile = () => {
     router.push("/sign-in");
   };
   const onRowClicked = (params: any) => {
+    const event = params?.event;
+    if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
+      return; // ignore clicks from any MUI icon button
+    }
     const { customer_id } = params.data;
 
     // always set highlight for clicked row

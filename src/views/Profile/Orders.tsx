@@ -90,6 +90,10 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   }, [data]);
 
   const onRowClicked = (params: any) => {
+    const event = params?.event;
+    if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
+      return; // ignore clicks from any MUI icon button
+    }
     if (selectedOrder?.order_id === params.data.order_id) {
       setSelectedOrder(null);
     } else {

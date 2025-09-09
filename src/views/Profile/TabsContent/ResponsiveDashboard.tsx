@@ -110,7 +110,9 @@ const ResponsiveDashboard = ({
         <Paper
           key="profiles"
           elevation={3}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           sx={{
             p: 2,
             borderRadius: 3,

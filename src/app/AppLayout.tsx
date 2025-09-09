@@ -5,7 +5,7 @@ import { Box, CircularProgress } from "@mui/material";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import React, { useState, useEffect } from "react";
-
+import { Toaster } from "react-hot-toast";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -53,5 +53,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     </Box>
   );
 
-  return <Provider store={store}>{isAuthPage ? children : content}</Provider>;
+  return (
+    <Provider store={store}>
+      {isAuthPage ? children : content}
+      <Toaster position="top-center" reverseOrder={false} />
+    </Provider>
+  );
 }

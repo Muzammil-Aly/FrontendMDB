@@ -16,6 +16,7 @@ import {
   RowStyleModule,
 } from "ag-grid-community";
 import Pagination from "./Pagination";
+
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RowSelectionModule,
@@ -56,11 +57,11 @@ const AgGridTable: React.FC<any> = ({
       mode: "multiRow",
     };
   }, []);
-  const onCellClicked = (params: any) => {
-    navigator.clipboard.writeText(params.value).then(() => {
-      console.log("Copied:", params.value);
-    });
-  };
+  // const onCellClicked = (params: any) => {
+  //   navigator.clipboard.writeText(params.value).then(() => {
+  //     console.log("Copied:", params.value);
+  //   });
+  // };
 
   return (
     <>
@@ -131,7 +132,7 @@ const AgGridTable: React.FC<any> = ({
             rowSelection={"multiple"}
             onRowSelected={handleRowSelection}
             // clipbord={true}
-            onCellClicked={onCellClicked}
+            // onCellClicked={onCellClicked}
             {...gridProps}
           />
         </div>
