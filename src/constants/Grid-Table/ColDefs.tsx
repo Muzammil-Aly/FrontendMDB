@@ -67,7 +67,6 @@ export const orders = [
     headerName: "Customer Name",
     cellRenderer: CopyCellRenderer,
   },
-  // { field: "customer_no", headerName: "Customer No" },
   { field: "phone_no", headerName: "Phone No", cellRenderer: CopyCellRenderer },
   {
     field: "customer_email",
@@ -82,6 +81,11 @@ export const orders = [
   },
   { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
   { field: "retailer", headerName: "Retailer", cellRenderer: CopyCellRenderer },
+  {
+    field: "customer_no",
+    headerName: "Customer No",
+    cellRenderer: CopyCellRenderer,
+  },
 
   {
     field: "order_date",
@@ -264,4 +268,114 @@ export const support_ticket_comments = [
   // { field: "public", headerName: "Public" },
   // { field: "parent_theme", headerName: "Parent Theme" },
   // { field: "child_theme_cluster_name", headerName: "Child Theme Cluster Name" },
+];
+
+export const touchups_columns = [
+  {
+    field: "order_id",
+    headerName: "Order ID",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "lot_no",
+    headerName: "Lot No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "sku",
+    headerName: "SKU",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "customer_id",
+    headerName: "Customer ID",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "parts_item_no",
+    headerName: "Parts Item No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "parts_item_name",
+    headerName: "Parts Item Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "parts_item_name_2",
+    headerName: "Parts Item Name 2",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "touchup_pen_item_no",
+    headerName: "Touchup Pen Item No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "touchup_pen_item_name",
+    headerName: "Touchup Pen Item Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "brand",
+    headerName: "Brand",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "color_slug",
+    headerName: "Color Slug",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "color_name",
+    headerName: "Color Name",
+    cellRenderer: CopyCellRenderer,
+  },
+];
+export const inventory_columns = [
+  {
+    field: "Location Code",
+    headerName: "Location Code",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Item No_",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Description",
+    headerName: "Description",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Qty_",
+    headerName: "Quantity",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "ETA",
+    headerName: "ETA",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Qty_ Available",
+    headerName: "Qty Available",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Avail_ Qty_ on Hand",
+    headerName: "Avail Qty on Hand",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Avail_ Qty_ to Commit",
+    headerName: "Avail Qty to Commit",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Qty_ on Blocked Lot_Bin",
+    headerName: "Qty on Blocked Lot/Bin",
+    cellRenderer: CopyCellRenderer,
+  },
 ];

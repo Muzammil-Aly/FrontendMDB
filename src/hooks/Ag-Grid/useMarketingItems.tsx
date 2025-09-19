@@ -76,27 +76,65 @@ const useMarketingEvents = (columns: Column[]) => {
             headerName: "Event Type",
             flex: 1,
             minWidth: 140,
-            cellRenderer: (params: ICellRendererParams) => (
-              <Box
-                sx={{
-                  padding: " 1px",
+            //   cellRenderer: (params: ICellRendererParams) => (
+            //     <Box
+            //       sx={{
+            //         padding: " 1px",
 
-                  // p:0.5,
-                  border: "1px solid black",
-                  borderRadius: "2px",
-                  fontWeight: 600,
-                  fontSize: 13,
-                  display: "inline-block",
-                  bgcolor: "#E3E8EB",
-                  color: "#555",
-                  textTransform: "capitalize",
-                  textAlign: "center",
-                }}
-              >
-                {params.value}
-              </Box>
-            ),
+            //         // p:0.5,
+            //         border: "1px solid black",
+            //         borderRadius: "2px",
+            //         fontWeight: 600,
+            //         fontSize: 13,
+            //         display: "inline-block",
+            //         bgcolor: "#E3E8EB",
+            //         color: "#555",
+            //         textTransform: "capitalize",
+            //         textAlign: "center",
+            //       }}
+            //     >
+            //       {params.value}
+            //     </Box>
+            //   ),
           };
+
+        // case "event_type":
+        //   return {
+        //     ...col,
+        //     headerName: "Event Type",
+        //     flex: 1,
+        //     minWidth: 140,
+        //     cellRenderer: (params: ICellRendererParams) => {
+        //       const colors: Record<string, { bgcolor: string; color: string }> =
+        //         {
+        //           click: { bgcolor: "#E0F8E9", color: "#299438" },
+        //           open: { bgcolor: "#FFF4E5", color: "#B26A00" },
+        //           unsubscribe: { bgcolor: "#FDECEA", color: "#D32F2F" },
+        //         };
+
+        //       const style = colors[params.value?.toLowerCase()] || {
+        //         bgcolor: "#5D8BAC",
+        //         color: "#fff",
+        //       };
+
+        //       return (
+        //         <Box
+        //           sx={{
+        //             ...style,
+        //             padding: "2px 8px",
+        //             borderRadius: "6px",
+        //             fontWeight: 600,
+        //             fontSize: 13,
+        //             display: "inline-block",
+        //             textAlign: "center",
+        //             textTransform: "capitalize",
+        //           }}
+        //         >
+        //           {params.value}
+        //         </Box>
+        //       );
+        //     },
+        //   };
 
         case "campaign_id":
           return { ...col, headerName: "Campaign ID", flex: 1, minWidth: 160 };

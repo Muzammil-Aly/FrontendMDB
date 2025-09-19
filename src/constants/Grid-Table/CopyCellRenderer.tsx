@@ -60,6 +60,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Tooltip, IconButton } from "@mui/material";
 import toast from "react-hot-toast";
 import { ICellRendererParams } from "ag-grid-community";
+import "./ResponsiveDashbord.css";
 
 const CopyCellRenderer: React.FC<ICellRendererParams> = (props) => {
   const [hover, setHover] = useState(false);
@@ -72,7 +73,7 @@ const CopyCellRenderer: React.FC<ICellRendererParams> = (props) => {
 
     if (props.value !== undefined && props.value !== null) {
       navigator.clipboard.writeText(String(props.value)).then(() => {
-        toast.success("Copied to clipboard!"); // ✅ toast instead of Snackbar
+        toast.success("Copied to clipboard!");
       });
     }
   };
@@ -92,6 +93,7 @@ const CopyCellRenderer: React.FC<ICellRendererParams> = (props) => {
             size="small"
             onClick={handleCopy}
             style={{ marginLeft: 4 }}
+            className="no-drag"
           >
             <ContentCopyIcon fontSize="inherit" />
           </IconButton>

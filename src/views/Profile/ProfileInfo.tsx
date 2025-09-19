@@ -16,7 +16,11 @@ import {
   ListSubheader,
   InputAdornment,
   CircularProgress,
+  IconButton,
+  Button,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
 import React, { useState, useMemo, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
 import CustomSearchField from "@/components/Common/CustomSearch";
@@ -24,6 +28,11 @@ import { Phone, Send } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import { useGetProfilesQuery } from "@/redux/services/profileApi";
 import Loader from "@/components/Common/Loader";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { getRowStyle } from "@/utils/gridStyles";
 
 interface SegmentOption {
   id: string;
@@ -58,7 +67,13 @@ const DetailedInfo = () => {
   const [isFullNameTyping, setIsFullNameTyping] = useState(false);
   const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
+  const [lastDateFilter, setLastDateFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [lastDateInput, setLastDateInput] = useState<any>(null);
 
+  const [dateInput, setDateInput] = useState<any>(null);
   const [highlightedId, setHighlightedId] = useState<string | number | null>(
     null
   );
@@ -71,6 +86,8 @@ const DetailedInfo = () => {
       customer_id: customerIdFilter || undefined,
       full_name: fullNameFilter || undefined,
       phone: phoneNumberFilter || undefined,
+      created_at: dateFilter || undefined,
+      last_order_date: lastDateFilter || undefined,
     },
     { skip: false }
   );
@@ -107,16 +124,16 @@ const DetailedInfo = () => {
 
     setModalOpen(true);
   };
-  const getRowStyle = (params: any) => {
-    if (highlightedId === params.data.customer_id) {
-      return {
-        backgroundColor: "#E0E0E0",
-        color: "#fff !important",
-        fontWeight: 600,
-      };
-    }
-    return {};
-  };
+  // const getRowStyle = (params: any) => {
+  //   if (highlightedId === params.data.customer_id) {
+  //     return {
+  //       backgroundColor: "#E0E0E0",
+  //       color: "#fff !important",
+  //       fontWeight: 600,
+  //     };
+  //   }
+  //   return {};
+  // };
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput(value);
@@ -173,7 +190,7 @@ const DetailedInfo = () => {
   );
 
   return (
-    <Box flex={1} p={0}>
+    <Box flex={1} pl={8}>
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -181,7 +198,7 @@ const DetailedInfo = () => {
         pr={3}
       >
         <Box display={"flex"} flexDirection={"column"}>
-          <Typography
+          {/* <Typography
             variant="h2"
             p={2}
             mb={1}
@@ -189,14 +206,64 @@ const DetailedInfo = () => {
             fontWeight={700}
           >
             Profile Information
-          </Typography>
+          </Typography> */}
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
+              Profile Information
+            </Typography>
+            <Box display={"flex"} alignItems={"center"} gap={2}>
+              <FormControl size="small" sx={{ width: 150 }}>
+                <Autocomplete
+                  size="small"
+                  options={sourceOptions}
+                  value={sourceFilter ?? "All"}
+                  onChange={(e, newValue) => {
+                    setSourceFilter(
+                      !newValue || newValue === "All" ? undefined : newValue
+                    );
+
+                    setPage(1);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Source"
+                      placeholder="Source"
+                    />
+                  )}
+                />
+              </FormControl>
+              <Box>
+                <FormControl size="small">
+                  <InputLabel>Page Size</InputLabel>
+                  <Select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setPage(1);
+                    }}
+                    label="Page Size"
+                    sx={{ width: 100 }}
+                  >
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={50}>50</MenuItem>
+                    <MenuItem value={100}>100</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
+          </Box>
           <Box
             display={"flex"}
             justifyContent={"space-between"}
             alignItems={"center"}
             gap={0}
             mb={2}
-            pl={1}
+            // pl={1}
           >
             <Box
               display={"flex"}
@@ -338,43 +405,117 @@ const DetailedInfo = () => {
                 />
               </FormControl>
               <Box display={"flex"} justifyContent={"space-between"} gap={2}>
-                <FormControl size="small" sx={{ width: 150 }}>
-                  <Autocomplete
-                    size="small"
-                    options={sourceOptions}
-                    value={sourceFilter ?? "All"}
-                    onChange={(e, newValue) => {
-                      setSourceFilter(
-                        !newValue || newValue === "All" ? undefined : newValue
-                      );
+                <FormControl size="small" sx={{ width: 190 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      enableAccessibleFieldDOMStructure={false}
+                      label="Created At"
+                      value={dateInput}
+                      onChange={(newValue) => {
+                        if (!newValue) {
+                          setDateInput(null);
+                          setDateFilter(undefined);
+                        } else {
+                          setDateInput(newValue);
+                          setDateFilter(dayjs(newValue).format("YYYY-MM-DD"));
+                        }
+                        setPage(1);
+                      }}
+                      slots={{
+                        textField: (textFieldProps) => {
+                          // filter out unwanted internal props
+                          const {
+                            sectionListRef,
+                            areAllSectionsEmpty,
+                            ...rest
+                          } = textFieldProps;
 
-                      setPage(1);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Source"
-                        placeholder="Source"
-                      />
-                    )}
-                  />
+                          return (
+                            <TextField
+                              {...rest}
+                              size="small"
+                              placeholder="Select Date"
+                              InputProps={{
+                                ...rest.InputProps,
+                                endAdornment: dateInput ? (
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => {
+                                      setDateInput(null);
+                                      setDateFilter(undefined);
+                                      setPage(1);
+                                    }}
+                                  >
+                                    <CloseIcon fontSize="small" />
+                                  </IconButton>
+                                ) : (
+                                  rest.InputProps?.endAdornment
+                                ),
+                              }}
+                            />
+                          );
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
+              </Box>
+              <Box>
+                <FormControl size="small" sx={{ width: 190 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      enableAccessibleFieldDOMStructure={false}
+                      label="Last Order Date"
+                      value={lastDateInput}
+                      onChange={(newValue) => {
+                        if (!newValue) {
+                          setLastDateInput(null);
+                          setLastDateFilter(undefined);
+                        } else {
+                          setLastDateInput(newValue);
+                          setLastDateFilter(
+                            dayjs(newValue).format("YYYY-MM-DD")
+                          );
+                        }
+                        setPage(1);
+                      }}
+                      slots={{
+                        textField: (textFieldProps) => {
+                          // filter out unwanted internal props
+                          const {
+                            sectionListRef,
+                            areAllSectionsEmpty,
+                            ...rest
+                          } = textFieldProps;
 
-                <FormControl size="small">
-                  <InputLabel>Page Size</InputLabel>
-                  <Select
-                    value={pageSize}
-                    onChange={(e) => {
-                      setPageSize(Number(e.target.value));
-                      setPage(1);
-                    }}
-                    label="Page Size"
-                    sx={{ width: 100 }}
-                  >
-                    <MenuItem value={10}>10</MenuItem>
-                    <MenuItem value={50}>50</MenuItem>
-                    <MenuItem value={100}>100</MenuItem>
-                  </Select>
+                          return (
+                            <TextField
+                              {...rest}
+                              size="small"
+                              placeholder="Select Date"
+                              InputProps={{
+                                ...rest.InputProps,
+                                endAdornment: lastDateInput ? (
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => {
+                                      setLastDateInput(null);
+                                      setLastDateFilter(undefined);
+                                      setPage(1);
+                                    }}
+                                  >
+                                    <CloseIcon fontSize="small" />
+                                  </IconButton>
+                                ) : (
+                                  rest.InputProps?.endAdornment
+                                ),
+                              }}
+                            />
+                          );
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
               </Box>
             </Box>
@@ -424,7 +565,8 @@ const DetailedInfo = () => {
           rowData={rowData}
           columnDefs={userCol}
           onRowClicked={onRowClicked}
-          getRowStyle={getRowStyle}
+          // getRowStyle={getRowStyle}
+          getRowStyle={getRowStyle(highlightedId)}
           height={465}
           enablePagination
           currentPage={page}

@@ -33,6 +33,8 @@ import dayjs from "dayjs";
 
 import { exportProfilesToPDF } from "@/utils/exportPDF";
 import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
+import { getRowStyle } from "@/utils/gridStyles";
+
 interface OrdersProps {
   customerId?: string; // optional prop
 }
@@ -63,7 +65,9 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(
     undefined
   );
-
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
   const [tagsFilter, setTagsFilter] = useState<string | undefined>(undefined);
   const [customerNameInput, setCustomerNameInput] = useState("");
   const [ticketIdInput, setTicketIdInput] = useState("");
@@ -210,16 +214,16 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
     }
   };
 
-  const getRowStyle = (params: any) => {
-    if (selectedTicket?.ticket_id === params.data.ticket_id) {
-      return {
-        backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
-        color: "#fff !important", //           // white text for contrast
-        fontWeight: 600, // makes it stand out a bit more
-      };
-    }
-    return {};
-  };
+  // const getRowStyle = (params: any) => {
+  //   if (selectedTicket?.ticket_id === params.data.ticket_id) {
+  //     return {
+  //       backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
+  //       color: "#fff !important", //           // white text for contrast
+  //       fontWeight: 600, // makes it stand out a bit more
+  //     };
+  //   }
+  //   return {};
+  // };
 
   return (
     <Box display="flex">
@@ -230,7 +234,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
             flexDirection="column"
             justifyContent={"space-between"}
             alignItems={"flex-start"}
-            pr={3}
+            pl={8}
             gap={1}
             mb={2}
           >
@@ -238,8 +242,9 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
               display="flex"
               justifyContent="space-between"
               alignItems={"center"}
+              gap={35}
             >
-              <Box display="flex" alignItems="center" gap={0}>
+              <Box display="flex" alignItems="center" gap={5}>
                 <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
                   Support Tickets
                 </Typography>
@@ -394,60 +399,6 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                   </LocalizationProvider>
                 </FormControl> */}
 
-                <FormControl size="small" sx={{ width: 190 }}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      enableAccessibleFieldDOMStructure={false}
-                      label="Created At"
-                      value={dateInput}
-                      onChange={(newValue) => {
-                        if (!newValue) {
-                          setDateInput(null);
-                          setDateFilter(undefined);
-                        } else {
-                          setDateInput(newValue);
-                          setDateFilter(dayjs(newValue).format("YYYY-MM-DD"));
-                        }
-                        setPage(1);
-                      }}
-                      slots={{
-                        textField: (textFieldProps) => {
-                          // filter out unwanted internal props
-                          const {
-                            sectionListRef,
-                            areAllSectionsEmpty,
-                            ...rest
-                          } = textFieldProps;
-
-                          return (
-                            <TextField
-                              {...rest}
-                              size="small"
-                              placeholder="Select Date"
-                              InputProps={{
-                                ...rest.InputProps,
-                                endAdornment: dateInput ? (
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                      setDateInput(null);
-                                      setDateFilter(undefined);
-                                      setPage(1);
-                                    }}
-                                  >
-                                    <CloseIcon fontSize="small" />
-                                  </IconButton>
-                                ) : (
-                                  rest.InputProps?.endAdornment
-                                ),
-                              }}
-                            />
-                          );
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
                 <FormControl size="small">
                   <InputLabel>Page Size</InputLabel>
                   <Select
@@ -606,6 +557,57 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                   }}
                 />
               </FormControl>
+              <FormControl size="small" sx={{ width: 190 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    enableAccessibleFieldDOMStructure={false}
+                    label="Created At"
+                    value={dateInput}
+                    onChange={(newValue) => {
+                      if (!newValue) {
+                        setDateInput(null);
+                        setDateFilter(undefined);
+                      } else {
+                        setDateInput(newValue);
+                        setDateFilter(dayjs(newValue).format("YYYY-MM-DD"));
+                      }
+                      setPage(1);
+                    }}
+                    slots={{
+                      textField: (textFieldProps) => {
+                        // filter out unwanted internal props
+                        const { sectionListRef, areAllSectionsEmpty, ...rest } =
+                          textFieldProps;
+
+                        return (
+                          <TextField
+                            {...rest}
+                            size="small"
+                            placeholder="Select Date"
+                            InputProps={{
+                              ...rest.InputProps,
+                              endAdornment: dateInput ? (
+                                <IconButton
+                                  size="small"
+                                  onClick={() => {
+                                    setDateInput(null);
+                                    setDateFilter(undefined);
+                                    setPage(1);
+                                  }}
+                                >
+                                  <CloseIcon fontSize="small" />
+                                </IconButton>
+                              ) : (
+                                rest.InputProps?.endAdornment
+                              ),
+                            }}
+                          />
+                        );
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </FormControl>
             </Box>
           </Box>
         )}
@@ -617,7 +619,8 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
             rowData={rowData}
             userCol={ticketColumns}
             onRowClicked={onRowClicked}
-            getRowStyle={getRowStyle}
+            // getRowStyle={getRowStyle}
+            getRowStyle={getRowStyle(highlightedId)}
             selectedTicket={selectedTicket?.ticket_id}
             enablePagination
             currentPage={page}

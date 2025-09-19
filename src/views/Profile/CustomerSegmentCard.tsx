@@ -47,7 +47,11 @@ const CustomerSegmentCard: React.FC<Props> = ({ custId }) => {
     return <Alert severity="error">Failed to load customer segment</Alert>;
 
   if (!data || !data.data || data.data.length === 0)
-    return <Alert severity="warning">No customer segment found</Alert>;
+    return (
+      <Alert className="drag-handle" severity="warning">
+        No customer segment found
+      </Alert>
+    );
 
   const customer = data.data[0];
 
@@ -62,7 +66,12 @@ const CustomerSegmentCard: React.FC<Props> = ({ custId }) => {
       }}
     >
       <CardContent sx={{ p: 2 }}>
-        <Typography variant="subtitle2" fontWeight={600} mb={1}>
+        <Typography
+          variant="subtitle2"
+          fontWeight={600}
+          mb={1}
+          className="drag-handle"
+        >
           Customer ID: {customer.cust_id}
         </Typography>
 

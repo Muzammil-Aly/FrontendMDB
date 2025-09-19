@@ -27,25 +27,27 @@ interface CommentProps {
 
 interface SupportTicketCommentsProps {
   // customerId: string;
-    ticketId?: string;
+  ticketId?: string;
 }
 
-const SupportTicketComments: React.FC<SupportTicketCommentsProps> = ({ ticketId }) => {
+const SupportTicketComments: React.FC<SupportTicketCommentsProps> = ({
+  ticketId,
+}) => {
   // const numericCustId = parseInt(String(customerId).replace(/\D/g, ""), 10);
-const numericTicketId = ticketId ? parseInt(String(ticketId).replace(/\D/g, ""), 10) : undefined;
+  const numericTicketId = ticketId
+    ? parseInt(String(ticketId).replace(/\D/g, ""), 10)
+    : undefined;
 
-  const { data, error, isLoading, isFetching } = useGetSupportTicketsCommnetsQuery(
+  const { data, error, isLoading, isFetching } =
+    useGetSupportTicketsCommnetsQuery(
+      // { customerId: numericCustId },
+      // { skip: !customerId }
 
-    // { customerId: numericCustId },
-    // { skip: !customerId }
-    
-    {  ticketId: numericTicketId,
-        page_size: 50, 
-     },
-    { skip: !ticketId }
-  );
+      { ticketId: numericTicketId, page_size: 50 },
+      { skip: !ticketId }
+    );
 
-  if (isLoading  || isFetching) {
+  if (isLoading || isFetching) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" p={2}>
         <Loader />
@@ -66,7 +68,11 @@ const numericTicketId = ticketId ? parseInt(String(ticketId).replace(/\D/g, ""),
     : [];
 
   if (comments.length === 0) {
-    return <Alert severity="info">No comments found</Alert>;
+    return (
+      <Alert className="drag-handle" severity="info">
+        No comments found
+      </Alert>
+    );
   }
 
   // sort comments by created_at descending
@@ -77,23 +83,44 @@ const numericTicketId = ticketId ? parseInt(String(ticketId).replace(/\D/g, ""),
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
+      <Typography
+        variant="subtitle2"
+        fontWeight={600}
+        mb={1}
+        className="drag-handle"
+      >
+        Ticket ID: {ticketId}
+      </Typography>
       {isFetching ? (
         <Box display="flex" justifyContent="center" alignItems="center" p={2}>
-        <Loader />
-      </Box>
+          <Loader />
+        </Box>
       ) : (
         sortedComments.map((comment) => (
-          <Card key={comment.comment_id} variant="outlined" sx={{ borderRadius: 2 }}>
+          <Card
+            key={comment.comment_id}
+            variant="outlined"
+            sx={{ borderRadius: 2 }}
+          >
             <CardContent>
-              <Box display="flex" justifyContent="space-between" alignItems="start">
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="start"
+              >
                 <Box>
                   <Typography variant="subtitle2" fontWeight="bold">
                     Author ID: {comment.author_id}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Ticket #{comment.ticket_id} — Customer #{comment.customer_id}
+                    Ticket #{comment.ticket_id} — Customer #
+                    {comment.customer_id}
                   </Typography>
-                  <Typography variant="caption" color="text.disabled" display="block">
+                  <Typography
+                    variant="caption"
+                    color="text.disabled"
+                    display="block"
+                  >
                     {new Date(comment.created_at).toLocaleString()}
                   </Typography>
                 </Box>
@@ -113,8 +140,16 @@ const numericTicketId = ticketId ? parseInt(String(ticketId).replace(/\D/g, ""),
               </Typography>
 
               <Box display="flex" gap={1} mt={2}>
-                <Chip label={comment.parent_theme} size="small" color="primary" />
-                <Chip label={comment.child_theme_cluster_name} size="small" color="secondary" />
+                <Chip
+                  label={comment.parent_theme}
+                  size="small"
+                  color="primary"
+                />
+                <Chip
+                  label={comment.child_theme_cluster_name}
+                  size="small"
+                  color="secondary"
+                />
               </Box>
             </CardContent>
           </Card>

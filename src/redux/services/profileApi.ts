@@ -26,6 +26,8 @@ export const klaviyoApi = createApi({
         join_type?: string;
         customer_id?: string;
         key?: string;
+        created_at?: string;
+        last_order_date?: string;
       }
     >({
       query: ({
@@ -38,6 +40,8 @@ export const klaviyoApi = createApi({
         join_type,
         customer_id,
         key,
+        created_at,
+        last_order_date,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -49,6 +53,9 @@ export const klaviyoApi = createApi({
         if (customer_id) params.set("customer_id", customer_id);
         if (join_type) params.set("join_type", join_type);
         if (key) params.set("key", key);
+        if (created_at) params.set("created_at", created_at);
+        if (last_order_date) params.set("last_order_date", last_order_date);
+
         return `/customer_profiles/?${params.toString()}`;
       },
     }),
@@ -82,7 +89,7 @@ export const klaviyoApi = createApi({
       {
         page?: number;
         page_size?: number;
-        email?: string;
+        customer_email?: string;
         source?: string;
         order_id?: string;
         customer_id?: string;
@@ -101,6 +108,7 @@ export const klaviyoApi = createApi({
         customer_reference_no,
         shipping_address,
         tracking,
+        customer_email,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -112,6 +120,7 @@ export const klaviyoApi = createApi({
           params.set("customer_reference_no", customer_reference_no);
         if (shipping_address) params.set("shipping_address", shipping_address);
         if (tracking) params.set("tracking", tracking);
+        if (customer_email) params.set("customer_email", customer_email);
 
         return `/customer_orders?${params.toString()}`;
       },
@@ -237,6 +246,120 @@ export const klaviyoApi = createApi({
       },
     }),
 
+    getTouchups: builder.query<
+  any,
+  {
+       
+    order_id?: string;
+    lot_no?: string;
+    sku?: string;
+    customer_id?: string;
+    parts_item_no?: string;
+    parts_item_name?: string;
+    parts_item_name_2?: string;
+    touchup_pen_item_no?: string;
+    touchup_pen_item_name?: string;
+    brand?: string;
+    color_slug?: string;
+    color_name?: string;
+    page?: number;
+    page_size?: number;
+  }
+>({
+  query: ({
+    
+    order_id,
+    lot_no,
+    sku,
+    customer_id,
+    parts_item_no,
+    parts_item_name,
+    parts_item_name_2,
+    touchup_pen_item_no,
+    touchup_pen_item_name,
+    brand,
+    color_slug,
+    color_name,
+    page = 1,
+    page_size = 10,
+  }) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    params.set("page_size", page_size.toString());
+    if (order_id) params.set("order_id", order_id);
+    if (lot_no) params.set("lot_no", lot_no);
+    if (sku) params.set("sku", sku);
+    if (customer_id) params.set("customer_id", customer_id);
+    if (parts_item_no) params.set("parts_item_no", parts_item_no);
+    if (parts_item_name) params.set("parts_item_name", parts_item_name);
+    if (parts_item_name_2) params.set("parts_item_name_2", parts_item_name_2);
+    if (touchup_pen_item_no) params.set("touchup_pen_item_no", touchup_pen_item_no);
+    if (touchup_pen_item_name) params.set("touchup_pen_item_name", touchup_pen_item_name);
+    if (brand) params.set("brand", brand);
+    if (color_slug) params.set("color_slug", color_slug);
+    if (color_name) params.set("color_name", color_name);
+
+    return `touchup_part?${params.toString()}`;
+  },
+}),
+
+getInventory: builder.query<
+  any,
+  {
+    item_no?: string;
+    location_code?: string;
+    description?: string;
+    eta?: string;
+    qty?: number;
+    qty_available?: number;
+    avail_qty_on_hand?: number;
+    avail_qty_to_commit?: number;
+    qty_on_blocked_lot_bin?: number;
+    page?: number;
+    page_size?: number;
+  }
+>({
+  query: ({
+    item_no,
+    location_code,
+    description,
+    eta,
+    qty,
+    qty_available,
+    avail_qty_on_hand,
+    avail_qty_to_commit,
+    qty_on_blocked_lot_bin,
+    page = 1,
+    page_size = 10,
+  }) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    params.set("page_size", page_size.toString());
+
+    if (item_no) params.set("item_no", item_no);
+    if (location_code) params.set("location_code", location_code);
+    if (description) params.set("description", description);
+    if (eta) params.set("eta", eta);
+    if (qty !== undefined) params.set("qty", qty.toString());
+    if (qty_available !== undefined) params.set("qty_available", qty_available.toString());
+    if (avail_qty_on_hand !== undefined) params.set("avail_qty_on_hand", avail_qty_on_hand.toString());
+    if (avail_qty_to_commit !== undefined) params.set("avail_qty_to_commit", avail_qty_to_commit.toString());
+    if (qty_on_blocked_lot_bin !== undefined) params.set("qty_on_blocked_lot_bin", qty_on_blocked_lot_bin.toString());
+
+    return `inventory_Availability?${params.toString()}`;
+  },
+}),
+
+// getInventory: builder.query<any, void>({
+//   query: () => {
+//     const params = new URLSearchParams();
+//     params.set("page", "1");
+//     params.set("page_size", "10");
+
+//     return `inventory_Availability?${params.toString()}`;
+//   },
+// }),
+
     getSegments: builder.query<any, { page?: number; page_size?: number }>({
       query: ({ page, page_size } = {}) => {
         return `/segments?page=${page}&page_size=${page_size}`;
@@ -258,4 +381,6 @@ export const {
   useGetSupportTicketsQuery,
   useGetSupportTicketsCommnetsQuery,
   useGetCustomerEventsQuery,
+  useGetTouchupsQuery,
+  useGetInventoryQuery
 } = klaviyoApi;

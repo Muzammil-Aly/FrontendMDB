@@ -2,18 +2,35 @@
 import AgGridTable from "@/components/ag-grid";
 import { orderItems } from "@/constants/Grid-Table/ColDefs";
 import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
-import { Box ,Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
 import { useGetOrderItemsQuery } from "@/redux/services/profileApi";
+import { getRowStyle } from "@/utils/gridStyles";
 
 interface Props {
   orderId: string;
+  setSelectedOrderItem: React.Dispatch<React.SetStateAction<any | null>>;
 }
-
-const OrderItems = ({ orderId }: Props) => {
+interface OrderItem {
+  line_no: string | number;
+  order_id: string;
+  sku: string;
+  product_name: string;
+  item_type: string;
+  brand: string;
+  collection: string;
+  quantity: number;
+  amount: number;
+}
+const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
   const orderItemsCol = useOrderItems(orderItems);
- 
+
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
+  const [selectedItemDetail, setSelectedItemDetail] =
+    useState<OrderItem | null>(null);
 
   // Fetch order items from API using the orderId
   const { data, isLoading, isFetching, refetch } = useGetOrderItemsQuery(
@@ -22,23 +39,49 @@ const OrderItems = ({ orderId }: Props) => {
   );
 
   // Map API data to rowData for AgGrid
-const rowData = useMemo(() => {
-  const items = data?.data || data || []; // flexible for API shape
-  return Array.isArray(items)
-    ? items.map((item: any) => ({
-        line_no: item.line_no,
-        order_id: item.order_id,
-        sku: item.sku,
-        product_name: item.product_name,
-        item_type: item.item_type,
-        brand: item.brand,
-        collection: item.collection,
-        quantity: item.quantity,
-        amount: item.amount,
-      }))
-    : [];
-}, [data]);
+  const rowData = useMemo(() => {
+    const items = data?.data || data || []; // flexible for API shape
+    return Array.isArray(items)
+      ? items.map((item: any) => ({
+          line_no: item.line_no,
+          order_id: item.order_id,
+          sku: item.sku,
+          product_name: item.product_name,
+          item_type: item.item_type,
+          brand: item.brand,
+          collection: item.collection,
+          quantity: item.quantity,
+          amount: item.amount,
+        }))
+      : [];
+  }, [data]);
+  // const onRowClicked = (params: any) => {
+  //   const event = params?.event;
+  //   if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
+  //     return; // ignore clicks from any MUI icon button
+  //   }
+  //   if (selectedItemDetail?.line_no === params.data.line_no) {
+  //     setSelectedItemDetail(null);
+  //   } else {
+  //     setSelectedItemDetail(params.data);
+  //   }
+  // };
 
+  const onRowClicked = (params: any) => {
+   const event = params?.event;
+    if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
+      return; // ignore clicks from any MUI icon button
+    }
+
+    if (selectedItemDetail?.order_id === params.data.order_id) {
+      setSelectedItemDetail(null);
+      setSelectedOrderItem(null);
+    } else {
+      setSelectedItemDetail(params.data as OrderItem);
+      setSelectedOrderItem(params.data as OrderItem);
+    }
+  };
+console.log("selectedItemDetail",selectedItemDetail);
   // return (
   //   <Box display="flex" width="100%"
   //   justifyContent="center"
@@ -57,32 +100,38 @@ const rowData = useMemo(() => {
   // );
 
   return (
-  <Box 
-    display="flex" 
-    flexDirection="column"  // stack vertically
-    width="100%"
-    justifyContent="center"
-    alignItems="center"
-  >
-    {/* Show Order ID */}
-    <Typography variant="h6" sx={{ mb: 2 }}>
-      Order ID: {orderId ?? "N/A"}
-    </Typography>
+    <Box
+      display="flex"
+      flexDirection="column" // stack vertically
+      width="100%"
+      justifyContent="center"
+      alignItems="center"
+      // className="drag-handle"
+    >
+      {/* Show Order ID */}
+      <Typography
+      
+      className="drag-handle"
+      
+      variant="h6" sx={{ mb: 2 }}>
+        Order ID: {orderId ?? "N/A"}
+      </Typography>
 
-    {/* Loader or Table */}
-    {isLoading || isFetching ? (
-      <Loader />
-    ) : (
-      <AgGridTable
-        rowData={rowData}
-        columnDefs={orderItemsCol}
-        height={480}
-        enablePagination={false}
-      />
-    )}
-  </Box>
-);
-
+      {/* Loader or Table */}
+      {isLoading || isFetching ? (
+        <Loader />
+      ) : (
+        <AgGridTable
+          rowData={rowData}
+          columnDefs={orderItemsCol}
+          height={480}
+          enablePagination={false}
+          onRowClicked={onRowClicked}
+          getRowStyle={getRowStyle(highlightedId)}
+        />
+      )}
+    </Box>
+  );
 };
 
 export default OrderItems;

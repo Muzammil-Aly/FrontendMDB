@@ -131,6 +131,7 @@ const AgGridTable: React.FC<any> = ({
             // rowSelection={rowSelection ? rowSelectionMemo : undefined}
             rowSelection={"multiple"}
             onRowSelected={handleRowSelection}
+            
             // clipbord={true}
             // onCellClicked={onCellClicked}
             {...gridProps}

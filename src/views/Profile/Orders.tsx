@@ -23,6 +23,11 @@ import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
 interface OrdersProps {
   customerId?: string;
 }
+import CustomSearchField from "@/components/Common/CustomSearch";
+import { Phone, Send } from "@mui/icons-material";
+
+import { getRowStyle } from "@/utils/gridStyles";
+
 const Orders = ({ customerId }: { customerId?: string }) => {
   const orderCol = useOrdersColumn(orders);
 
@@ -56,6 +61,13 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const [customerReferenceNotyping, setIsCustomerReferenceNoTyping] =
     useState(false);
   const [trackingtyping, setIsTrackingTyping] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
+
   const { data, isLoading, isFetching } = useGetCustomerOrdersQuery({
     page,
     page_size: pageSize,
@@ -65,6 +77,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     customer_reference_no: customerReferenceNoFilter || undefined,
     shipping_address: shippingAddressFilter || undefined,
     tracking: trackigFilter || undefined,
+    customer_email: searchTerm || undefined,
   });
 
   const rowData = useMemo(() => {
@@ -100,17 +113,18 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       setSelectedOrder(params.data);
     }
   };
+  // console.log("Selected order", selectedOrder);
 
-  const getRowStyle = (params: any) => {
-    if (selectedOrder?.order_id === params.data.order_id) {
-      return {
-        backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
-        color: "#fff !important", //           // white text for contrast
-        fontWeight: 600, // makes it stand out a bit more
-      };
-    }
-    return {};
-  };
+  // const getRowStyle = (params: any) => {
+  //   if (selectedOrder?.order_id === params.data.order_id) {
+  //     return {
+  //       backgroundColor: "#E0E0E0", // MUI primary.main (blue 700)
+  //       color: "#fff !important", //           // white text for contrast
+  //       fontWeight: 600, // makes it stand out a bit more
+  //     };
+  //   }
+  //   return {};
+  // };
 
   const debouncedOrderId = useMemo(
     () =>
@@ -159,6 +173,30 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     []
   );
 
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchTerm(value);
+        setPage(1);
+        setIsTyping(false);
+      }, 5000),
+    []
+  );
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+
+    if (value.trim() === "") {
+      setSearchTerm("");
+      setPage(1);
+      debouncedSearch.cancel(); // cancel pending debounce
+    } else {
+      debouncedSearch(value);
+      setIsTyping(true);
+    }
+  };
+
   return (
     <Box display="flex">
       <Box flex={1} p={1}>
@@ -168,14 +206,48 @@ const Orders = ({ customerId }: { customerId?: string }) => {
             flexDirection={"column"}
             justifyContent="space-between"
             alignItems="flex-start"
-            pr={3}
+            pl={7}
             gap={2}
           >
-            <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
-              Orders
-            </Typography>
+            <Box display={"flex"} alignItems={"center"} gap={5}>
+              <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
+                Orders
+              </Typography>
 
-            <Box display="flex" alignItems="center" gap={1} ml={2} mb={2}>
+              <Box mt={-1}>
+                <Box display={"flex"} alignItems="center" gap={1}>
+                  <CustomSearchField
+                    value={searchInput}
+                    onChange={handleSearchInput}
+                    placeholder="Search by Email"
+                    InputProps={{
+                      endAdornment: searchInput.trim() !== "" && isTyping && (
+                        <InputAdornment position="end">
+                          <CircularProgress size={20} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  {
+                    <Send
+                      onClick={() => {
+                        setSearchTerm(searchInput);
+                        setPage(1);
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        color: "#004FA7",
+                        height: "36px",
+                        width: "36px",
+                      }}
+                    />
+                  }
+                </Box>
+              </Box>
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={4} ml={2} mb={2}>
               {/* <FormControl size="small">
                 <TextField
                   label="Order ID"
@@ -358,7 +430,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
             rowData={rowData}
             userCol={orderCol}
             onRowClicked={onRowClicked}
-            getRowStyle={getRowStyle}
+            // getRowStyle={getRowStyle}
+
+            getRowStyle={getRowStyle(highlightedId)}
             selectedOrderId={selectedOrder?.order_id}
             enablePagination
             currentPage={page}

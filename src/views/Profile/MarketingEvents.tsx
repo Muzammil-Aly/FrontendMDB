@@ -27,12 +27,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { getRowStyle } from "@/utils/gridStyles";
+
 interface MarketingEventsProps {
   customerId?: string; // optional prop
 }
 const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
   const eventCol = useMarketingEvents(marketing_events);
-
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -142,25 +146,34 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
   );
   return (
     <Box display="flex">
-      <Box flex={1} p={1}>
+      <Box flex={1} pl={8}>
         {!customerId && (
           <Box
             display="flex"
             justifyContent="space-between"
-            alignItems="center"
+            alignItems="flex-start"
             flexDirection={"column"}
-            pr={3}
+            // pr={3}
           >
             <Box
               display={"flex"}
-              justifyContent="space-between"
-              alignItems={"center"}
-              gap={7}
+              justifyContent="center"
+              alignItems={"flex-start"}
+              // gap={7}
               mb={2}
             >
               <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
                 Marketing Events
               </Typography>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              gap={2}
+              mb={2}
+              // pr={55}
+            >
               <Box mt={-1}>
                 <Box display={"flex"} alignItems="center" gap={1}>
                   <CustomSearchField
@@ -261,83 +274,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                   />
                 </LocalizationProvider>
               </FormControl> */}
-              <FormControl size="small" sx={{ width: 220 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    enableAccessibleFieldDOMStructure={false}
-                    label="Event Time Stamp "
-                    value={dateInput}
-                    onChange={(newValue) => {
-                      if (!newValue) {
-                        setDateInput(null);
-                        setDateFilter(undefined);
-                      } else {
-                        setDateInput(newValue);
-                        setDateFilter(dayjs(newValue).format("YYYY-MM-DD"));
-                      }
-                      setPage(1);
-                    }}
-                    slots={{
-                      textField: (textFieldProps) => {
-                        // filter out unwanted internal props
-                        const { sectionListRef, areAllSectionsEmpty, ...rest } =
-                          textFieldProps;
 
-                        return (
-                          <TextField
-                            {...rest}
-                            size="small"
-                            placeholder="Select Date"
-                            InputProps={{
-                              ...rest.InputProps,
-                              endAdornment: dateInput ? (
-                                <IconButton
-                                  size="small"
-                                  onClick={() => {
-                                    setDateInput(null);
-                                    setDateFilter(undefined);
-                                    setPage(1);
-                                  }}
-                                >
-                                  <CloseIcon fontSize="small" />
-                                </IconButton>
-                              ) : (
-                                rest.InputProps?.endAdornment
-                              ),
-                            }}
-                          />
-                        );
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </FormControl>
-
-              <FormControl size="small">
-                <InputLabel>Page Size</InputLabel>
-                <Select
-                  value={pageSize}
-                  onChange={(e) => {
-                    setPageSize(Number(e.target.value));
-                    setPage(1);
-                  }}
-                  label="Page Size"
-                  sx={{ minWidth: 100 }}
-                >
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={50}>50</MenuItem>
-                  <MenuItem value={100}>100</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              gap={2}
-              mb={2}
-              pr={55}
-            >
               <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Customer Name"
@@ -420,7 +357,74 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                   }}
                 />
               </FormControl>
+              <FormControl size="small" sx={{ width: 220 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    enableAccessibleFieldDOMStructure={false}
+                    label="Event Time Stamp "
+                    value={dateInput}
+                    onChange={(newValue) => {
+                      if (!newValue) {
+                        setDateInput(null);
+                        setDateFilter(undefined);
+                      } else {
+                        setDateInput(newValue);
+                        setDateFilter(dayjs(newValue).format("YYYY-MM-DD"));
+                      }
+                      setPage(1);
+                    }}
+                    slots={{
+                      textField: (textFieldProps) => {
+                        // filter out unwanted internal props
+                        const { sectionListRef, areAllSectionsEmpty, ...rest } =
+                          textFieldProps;
 
+                        return (
+                          <TextField
+                            {...rest}
+                            size="small"
+                            placeholder="Select Date"
+                            InputProps={{
+                              ...rest.InputProps,
+                              endAdornment: dateInput ? (
+                                <IconButton
+                                  size="small"
+                                  onClick={() => {
+                                    setDateInput(null);
+                                    setDateFilter(undefined);
+                                    setPage(1);
+                                  }}
+                                >
+                                  <CloseIcon fontSize="small" />
+                                </IconButton>
+                              ) : (
+                                rest.InputProps?.endAdornment
+                              ),
+                            }}
+                          />
+                        );
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+
+              <FormControl size="small">
+                <InputLabel>Page Size</InputLabel>
+                <Select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setPage(1);
+                  }}
+                  label="Page Size"
+                  sx={{ minWidth: 100 }}
+                >
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={50}>50</MenuItem>
+                  <MenuItem value={100}>100</MenuItem>
+                </Select>
+              </FormControl>
               {/* <TextField
               label="Event Type"
               value={eventTypeFilter || ""}
@@ -440,6 +444,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
             rowData={rowData}
             columnDefs={eventCol}
             // onRowClicked={onRowClicked}
+            getRowStyle={getRowStyle(highlightedId)}
             height={480}
             enablePagination
             currentPage={page}

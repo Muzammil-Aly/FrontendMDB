@@ -18,7 +18,12 @@ import {
   AppBar,
   Toolbar,
   Button,
+  Chip,
+  Popover,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
 import LogoutIcon from "@mui/icons-material/Logout";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomSearchField from "@/components/Common/CustomSearch";
@@ -29,10 +34,27 @@ import Loader from "@/components/Common/Loader";
 
 import Orders from "./Orders";
 import SupportTickets from "./SupportTickets";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
 import MarketingEvents from "./MarketingEvents";
-import DetailedInfo from "./DetailedInfo";
+import DetailedInfo from "./ProfileInfo";
+
+import { getRowStyle } from "@/utils/gridStyles";
+import { alignItems } from "@mui/system";
+// import PeopleIcon from "@mui/icons-material/People";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import EventIcon from "@mui/icons-material/Event";
+import InfoIcon from "@mui/icons-material/Info";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import Sidebar from "./Sidebar";
+import CustomerIdFilter from "./TabsContent/Inventory";
+import BadgeIcon from "@mui/icons-material/Badge";
+import Inventory from "./Inventory";
 interface SegmentOption {
   id: string;
   name: string;
@@ -52,15 +74,32 @@ const Profile = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const [activeMenu, setActiveMenu] = useState("Profile Information");
   const menuItems = [
-    "Profile Information",
-
-    "Customer Profiles",
-    "Orders",
-    "Support Tickets",
-    "Marketing Events",
+    {
+      key: "Profile Information",
+      label: "Profile Information",
+      icon: <InfoIcon />,
+    },
+    {
+      key: "Customer Profiles",
+      label: "Customer Profiles",
+      icon: <PeopleIcon />,
+    },
+    { key: "Orders", label: "Orders", icon: <ShoppingCartIcon /> },
+    {
+      key: "Support Tickets",
+      label: "Support Tickets",
+      icon: <SupportAgentIcon />,
+    },
+    { key: "Marketing Events", label: "Marketing Events", icon: <EventIcon /> },
+    {
+      key: "Inventory",
+      label: "Inventory",
+      icon: <InventoryIcon />, // make sure you import this icon
+    },
   ];
 
   const [sourceFilter, setSourceFilter] = useState<string | undefined>(
@@ -82,6 +121,13 @@ const Profile = () => {
   const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
   const [isFullNameTyping, setIsFullNameTyping] = useState(false);
   const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
+  const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
+  const [lastDateFilter, setLastDateFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [lastDateInput, setLastDateInput] = useState<any>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [dateInput, setDateInput] = useState<any>(null);
   const router = useRouter();
   const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
     {
@@ -92,6 +138,8 @@ const Profile = () => {
       customer_id: customerIdFilter || undefined,
       full_name: fullNameFilter || undefined,
       phone: phoneNumberFilter || undefined,
+      created_at: dateFilter || undefined,
+      last_order_date: lastDateFilter || undefined,
     },
     { skip: false }
   );
@@ -201,16 +249,33 @@ const Profile = () => {
     }
   };
 
-  const getRowStyle = (params: any) => {
-    if (highlightedId === params.data.customer_id) {
-      return {
-        backgroundColor: "#E0E0E0",
-        color: "#fff !important",
-        fontWeight: 600,
-      };
-    }
-    return {};
-  };
+  // const getRowStyle = (params: any) => {
+  //   if (highlightedId === params.data.customer_id) {
+  //     return {
+  //       backgroundColor: "#E0E0E0",
+  //       color: "#fff !important",
+  //       fontWeight: 600,
+  //     };
+  //   }
+  //   return {};
+  // };
+  // const getRowStyle = (params: any) => {
+  //   // 🔹 If highlighted row → apply highlight style first
+  //   if (highlightedId === params.data.customer_id) {
+  //     return {
+  //       backgroundColor: "#E0E0E0",
+  //       color: "#fff", // no need for !important here
+  //       fontWeight: 600,
+  //     };
+  //   }
+
+  //   // 🔹 Otherwise alternate row colors
+  //   if (params.node.rowIndex % 2 === 0) {
+  //     return { backgroundColor: "#f9f9f9" }; // even row
+  //   } else {
+  //     return { backgroundColor: "#ffffff" }; // odd row
+  //   }
+  // };
 
   const debouncedCustomerId = useMemo(
     () =>
@@ -281,13 +346,16 @@ const Profile = () => {
     "Profile Information": {
       component: <DetailedInfo />,
     },
+    Inventory: {
+      component: <Inventory />,
+    },
   };
 
   const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo", "Zendesk"];
 
   return (
     <Box display="flex">
-      <Box
+      {/* <Box
         sx={{
           width: 200,
           height: 800,
@@ -334,28 +402,183 @@ const Profile = () => {
           </Typography>
         ))}
         <Button
-          sx={{ mt: 10, ml: 2 }}
-          color="inherit"
+          sx={{
+            mt: 13,
+            ml: 2,
+            backgroundColor: "#4C4C4C",
+            color: "#ffff",
+            padding: "10px",
+          }}
+          // color="inherit"
           startIcon={<LogoutIcon />}
           onClick={handleLogout}
           variant="outlined" // or "contained" for a filled button
         >
           Logout
         </Button>
-      </Box>
+      </Box> */}
+      {/* <Box
+        onMouseEnter={() => setIsSidebarOpen(true)}
+        onMouseLeave={() => setIsSidebarOpen(false)}
+        sx={{
+          position: "fixed",
+          width: isSidebarOpen ? 200 : 70,
+          height: "100vh",
+          borderRight: "1px solid #ddd",
+          bgcolor: "#f9f9f9",
+          p: 2,
+          transition: "width 0.3s ease",
+          overflow: "hidden",
+          zIndex: 1200,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <Typography
+          variant="h1"
+          p={2}
+          color="#0D0D12"
+          fontWeight={700}
+          // mb={10}
+          mt={1}
+          sx={{
+            fontSize: isSidebarOpen ? 40 : 35,
+            textAlign: isSidebarOpen ? "left" : "center",
+          }}
+        >
+          {isSidebarOpen ? (
+            "UCP"
+          ) : (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              {"UCP".split("").map((char) => (
+                <span key={char}>{char}</span>
+              ))}
+            </Box>
+          )}
+        </Typography>
 
+        {menuItems.map((item) => (
+          <Box
+            key={item.key}
+            onClick={() => setActiveMenu(item.key)}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: isSidebarOpen ? 1.5 : 0,
+              p: 1.5,
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: activeMenu === item.key ? "bold" : "normal",
+              bgcolor: activeMenu === item.key ? "#e0e0e0" : "transparent",
+              borderRadius: "10px",
+              justifyContent: isSidebarOpen ? "flex-start" : "center",
+              "&:hover": { bgcolor: "#F3F4F6" },
+              transition: "all 0.2s ease",
+            }}
+          >
+            {item.icon}
+            {isSidebarOpen && item.label}
+          </Box>
+        ))}
+        <Button
+          sx={{
+            mt: 10,
+            ml: isSidebarOpen ? 2 : -1.5,
+            backgroundColor: "#4C4C4C",
+            color: "#ffff",
+            padding: "8px",
+            width: isSidebarOpen ? "auto" : "50px",
+            justifyContent: isSidebarOpen ? "flex-start" : "center",
+            borderRadius: "10px",
+            fontSize: "16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          startIcon={
+            isSidebarOpen ? <LogoutIcon sx={{ fontSize: 16 }} /> : null
+          }
+          onClick={handleLogout}
+          variant="outlined"
+        >
+          {isSidebarOpen ? "Logout" : <LogoutIcon sx={{ fontSize: 16 }} />}
+        </Button>
+      </Box> */}
+      <Sidebar
+        menuItems={menuItems}
+        activeMenu={activeMenu}
+        setActiveMenu={setActiveMenu}
+        onLogout={handleLogout}
+      />
       {activeMenu === "Customer Profiles" && (
-        <Box flex={1} p={1}>
+        <Box flex={1} pl={1.5}>
           <Box
             display={"flex"}
             justifyContent={"space-between"}
             alignItems={"center"}
-            pr={3}
+            pl={7}
           >
             <Box display={"flex"} flexDirection={"column"}>
-              <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-                Profile
-              </Typography>
+              {/* <Typography
+            variant="h2"
+            p={2}
+            mb={1}
+            color="#0D0D12"
+            fontWeight={700}
+          >
+            Profile Information
+          </Typography> */}
+              <Box
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
+                  Profile
+                </Typography>
+                <Box display={"flex"} alignItems={"center"} gap={2}>
+                  <FormControl size="small" sx={{ width: 150 }}>
+                    <Autocomplete
+                      size="small"
+                      options={sourceOptions}
+                      value={sourceFilter ?? "All"}
+                      onChange={(e, newValue) => {
+                        setSourceFilter(
+                          !newValue || newValue === "All" ? undefined : newValue
+                        );
+
+                        setPage(1);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Source"
+                          placeholder="Source"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <Box>
+                    <FormControl size="small">
+                      <InputLabel>Page Size</InputLabel>
+                      <Select
+                        value={pageSize}
+                        onChange={(e) => {
+                          setPageSize(Number(e.target.value));
+                          setPage(1);
+                        }}
+                        label="Page Size"
+                        sx={{ width: 100 }}
+                      >
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={50}>50</MenuItem>
+                        <MenuItem value={100}>100</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </Box>
+              </Box>
               <Box
                 display={"flex"}
                 justifyContent={"space-between"}
@@ -403,6 +626,22 @@ const Profile = () => {
                     </Box>
                   </Box>
                   <Box ml={0}>
+                    {/* <FormControl size="small">
+                    <TextField
+                      label="Customer ID"
+                      value={(customerIdFilter || "").toUpperCase()}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        setCustomerIdFilter(
+                          value ? value.toUpperCase() : undefined
+                        );
+                        setPage(1);
+                      }}
+                      size="small"
+                      placeholder="Search by Customer ID"
+                    />
+                  </FormControl> */}
                     {/* <FormControl size="small" sx={{ width: 140 }}>
                       <TextField
                         label="Customer ID"
@@ -416,27 +655,7 @@ const Profile = () => {
                             debouncedCustomerId.cancel(); // cancel pending debounce
                           } else {
                             debouncedCustomerId(value);
-                          }
-                        }}
-                        size="small"
-                        placeholder="Customer ID"
-                      />
-                    </FormControl> */}
-
-                    <FormControl size="small" sx={{ width: 140 }}>
-                      <TextField
-                        label="Customer ID"
-                        value={customerIdInput.toUpperCase()}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setCustomerIdInput(value);
-
-                          if (value.trim() === "") {
-                            setCustomerIdFilter(undefined);
-                            debouncedCustomerId.cancel(); // cancel pending debounce
-                          } else {
                             setIsCustomerIDTyping(true);
-                            debouncedCustomerId(value);
                           }
                         }}
                         size="small"
@@ -450,7 +669,79 @@ const Profile = () => {
                             ),
                         }}
                       />
-                    </FormControl>
+                    </FormControl> */}
+
+                    <Box>
+                      {/* Customer ID Filter */}
+                      <Chip
+                        icon={<BadgeIcon />}
+                        label={
+                          customerIdFilter
+                            ? `Customer ID: ${customerIdFilter}`
+                            : "Customer ID"
+                        }
+                        variant="outlined"
+                        onClick={(e) => setAnchorEl(e.currentTarget)}
+                        sx={{
+                          borderRadius: "8px",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          "& .MuiChip-label": { px: 1 },
+                        }}
+                      />
+
+                      {/* Popover for typing/search */}
+                      <Popover
+                        open={Boolean(anchorEl)}
+                        anchorEl={anchorEl}
+                        onClose={() => setAnchorEl(null)}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                      >
+                        <Box sx={{ p: 1, width: 135 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Customer ID"
+                            placeholder="Type Customer ID"
+                            value={customerIdInput.toUpperCase()}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setCustomerIdInput(value);
+
+                              if (value.trim() === "") {
+                                setCustomerIdFilter(undefined);
+                                debouncedCustomerId.cancel();
+                              } else {
+                                debouncedCustomerId(value);
+                                setIsCustomerIDTyping(true);
+                              }
+                            }}
+                            sx={{
+                              width: 120, // 👈 makes the popover small, you can adjust
+                              "& .MuiInputBase-input": {
+                                fontSize: "14px", // 👈 input text size
+                                // p: "4px 6px", // 👈 compact padding
+                              },
+                              "& .MuiInputLabel-root": {
+                                fontSize: "14px", // 👈 label size
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment:
+                                customerIdInput.trim() !== "" &&
+                                isCustomerIDTyping ? (
+                                  <InputAdornment position="end">
+                                    <CircularProgress size={18} />
+                                  </InputAdornment>
+                                ) : null,
+                            }}
+                          />
+                        </Box>
+                      </Popover>
+                    </Box>
                   </Box>
                   <FormControl size="small" sx={{ width: 150 }}>
                     <TextField
@@ -464,8 +755,8 @@ const Profile = () => {
                           setFullNameFilter(undefined);
                           debouncedFullName.cancel();
                         } else {
-                          setIsFullNameTyping(true);
                           debouncedFullName(value);
+                          setIsFullNameTyping(true);
                         }
                       }}
                       size="small"
@@ -492,8 +783,8 @@ const Profile = () => {
                           setPhoneNumberFilter(undefined);
                           debouncedPhoneNumber.cancel();
                         } else {
-                          setIsPhoneNumberTyping(true);
                           debouncedPhoneNumber(value);
+                          setIsPhoneNumberTyping(true);
                         }
                       }}
                       size="small"
@@ -513,45 +804,119 @@ const Profile = () => {
                     justifyContent={"space-between"}
                     gap={2}
                   >
-                    <FormControl size="small" sx={{ width: 150 }}>
-                      <Autocomplete
-                        size="small"
-                        options={sourceOptions}
-                        value={sourceFilter ?? "All"}
-                        onChange={(e, newValue) => {
-                          setSourceFilter(
-                            !newValue || newValue === "All"
-                              ? undefined
-                              : newValue
-                          );
+                    <FormControl size="small" sx={{ width: 190 }}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          enableAccessibleFieldDOMStructure={false}
+                          label="Created At"
+                          value={dateInput}
+                          onChange={(newValue) => {
+                            if (!newValue) {
+                              setDateInput(null);
+                              setDateFilter(undefined);
+                            } else {
+                              setDateInput(newValue);
+                              setDateFilter(
+                                dayjs(newValue).format("YYYY-MM-DD")
+                              );
+                            }
+                            setPage(1);
+                          }}
+                          slots={{
+                            textField: (textFieldProps) => {
+                              // filter out unwanted internal props
+                              const {
+                                sectionListRef,
+                                areAllSectionsEmpty,
+                                ...rest
+                              } = textFieldProps;
 
-                          setPage(1);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Source"
-                            placeholder="Source"
-                          />
-                        )}
-                      />
+                              return (
+                                <TextField
+                                  {...rest}
+                                  size="small"
+                                  placeholder="Select Date"
+                                  InputProps={{
+                                    ...rest.InputProps,
+                                    endAdornment: dateInput ? (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          setDateInput(null);
+                                          setDateFilter(undefined);
+                                          setPage(1);
+                                        }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ) : (
+                                      rest.InputProps?.endAdornment
+                                    ),
+                                  }}
+                                />
+                              );
+                            },
+                          }}
+                        />
+                      </LocalizationProvider>
                     </FormControl>
+                  </Box>
+                  <Box>
+                    <FormControl size="small" sx={{ width: 190 }}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          enableAccessibleFieldDOMStructure={false}
+                          label="Last Order Date"
+                          value={lastDateInput}
+                          onChange={(newValue) => {
+                            if (!newValue) {
+                              setLastDateInput(null);
+                              setLastDateFilter(undefined);
+                            } else {
+                              setLastDateInput(newValue);
+                              setLastDateFilter(
+                                dayjs(newValue).format("YYYY-MM-DD")
+                              );
+                            }
+                            setPage(1);
+                          }}
+                          slots={{
+                            textField: (textFieldProps) => {
+                              // filter out unwanted internal props
+                              const {
+                                sectionListRef,
+                                areAllSectionsEmpty,
+                                ...rest
+                              } = textFieldProps;
 
-                    <FormControl size="small">
-                      <InputLabel>Page Size</InputLabel>
-                      <Select
-                        value={pageSize}
-                        onChange={(e) => {
-                          setPageSize(Number(e.target.value));
-                          setPage(1);
-                        }}
-                        label="Page Size"
-                        sx={{ width: 100 }}
-                      >
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={50}>50</MenuItem>
-                        <MenuItem value={100}>100</MenuItem>
-                      </Select>
+                              return (
+                                <TextField
+                                  {...rest}
+                                  size="small"
+                                  placeholder="Select Date"
+                                  InputProps={{
+                                    ...rest.InputProps,
+                                    endAdornment: lastDateInput ? (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          setLastDateInput(null);
+                                          setLastDateFilter(undefined);
+                                          setPage(1);
+                                        }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ) : (
+                                      rest.InputProps?.endAdornment
+                                    ),
+                                  }}
+                                />
+                              );
+                            },
+                          }}
+                        />
+                      </LocalizationProvider>
                     </FormControl>
                   </Box>
                 </Box>
@@ -602,7 +967,8 @@ const Profile = () => {
               userCol={userCol}
               onRowClicked={onRowClicked}
               height={465}
-              getRowStyle={getRowStyle}
+              // getRowStyle={getRowStyle}
+              getRowStyle={getRowStyle(highlightedId)}
               selectedCustId={selectedUser?.customer_id}
               enablePagination
               currentPage={page}

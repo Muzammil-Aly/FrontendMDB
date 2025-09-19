@@ -88,8 +88,8 @@ const useOrdersColumn = (columns: Column[]) => {
             flex: 1,
             minWidth: 220,
           };
-        // case "customer_no":
-        //   return { ...col, headerName: "Customer No", flex: 1, minWidth: 150 };
+        case "customer_no":
+          return { ...col, headerName: "Customer No", flex: 1, minWidth: 150 };
         case "total_value":
           return { ...col, headerName: "Total Value", flex: 1, minWidth: 160 };
         case "fulfillment_status":

@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import React, { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import Loader from "@/components/Common/Loader";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -25,15 +26,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (isAuthenticated === null && !isAuthPage) {
     return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
+      <Box sx={{ height: 600 }}>
+        <Loader title="UCP" />
       </Box>
     );
   }
