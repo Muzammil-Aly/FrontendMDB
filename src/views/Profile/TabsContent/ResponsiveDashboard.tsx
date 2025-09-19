@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import AgGridTable from "@/components/ag-grid";
 import "react-grid-layout/css/styles.css";
@@ -97,7 +97,11 @@ const ResponsiveDashboard = ({
   type OrderItem = { order_id: string; [key: string]: any };
   const [selectedOrderItem, setSelectedOrderItem] = useState<OrderItem | null>(null);
   const [selectedTouchup, setSelectedTouchup] = useState<any | null>(null);
-
+useEffect(() => {
+  // Reset when orderId changes or is cleared
+  setSelectedOrderItem(null);
+  setSelectedTouchup(null);
+}, [selectedOrderId]);
 const layouts = {
   lg: [
     { i: "profiles", x: 0, y: 0, w: hasId ? 7 : 12, h: 16, minW: 4, minH: 16, maxH: 50 },

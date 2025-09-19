@@ -671,77 +671,34 @@ const Profile = () => {
                       />
                     </FormControl> */}
 
-                    <Box>
-                      {/* Customer ID Filter */}
-                      <Chip
-                        icon={<BadgeIcon />}
-                        label={
-                          customerIdFilter
-                            ? `Customer ID: ${customerIdFilter}`
-                            : "Customer ID"
-                        }
-                        variant="outlined"
-                        onClick={(e) => setAnchorEl(e.currentTarget)}
-                        sx={{
-                          borderRadius: "8px",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          "& .MuiChip-label": { px: 1 },
-                        }}
-                      />
-
-                      {/* Popover for typing/search */}
-                      <Popover
-                        open={Boolean(anchorEl)}
-                        anchorEl={anchorEl}
-                        onClose={() => setAnchorEl(null)}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                        }}
-                      >
-                        <Box sx={{ p: 1, width: 135 }}>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            label="Customer ID"
-                            placeholder="Type Customer ID"
-                            value={customerIdInput.toUpperCase()}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setCustomerIdInput(value);
-
-                              if (value.trim() === "") {
-                                setCustomerIdFilter(undefined);
-                                debouncedCustomerId.cancel();
-                              } else {
-                                debouncedCustomerId(value);
-                                setIsCustomerIDTyping(true);
-                              }
-                            }}
-                            sx={{
-                              width: 120, // 👈 makes the popover small, you can adjust
-                              "& .MuiInputBase-input": {
-                                fontSize: "14px", // 👈 input text size
-                                // p: "4px 6px", // 👈 compact padding
-                              },
-                              "& .MuiInputLabel-root": {
-                                fontSize: "14px", // 👈 label size
-                              },
-                            }}
-                            InputProps={{
-                              endAdornment:
-                                customerIdInput.trim() !== "" &&
-                                isCustomerIDTyping ? (
-                                  <InputAdornment position="end">
-                                    <CircularProgress size={18} />
-                                  </InputAdornment>
-                                ) : null,
-                            }}
-                          />
-                        </Box>
-                      </Popover>
-                    </Box>
+                   <FormControl size="small" sx={{ width: 140 }}>
+                                     <TextField
+                                       label="Customer ID"
+                                       value={customerIdInput.toUpperCase()}
+                                       onChange={(e) => {
+                                         const value = e.target.value;
+                                         setCustomerIdInput(value);
+                   
+                                         if (value.trim() === "") {
+                                           setCustomerIdFilter(undefined);
+                                           debouncedCustomerId.cancel(); // cancel pending debounce
+                                         } else {
+                                           debouncedCustomerId(value);
+                                           setIsCustomerIDTyping(true);
+                                         }
+                                       }}
+                                       size="small"
+                                       placeholder="Customer ID"
+                                       InputProps={{
+                                         endAdornment: customerIdInput.trim() !== "" &&
+                                           isCustomerIDTyping && (
+                                             <InputAdornment position="end">
+                                               <CircularProgress size={20} />
+                                             </InputAdornment>
+                                           ),
+                                       }}
+                                     />
+                                   </FormControl>
                   </Box>
                   <FormControl size="small" sx={{ width: 150 }}>
                     <TextField

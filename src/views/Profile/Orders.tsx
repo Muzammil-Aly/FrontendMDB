@@ -109,6 +109,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     }
     if (selectedOrder?.order_id === params.data.order_id) {
       setSelectedOrder(null);
+      
     } else {
       setSelectedOrder(params.data);
     }
