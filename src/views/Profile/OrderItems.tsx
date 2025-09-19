@@ -10,7 +10,7 @@ import { getRowStyle } from "@/utils/gridStyles";
 
 interface Props {
   orderId: string;
-  setSelectedOrderItem: React.Dispatch<React.SetStateAction<any | null>>;
+  setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
 }
 interface OrderItem {
   line_no: string | number;
@@ -75,10 +75,10 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
 
     if (selectedItemDetail?.order_id === params.data.order_id) {
       setSelectedItemDetail(null);
-      setSelectedOrderItem(null);
+      setSelectedOrderItem?.(null);
     } else {
       setSelectedItemDetail(params.data as OrderItem);
-      setSelectedOrderItem(params.data as OrderItem);
+      setSelectedOrderItem?.(params.data as OrderItem);
     }
   };
 console.log("selectedItemDetail",selectedItemDetail);
