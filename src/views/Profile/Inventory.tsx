@@ -7,10 +7,6 @@ import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
 import { useGetInventoryQuery } from "@/redux/services/profileApi"; 
 import { getRowStyle } from "@/utils/gridStyles";
-interface Props {
-  // itemNo: string;
-//   setSelectedTI?: React.Dispatch<React.SetStateAction<any | null>>;
-}
 
 interface TI {
   "Location Code": string;
@@ -24,7 +20,7 @@ interface TI {
   "Qty_ on Blocked Lot_Bin": number;
 }
 
-const Inventory = ({ }: Props) => {
+const Inventory = () =>  {
   const tiCol = useInventoryColumn(inventory_columns);
 
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
