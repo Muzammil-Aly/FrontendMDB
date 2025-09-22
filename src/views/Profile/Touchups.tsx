@@ -2,12 +2,24 @@
 import AgGridTable from "@/components/ag-grid";
 import { touchups_columns } from "@/constants/Grid-Table/ColDefs"; // your touchups colDefs
 import useTouchupsColumn from "@/hooks/Ag-Grid/useTouchupsColumn"; // the hook we built earlier
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  TextField,
+  CircularProgress,
+  InputAdornment,
+} from "@mui/material";
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
-import { useGetTouchupsQuery } from "@/redux/services/profileApi"
- // <-- adjust if your API hook has different name
+import { useGetTouchupsQuery } from "@/redux/services/profileApi";
+// <-- adjust if your API hook has different name
 import { getRowStyle } from "@/utils/gridStyles";
+import debounce from "lodash.debounce";
+import { flex } from "@mui/system";
 
 interface Props {
   orderId: string;
@@ -30,21 +42,30 @@ interface Touchup {
 }
 
 const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
-
   const touchupsCol = useTouchupsColumn(touchups_columns);
 
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [selectedTouchupDetail, setSelectedTouchupDetail] =
     useState<Touchup | null>(null);
+  const [lotNoInput, setLotNoInput] = useState("");
 
-    console.log("Touchups orderId:", orderId);
+  const [isLotNoTyping, setIsLotNoTyping] = useState(false);
+  const [lotNoFilter, setlotNoFilter] = useState<string | undefined>(undefined);
+  // console.log("Touchups orderId:", orderId);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Fetch touchups from API
-const { data, isLoading, isFetching, refetch } = useGetTouchupsQuery(
-  { order_id: orderId },
-  { skip: !orderId }
-);
+  const { data, isLoading, isFetching, refetch } = useGetTouchupsQuery(
+    {
+      order_id: orderId,
+      page,
+      page_size: pageSize,
+      lot_no: lotNoFilter,
+    },
 
+    { skip: !orderId }
+  );
 
   // Map API response -> rowData
   const rowData = useMemo(() => {
@@ -77,21 +98,62 @@ const { data, isLoading, isFetching, refetch } = useGetTouchupsQuery(
       setHighlightedId(params.data.order_id);
     }
   };
-
+  const debouncedItemNo = useMemo(
+    () =>
+      debounce((value: string) => {
+        setlotNoFilter(value);
+        setPage(1);
+        setIsLotNoTyping(false);
+      }, 5000),
+    []
+  );
   return (
     <Box
       display="flex"
       flexDirection="column"
       width="100%"
-      justifyContent="center"
-      alignItems="center"
+      // justifyContent="center"
+      // alignItems="center"
       className="drag-handle"
-      
+      gap={2}
     >
       {/* Show Order ID */}
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Touchups for Order: {orderId ?? "N/A"}
-      </Typography>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Touchups for Order: {orderId ?? "N/A"}
+        </Typography>
+        <FormControl size="small" sx={{ width: 160 }}>
+          <TextField
+            label="Lot No"
+            value={lotNoInput.toUpperCase()}
+            onChange={(e) => {
+              const value = e.target.value;
+              setLotNoInput(value);
+
+              if (value.trim() === "") {
+                setlotNoFilter(undefined);
+                debouncedItemNo.cancel(); // cancel pending debounce
+              } else {
+                debouncedItemNo(value);
+                setIsLotNoTyping(true);
+              }
+            }}
+            size="small"
+            placeholder="Lot No"
+            InputProps={{
+              endAdornment: lotNoInput.trim() !== "" && isLotNoTyping && (
+                <InputAdornment position="end">
+                  <CircularProgress size={20} />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </FormControl>
+      </Box>
 
       {/* Loader or Table */}
       {isLoading || isFetching ? (
