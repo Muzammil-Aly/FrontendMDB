@@ -52,12 +52,19 @@ const Inventory = () => {
     undefined
   );
 
+  const [descriptionInput, setDescriptionInput] = useState("");
+  const [descriptionTyping, setDescriptionTyping] = useState(false);
+  const [descriptionFilter, setDescriptionFilter] = useState<
+    string | undefined
+  >(undefined);
+
   // Fetch TI data from API
   const { data, isLoading, isFetching } = useGetInventoryQuery({
     page,
     page_size: pageSize,
     location_code: locationCodeFilter || undefined,
     item_no: ItemNoFilter || undefined,
+    description: descriptionFilter,
   });
 
   // Map API response -> rowData
@@ -105,6 +112,15 @@ const Inventory = () => {
         setItemNoFilter(value);
         setPage(1);
         setItemNoInputTyping(false);
+      }, 5000),
+    []
+  );
+  const debouncedDescription = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDescriptionFilter(value);
+        setPage(1);
+        setDescriptionTyping(false);
       }, 5000),
     []
   );
@@ -198,7 +214,34 @@ const Inventory = () => {
               />
             </FormControl>
           </Box>
+          <FormControl size="small" sx={{ width: 160 }}>
+            <TextField
+              label="Description"
+              value={descriptionInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                setDescriptionInput(value);
 
+                if (value.trim() === "") {
+                  setDescriptionFilter(undefined);
+                  debouncedDescription.cancel(); // cancel pending debounce
+                } else {
+                  debouncedDescription(value);
+                  setDescriptionTyping(true);
+                }
+              }}
+              size="small"
+              placeholder="Description"
+              InputProps={{
+                endAdornment: descriptionInput.trim() !== "" &&
+                  descriptionTyping && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ),
+              }}
+            />
+          </FormControl>
           <Box>
             <FormControl size="small">
               <InputLabel>Page Size</InputLabel>

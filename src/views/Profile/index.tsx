@@ -55,6 +55,7 @@ import Sidebar from "./Sidebar";
 import CustomerIdFilter from "./TabsContent/Inventory";
 import BadgeIcon from "@mui/icons-material/Badge";
 import Inventory from "./Inventory";
+import Demo from "./TabsContent/Demo";
 interface SegmentOption {
   id: string;
   name: string;
@@ -100,6 +101,7 @@ const Profile = () => {
       label: "Inventory",
       icon: <InventoryIcon />, // make sure you import this icon
     },
+    // { key: "Demo", label: "Orders", icon: <ShoppingCartIcon /> },
   ];
 
   const [sourceFilter, setSourceFilter] = useState<string | undefined>(
@@ -349,6 +351,9 @@ const Profile = () => {
     Inventory: {
       component: <Inventory />,
     },
+    // Demo: {
+    //   component: <Demo />,
+    // },
   };
 
   const sourceOptions = ["All", "Klaviyo", "Shopify", "Wismo", "Zendesk"];
@@ -671,34 +676,34 @@ const Profile = () => {
                       />
                     </FormControl> */}
 
-                   <FormControl size="small" sx={{ width: 140 }}>
-                                     <TextField
-                                       label="Customer ID"
-                                       value={customerIdInput.toUpperCase()}
-                                       onChange={(e) => {
-                                         const value = e.target.value;
-                                         setCustomerIdInput(value);
-                   
-                                         if (value.trim() === "") {
-                                           setCustomerIdFilter(undefined);
-                                           debouncedCustomerId.cancel(); // cancel pending debounce
-                                         } else {
-                                           debouncedCustomerId(value);
-                                           setIsCustomerIDTyping(true);
-                                         }
-                                       }}
-                                       size="small"
-                                       placeholder="Customer ID"
-                                       InputProps={{
-                                         endAdornment: customerIdInput.trim() !== "" &&
-                                           isCustomerIDTyping && (
-                                             <InputAdornment position="end">
-                                               <CircularProgress size={20} />
-                                             </InputAdornment>
-                                           ),
-                                       }}
-                                     />
-                                   </FormControl>
+                    <FormControl size="small" sx={{ width: 140 }}>
+                      <TextField
+                        label="Customer ID"
+                        value={customerIdInput.toUpperCase()}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setCustomerIdInput(value);
+
+                          if (value.trim() === "") {
+                            setCustomerIdFilter(undefined);
+                            debouncedCustomerId.cancel(); // cancel pending debounce
+                          } else {
+                            debouncedCustomerId(value);
+                            setIsCustomerIDTyping(true);
+                          }
+                        }}
+                        size="small"
+                        placeholder="Customer ID"
+                        InputProps={{
+                          endAdornment: customerIdInput.trim() !== "" &&
+                            isCustomerIDTyping && (
+                              <InputAdornment position="end">
+                                <CircularProgress size={20} />
+                              </InputAdornment>
+                            ),
+                        }}
+                      />
+                    </FormControl>
                   </Box>
                   <FormControl size="small" sx={{ width: 150 }}>
                     <TextField
