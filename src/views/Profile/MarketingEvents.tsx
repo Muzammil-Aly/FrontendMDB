@@ -28,7 +28,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { getRowStyle } from "@/utils/gridStyles";
-
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 interface MarketingEventsProps {
   customerId?: string; // optional prop
 }
@@ -162,9 +164,41 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
               // gap={7}
               mb={2}
             >
-              <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
-                Marketing Events
-              </Typography>
+              <Box
+                sx={{
+                  textAlign: "center",
+                  p: 3,
+                  // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                  borderRadius: "16px",
+                  // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: "2.5rem",
+                    background: "linear-gradient(90deg, black)",
+                    WebkitBackgroundClip: "text",
+                    // WebkitTextFillColor: "transparent",
+                    letterSpacing: "0.5px",
+                    position: "relative",
+                    display: "inline-block",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      width: "60%",
+                      height: "4px",
+                      left: "20%",
+                      bottom: -8,
+                      // background: "linear-gradient(90deg, #004080)",
+                      borderRadius: "4px",
+                    },
+                  }}
+                >
+                  Marketing Events
+                </Typography>
+              </Box>
             </Box>
             <Box
               display="flex"
@@ -172,6 +206,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
               alignItems="flex-start"
               gap={2}
               mb={2}
+              pl={"10px"}
               // pr={55}
             >
               <Box mt={-1}>
@@ -275,7 +310,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                 </LocalizationProvider>
               </FormControl> */}
 
-              <FormControl size="small" sx={{ width: 200 }}>
+              {/* <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Customer Name"
                   value={customerNameInput || ""}
@@ -301,8 +336,20 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 200 }}>
+              </FormControl> */}
+              <SearchInput
+                label="Customer Name"
+                value={customerNameInput || ""}
+                setValue={(val) => {
+                  setCustomerNameInput(val);
+                  setIsCustomerNameTyping(true);
+                }}
+                setFilter={setCustomerNameFilter}
+                debouncedFunction={debouncedCustomerName}
+                loading={isCustomerNameTyping}
+                width={180}
+              />
+              {/* <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Event ID"
                   value={eventIdInput}
@@ -328,8 +375,20 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 200 }}>
+              </FormControl> */}
+              <SearchInput
+                label="Event ID"
+                value={eventIdInput}
+                setValue={(val) => {
+                  setEventIdInput(val);
+                  setIsEventIdTyping(true);
+                }}
+                setFilter={setEventIdFilter}
+                debouncedFunction={debouncedEventId}
+                loading={isEventIdTyping}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Customer ID"
                   value={customerIdInput.toUpperCase()}
@@ -356,8 +415,20 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 220 }}>
+              </FormControl> */}
+              <SearchInput
+                label="Customer ID"
+                value={customerIdInput}
+                setValue={(val) => {
+                  setCustomerIdInput(val);
+                  setIsCustomerIdTyping(true);
+                }}
+                setFilter={setCustomerIdFilter}
+                debouncedFunction={debouncedCustomerId}
+                loading={isCustomerIdTyping}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 220 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     enableAccessibleFieldDOMStructure={false}
@@ -407,24 +478,23 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                     }}
                   />
                 </LocalizationProvider>
-              </FormControl>
-
-              <FormControl size="small">
-                <InputLabel>Page Size</InputLabel>
-                <Select
-                  value={pageSize}
-                  onChange={(e) => {
-                    setPageSize(Number(e.target.value));
-                    setPage(1);
-                  }}
-                  label="Page Size"
-                  sx={{ minWidth: 100 }}
-                >
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={50}>50</MenuItem>
-                  <MenuItem value={100}>100</MenuItem>
-                </Select>
-              </FormControl>
+              </FormControl> */}
+              <CustomDatePicker
+                label="Event Time Stamp"
+                value={dateInput}
+                setValue={setDateInput}
+                setFilter={setDateFilter}
+                setPage={setPage}
+              />
+              <CustomSelect
+                label="Page Size"
+                value={pageSize}
+                options={[10, 50, 100]}
+                onChange={(val) => {
+                  setPageSize(val); // val is already a number
+                  setPage(1);
+                }}
+              />
               {/* <TextField
               label="Event Type"
               value={eventTypeFilter || ""}

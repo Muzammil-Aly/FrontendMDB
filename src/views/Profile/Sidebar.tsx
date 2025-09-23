@@ -54,26 +54,79 @@ const Sidebar: React.FC<SidebarProps> = ({
         }}
       >
         {isSidebarOpen ? (
-          <Typography
-            variant="h1"
-            color="#0D0D12"
-            fontWeight={700}
-            sx={{ fontSize: 40 }}
+          <Box
+            sx={{
+              textAlign: "center",
+              p: 3,
+              // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+              borderRadius: "16px",
+              // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+            }}
           >
-            UCP
-          </Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 800,
+                fontSize: "2.5rem",
+                background: "linear-gradient(90deg, black)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: "0.5px",
+                position: "relative",
+                display: "inline-block",
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  width: "60%",
+                  height: "4px",
+                  left: "20%",
+                  bottom: -8,
+                  // background: "linear-gradient(90deg, #004080)",
+                  borderRadius: "4px",
+                },
+              }}
+            >
+              UCP
+            </Typography>
+          </Box>
         ) : (
           <Box display="flex" flexDirection="column" alignItems="center">
             {"UCP".split("").map((char) => (
-              <Typography
-                key={char}
-                variant="h3"
-                color="#0D0D12"
-                fontWeight={700}
-                sx={{ lineHeight: 1.2 }}
+              <Box
+                sx={{
+                  textAlign: "center",
+                  // p: 3,
+                  // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                  borderRadius: "16px",
+                  // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                }}
               >
-                {char}
-              </Typography>
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: "2.5rem",
+                    background: "linear-gradient(90deg, black)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    letterSpacing: "0.5px",
+                    position: "relative",
+                    display: "inline-block",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      width: "60%",
+                      height: "4px",
+                      left: "20%",
+                      bottom: -8,
+                      // background: "linear-gradient(90deg, #004080)",
+                      borderRadius: "4px",
+                    },
+                  }}
+                >
+                  {char}
+                </Typography>
+              </Box>
             ))}
           </Box>
         )}

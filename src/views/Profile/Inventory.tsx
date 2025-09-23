@@ -18,6 +18,8 @@ import Loader from "@/components/Common/Loader";
 import { useGetInventoryQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import debounce from "lodash.debounce";
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 
 interface Inventory {
   "Location Code": string;
@@ -125,6 +127,11 @@ const Inventory = () => {
     []
   );
 
+  // const debouncedCustomerId = debounce((val: string) => {
+  //   setDescriptionFilter(val);
+  //   setDescriptionTyping(false);
+  // }, 500);
+
   return (
     <Box
       display="flex"
@@ -142,19 +149,45 @@ const Inventory = () => {
         alignItems={"center"}
       >
         <Box>
-          <Typography
-            variant="h1"
-            p={2}
-            color="#0D0D12"
-            fontWeight={700}
-            justifyItems={"left"}
+          <Box
+            sx={{
+              textAlign: "center",
+              p: 3,
+              // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+              borderRadius: "16px",
+              // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+            }}
           >
-            Inventory
-          </Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 800,
+                fontSize: "2.5rem",
+                background: "linear-gradient(90deg, black)",
+                WebkitBackgroundClip: "text",
+                // WebkitTextFillColor: "transparent",
+                letterSpacing: "0.5px",
+                position: "relative",
+                display: "inline-block",
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  width: "60%",
+                  height: "4px",
+                  left: "20%",
+                  bottom: -8,
+                  // background: "linear-gradient(90deg, #004080)",
+                  borderRadius: "4px",
+                },
+              }}
+            >
+              Inventory
+            </Typography>
+          </Box>
         </Box>
         <Box display={"flex"} gap={2}>
           <Box>
-            <FormControl size="small" sx={{ width: 160 }}>
+            {/* <FormControl size="small" sx={{ width: 160 }}>
               <TextField
                 label="Location Code"
                 value={locationCodeInput.toUpperCase()}
@@ -181,11 +214,25 @@ const Inventory = () => {
                     ),
                 }}
               />
-            </FormControl>
+            </FormControl> */}
+
+            <SearchInput
+              label="Location Code"
+              value={locationCodeInput}
+              // setValue={setDescriptionInput}
+              setValue={(val) => {
+                setLocationCodeInput(val);
+                setLocationCodeInputTyping(true);
+              }}
+              setFilter={setLocationCodeFilter}
+              debouncedFunction={debouncedLocationCode}
+              loading={islocationCodeInputTyping}
+              width={160}
+            />
           </Box>
 
           <Box>
-            <FormControl size="small" sx={{ width: 160 }}>
+            {/* <FormControl size="small" sx={{ width: 160 }}>
               <TextField
                 label="Item No"
                 value={itemNoInput}
@@ -212,9 +259,21 @@ const Inventory = () => {
                     ),
                 }}
               />
-            </FormControl>
+            </FormControl> */}
+            <SearchInput
+              label="Item No"
+              value={itemNoInput}
+              // setValue={setDescriptionInput}
+              setValue={(val) => {
+                setItemNoInput(val);
+                setItemNoInputTyping(true);
+              }}
+              setFilter={setItemNoFilter}
+              debouncedFunction={debouncedItemNo}
+              loading={isItemNoInputTyping}
+            />
           </Box>
-          <FormControl size="small" sx={{ width: 160 }}>
+          {/* <FormControl size="small" sx={{ width: 160 }}>
             <TextField
               label="Description"
               value={descriptionInput}
@@ -241,24 +300,30 @@ const Inventory = () => {
                   ),
               }}
             />
-          </FormControl>
+          </FormControl> */}
+
+          <SearchInput
+            label="Description"
+            value={descriptionInput}
+            // setValue={setDescriptionInput}
+            setValue={(val) => {
+              setDescriptionInput(val);
+              setDescriptionTyping(true);
+            }}
+            setFilter={setDescriptionFilter}
+            debouncedFunction={debouncedDescription}
+            loading={descriptionTyping}
+          />
           <Box>
-            <FormControl size="small">
-              <InputLabel>Page Size</InputLabel>
-              <Select
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                  setPage(1);
-                }}
-                label="Page Size"
-                sx={{ width: 100 }}
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-              </Select>
-            </FormControl>
+            <CustomSelect
+              label="Page Size"
+              value={pageSize}
+              options={[10, 50, 100]}
+              onChange={(val) => {
+                setPageSize(val); // val is already a number
+                setPage(1);
+              }}
+            />
           </Box>
         </Box>
       </Box>

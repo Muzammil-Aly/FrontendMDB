@@ -68,7 +68,7 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
   // };
 
   const onRowClicked = (params: any) => {
-   const event = params?.event;
+    const event = params?.event;
     if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
       return; // ignore clicks from any MUI icon button
     }
@@ -81,7 +81,7 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
       setSelectedOrderItem?.(params.data as OrderItem);
     }
   };
-console.log("selectedItemDetail",selectedItemDetail);
+  console.log("selectedItemDetail", selectedItemDetail);
   // return (
   //   <Box display="flex" width="100%"
   //   justifyContent="center"
@@ -110,10 +110,33 @@ console.log("selectedItemDetail",selectedItemDetail);
     >
       {/* Show Order ID */}
       <Typography
-      
-      className="drag-handle"
-      
-      variant="h6" sx={{ mb: 2 }}>
+        className="drag-handle"
+        variant="caption"
+        sx={{
+          fontWeight: 600,
+          color: "#fff",
+          background: "#1976d2",
+          px: 1.5, // smaller horizontal padding
+          py: 0.5, // smaller vertical padding
+          fontSize: "1em", // very small text
+          borderRadius: "3px 5px 5px 3px",
+          position: "relative",
+          mb: 2,
+          display: "inline-block",
+          "::before": {
+            content: '""',
+            position: "absolute",
+            left: -8, // smaller triangle
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 0,
+            height: 0,
+            borderTop: "8px solid transparent",
+            borderBottom: "8px solid transparent",
+            borderRight: "8px solid #1976d2",
+          },
+        }}
+      >
         Order ID: {orderId ?? "N/A"}
       </Typography>
 

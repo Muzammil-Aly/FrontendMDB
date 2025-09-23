@@ -27,7 +27,8 @@ import CustomSearchField from "@/components/Common/CustomSearch";
 import { Phone, Send } from "@mui/icons-material";
 
 import { getRowStyle } from "@/utils/gridStyles";
-
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 const Orders = ({ customerId }: { customerId?: string }) => {
   const orderCol = useOrdersColumn(orders);
 
@@ -109,7 +110,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     }
     if (selectedOrder?.order_id === params.data.order_id) {
       setSelectedOrder(null);
-      
     } else {
       setSelectedOrder(params.data);
     }
@@ -208,14 +208,46 @@ const Orders = ({ customerId }: { customerId?: string }) => {
             justifyContent="space-between"
             alignItems="flex-start"
             pl={7}
-            gap={2}
+            // gap={2}
           >
             <Box display={"flex"} alignItems={"center"} gap={5}>
-              <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
-                Orders
-              </Typography>
+              <Box
+                sx={{
+                  textAlign: "center",
+                  p: 3,
+                  // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                  borderRadius: "16px",
+                  // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: "2.5rem",
+                    background: "linear-gradient(90deg, black)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    letterSpacing: "0.5px",
+                    position: "relative",
+                    display: "inline-block",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      width: "60%",
+                      height: "4px",
+                      left: "20%",
+                      bottom: -8,
+                      // background: "linear-gradient(90deg, #004080)",
+                      borderRadius: "4px",
+                    },
+                  }}
+                >
+                  Orders
+                </Typography>
+              </Box>
 
-              <Box mt={-1}>
+              <Box mt={0}>
                 <Box display={"flex"} alignItems="center" gap={1}>
                   <CustomSearchField
                     value={searchInput}
@@ -263,7 +295,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 />
               </FormControl> */}
 
-              <FormControl size="small" sx={{ width: 160 }}>
+              {/* <FormControl size="small" sx={{ width: 160 }}>
                 <TextField
                   label="Order ID"
                   value={orderIdInput.toUpperCase()}
@@ -290,8 +322,21 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
 
+              <SearchInput
+                label="Order ID"
+                value={orderIdInput}
+                setValue={(val) => {
+                  setOrderIdInput(val);
+                  setIsOrderIdTyping(true);
+                }}
+                setFilter={setOrderIdFilter}
+                debouncedFunction={debouncedOrderId}
+                loading={orderIdtyping}
+                width={150}
+              />
+              {/* 
               <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
                   label="Customer Name"
@@ -319,8 +364,22 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 210 }}>
+              </FormControl> */}
+
+              <SearchInput
+                label="Customer Name"
+                value={customerNameInput}
+                setValue={(val) => {
+                  setCustomerNameInput(val);
+                  setIsCustomerNameTyping(true);
+                }}
+                setFilter={setCustomerNameFilter}
+                debouncedFunction={debouncedCustomerName}
+                loading={customerNametyping}
+                width={200}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 210 }}>
                 <TextField
                   label="Shipping Address"
                   value={shippingAddressInput}
@@ -347,8 +406,22 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 230 }}>
+              </FormControl> */}
+
+              <SearchInput
+                label="Shipping Address"
+                value={shippingAddressInput}
+                setValue={(val) => {
+                  setShippingAddressInput(val);
+                  setIsShippingAddressTyping(true);
+                }}
+                setFilter={setShippingAddressFilter}
+                debouncedFunction={debouncedShippingAddress}
+                loading={shippingAddresstyping}
+                width={200}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 230 }}>
                 <TextField
                   label="Customer Reference No "
                   value={customerReferenceNoInput}
@@ -374,9 +447,21 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
+              <SearchInput
+                label="Customer Reference No"
+                value={customerReferenceNoInput}
+                setValue={(val) => {
+                  setCustomerReferenceNoInput(val);
+                  setIsCustomerReferenceNoTyping(true);
+                }}
+                setFilter={setCustomerReferenceNoFilter}
+                debouncedFunction={debouncedcustomerReferenceNo}
+                loading={customerReferenceNotyping}
+                width={260}
+              />
 
-              <FormControl size="small" sx={{ width: 140 }}>
+              {/* <FormControl size="small" sx={{ width: 140 }}>
                 <TextField
                   label="Tracking"
                   value={trackingInput}
@@ -402,9 +487,20 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
+              <SearchInput
+                label="Tracking"
+                value={trackingInput}
+                setValue={(val) => {
+                  setTrackingInput(val);
+                  setIsTrackingTyping(true);
+                }}
+                setFilter={setTrackingFilter}
+                debouncedFunction={debouncedTracking}
+                loading={trackingtyping}
+              />
 
-              <FormControl size="small" sx={{ width: 100 }}>
+              {/* <FormControl size="small" sx={{ width: 100 }}>
                 <InputLabel>Page Size</InputLabel>
                 <Select
                   value={pageSize}
@@ -419,7 +515,17 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                   <MenuItem value={50}>50</MenuItem>
                   <MenuItem value={100}>100</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
+
+              <CustomSelect
+                label="Page Size"
+                value={pageSize}
+                options={[10, 50, 100]}
+                onChange={(val) => {
+                  setPageSize(val); // val is already a number
+                  setPage(1);
+                }}
+              />
             </Box>
           </Box>
         )}

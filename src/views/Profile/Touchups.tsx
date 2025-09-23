@@ -114,7 +114,7 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
       width="100%"
       // justifyContent="center"
       // alignItems="center"
-      className="drag-handle"
+      // className="drag-handle"
       gap={2}
     >
       {/* Show Order ID */}
@@ -123,12 +123,41 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
+        {/* <Typography variant="h6" sx={{ mb: 2 }}>
+          Touchups for Order: {orderId ?? "N/A"}
+        </Typography> */}
+        <Typography
+          className="drag-handle"
+          variant="caption"
+          sx={{
+            fontWeight: 600,
+            color: "#fff",
+            background: "#1976d2",
+            px: 1.5, // smaller horizontal padding
+            py: 0.5, // smaller vertical padding
+            fontSize: "1em", // very small text
+            borderRadius: "3px 5px 5px 3px",
+            position: "relative",
+            display: "inline-block",
+            "::before": {
+              content: '""',
+              position: "absolute",
+              left: -8, // smaller triangle
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 0,
+              height: 0,
+              borderTop: "8px solid transparent",
+              borderBottom: "8px solid transparent",
+              borderRight: "8px solid #1976d2",
+            },
+          }}
+        >
           Touchups for Order: {orderId ?? "N/A"}
         </Typography>
-        <FormControl size="small" sx={{ width: 160 }}>
+
+        <FormControl sx={{ width: 150 }}>
           <TextField
-            label="Lot No"
             value={lotNoInput.toUpperCase()}
             onChange={(e) => {
               const value = e.target.value;
@@ -136,21 +165,45 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
 
               if (value.trim() === "") {
                 setlotNoFilter(undefined);
-                debouncedItemNo.cancel(); // cancel pending debounce
+                debouncedItemNo.cancel();
               } else {
                 debouncedItemNo(value);
                 setIsLotNoTyping(true);
               }
             }}
-            size="small"
             placeholder="Lot No"
+            size="small"
+            variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "20px", // modern pill shape
+                backgroundColor: "#ffffff", // clean white
+                border: "1px solid #e0e0e0", // subtle border
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                transition: "all 0.25s ease",
+                "&:hover": {
+                  borderColor: "#42a5f5",
+                  boxShadow: "0 2px 6px rgba(66, 165, 245, 0.15)",
+                },
+                "&.Mui-focused": {
+                  borderColor: "#1976d2",
+                  boxShadow: "0 0 6px rgba(25, 118, 210, 0.25)",
+                },
+              },
+              "& .MuiInputBase-input": {
+                padding: "6px 14px",
+                textTransform: "uppercase",
+              },
+            }}
             InputProps={{
               endAdornment: lotNoInput.trim() !== "" && isLotNoTyping && (
                 <InputAdornment position="end">
-                  <CircularProgress size={20} />
+                  <CircularProgress size={16} />
                 </InputAdornment>
               ),
             }}
+            InputLabelProps={{ style: { display: "none" } }}
           />
         </FormControl>
       </Box>

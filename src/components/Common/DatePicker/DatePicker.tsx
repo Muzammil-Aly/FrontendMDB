@@ -1,52 +1,110 @@
 "use client";
-import React, { useState } from "react";
-import { TextField, Box } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import React from "react";
+import {
+  FormControl,
+  TextField,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import CloseIcon from "@mui/icons-material/Close";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import dayjs, { Dayjs } from "dayjs";
 
-interface SelectDatePickerProps {
-  onDateChange: (date: string | null) => void;
-  label?: string;
-  defaultValue?: string;
+interface CustomDatePickerProps {
+  label: string;
+  value: Dayjs | null;
+  setValue: (val: Dayjs | null) => void;
+  setFilter: (val: string | undefined) => void;
+  setPage: (val: number) => void;
+  width?: number | string;
+  placeholder?: string;
 }
 
-const SelectDatePicker: React.FC<SelectDatePickerProps> = ({
-  onDateChange,
-  label = "Select Date",
-  defaultValue,
+const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
+  label,
+  value,
+  setValue,
+  setFilter,
+  setPage,
+  width = 220,
+  placeholder = "Select Date",
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(
-    defaultValue ? dayjs(defaultValue) : null
-  );
-
-  const handleDateChange = (newValue: Dayjs | null) => {
-    setSelectedDate(newValue);
-    onDateChange(newValue ? newValue.format("YYYY-MM-DD") : null);
-  };
-
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box>
+    <FormControl size="small" sx={{ width }}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
+          enableAccessibleFieldDOMStructure={false} // ✅ important to avoid error
           label={label}
-          value={selectedDate}
-          onChange={handleDateChange}
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              size: "small",
-              sx: {
-                backgroundColor: "#fff",
-                borderRadius: "6px",
-              },
+          value={value}
+          onChange={(newValue) => {
+            if (!newValue) {
+              setValue(null);
+              setFilter(undefined);
+            } else {
+              setValue(newValue);
+              setFilter(dayjs(newValue).format("YYYY-MM-DD"));
+            }
+            setPage(1);
+          }}
+          slots={{
+            textField: (textFieldProps) => {
+              // strip props MUI adds for accessible DOM
+              const { sectionListRef, areAllSectionsEmpty, ...rest } =
+                textFieldProps;
+
+              return (
+                <TextField
+                  {...rest}
+                  size="small"
+                  placeholder={placeholder}
+                  sx={{
+                    backgroundColor: "#fff",
+                    borderRadius: "12px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                      "&:hover": {
+                        boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#1976d2",
+                        borderWidth: "2px",
+                      },
+                    },
+                  }}
+                  InputProps={{
+                    ...rest.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CalendarMonthIcon fontSize="small" color="action" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: value ? (
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setValue(null);
+                          setFilter(undefined);
+                          setPage(1);
+                        }}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    ) : (
+                      rest.InputProps?.endAdornment
+                    ),
+                  }}
+                />
+              );
             },
           }}
         />
-      </Box>
-    </LocalizationProvider>
+      </LocalizationProvider>
+    </FormControl>
   );
 };
 
-export default SelectDatePicker;
+export default CustomDatePicker;

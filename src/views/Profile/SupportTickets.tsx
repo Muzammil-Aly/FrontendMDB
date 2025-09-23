@@ -34,7 +34,9 @@ import dayjs from "dayjs";
 import { exportProfilesToPDF } from "@/utils/exportPDF";
 import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
 import { getRowStyle } from "@/utils/gridStyles";
-
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 interface OrdersProps {
   customerId?: string; // optional prop
 }
@@ -242,12 +244,45 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
               display="flex"
               justifyContent="space-between"
               alignItems={"center"}
-              gap={35}
+              gap={30}
             >
               <Box display="flex" alignItems="center" gap={5}>
-                <Typography variant="h1" p={1} color="#0D0D12" fontWeight={700}>
-                  Support Tickets
-                </Typography>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 2,
+                    // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                    borderRadius: "16px",
+                    // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: "2.5rem",
+                      background: "linear-gradient(90deg, black)",
+                      WebkitBackgroundClip: "text",
+                      // WebkitTextFillColor: "transparent",
+                      letterSpacing: "0.5px",
+                      position: "relative",
+                      display: "inline-block",
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        width: "60%",
+                        height: "4px",
+                        left: "20%",
+                        bottom: -8,
+                        // background: "linear-gradient(90deg, #004080)",
+                        borderRadius: "4px",
+                      },
+                    }}
+                  >
+                    Support Tickets
+                  </Typography>
+                </Box>
+
                 <Box mt={-1}>
                   <Box display={"flex"} alignItems="center" gap={1}>
                     <CustomSearchField
@@ -281,7 +316,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                 </Box>
               </Box>
               <Box display="flex" alignItems="center" gap={3} ml={5}>
-                <FormControl size="small" sx={{ width: 150 }}>
+                {/* <FormControl size="small" sx={{ width: 150 }}>
                   <Autocomplete
                     size="small"
                     options={statusOptions}
@@ -298,6 +333,43 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                         {...params}
                         label="Status"
                         placeholder="Status"
+                      />
+                    )}
+                  />
+                </FormControl> */}
+
+                <FormControl size="small" sx={{ width: 150 }}>
+                  <Autocomplete
+                    size="small"
+                    options={statusOptions}
+                    value={statusFilter ?? "All"}
+                    onChange={(e, newValue) => {
+                      setStatusFilter(
+                        !newValue || newValue === "All" ? undefined : newValue
+                      );
+                      setPage(1);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Status"
+                        placeholder="Select Status"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#fff",
+                          borderRadius: "12px",
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "12px",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                            "&:hover": {
+                              boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "#1976d2",
+                              borderWidth: "2px",
+                            },
+                          },
+                        }}
                       />
                     )}
                   />
@@ -399,26 +471,19 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                   </LocalizationProvider>
                 </FormControl> */}
 
-                <FormControl size="small">
-                  <InputLabel>Page Size</InputLabel>
-                  <Select
-                    value={pageSize}
-                    onChange={(e) => {
-                      setPageSize(Number(e.target.value));
-                      setPage(1);
-                    }}
-                    label="Page Size"
-                    sx={{ minWidth: 120 }}
-                  >
-                    <MenuItem value={10}>10</MenuItem>
-                    <MenuItem value={50}>50</MenuItem>
-                    <MenuItem value={100}>100</MenuItem>
-                  </Select>
-                </FormControl>
+                <CustomSelect
+                  label="Page Size"
+                  value={pageSize}
+                  options={[10, 50, 100]}
+                  onChange={(val) => {
+                    setPageSize(val); // val is already a number
+                    setPage(1);
+                  }}
+                />
               </Box>
             </Box>
             <Box display={"flex"} alignItems={"center"} gap={2} ml={2}>
-              <FormControl size="small" sx={{ width: 150 }}>
+              {/* <FormControl size="small" sx={{ width: 150 }}>
                 <TextField
                   label="Customer ID"
                   value={customerIdInput.toUpperCase()}
@@ -446,9 +511,20 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
+              <SearchInput
+                label="Customer ID"
+                value={customerIdInput}
+                setValue={(val) => {
+                  setCustomerIdInput(val);
+                  setIsCustomerIdTyping(true);
+                }}
+                setFilter={setCustomerIdFilter}
+                debouncedFunction={debouncedCustomerId}
+                loading={isCustomerIdTyping}
+              />
 
-              <FormControl size="small" sx={{ width: 150 }}>
+              {/* <FormControl size="small" sx={{ width: 150 }}>
                 <TextField
                   label="Ticket ID"
                   value={ticketIdInput || ""}
@@ -474,9 +550,20 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
+              <SearchInput
+                label="Ticket ID"
+                value={ticketIdInput || ""}
+                setValue={(val) => {
+                  setTicketIdInput(val);
+                  setIsTicketIdTyping(true);
+                }}
+                setFilter={setTicketIdFilter}
+                debouncedFunction={debouncedTicketId}
+                loading={isTicketIdTyping}
+              />
 
-              <FormControl size="small" sx={{ width: 180 }}>
+              {/* <FormControl size="small" sx={{ width: 180 }}>
                 <TextField
                   label="Tags"
                   value={tagsInput}
@@ -501,9 +588,21 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                     ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
 
-              <FormControl size="small" sx={{ ml: 2, width: 200 }}>
+              <SearchInput
+                label="Tags"
+                value={tagsInput}
+                setValue={(val) => {
+                  setTagsInput(val);
+                  setIsTagsTyping(true);
+                }}
+                setFilter={setTagsFilter}
+                debouncedFunction={debouncedTags}
+                loading={isTagsTyping}
+              />
+
+              {/* <FormControl size="small" sx={{ ml: 2, width: 200 }}>
                 <TextField
                   label="Customer Name"
                   value={customerNameInput || ""}
@@ -529,8 +628,22 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 190 }}>
+
+              </FormControl> */}
+              <SearchInput
+                label="Customer Name"
+                value={customerNameInput || ""}
+                setValue={(val) => {
+                  setCustomerNameInput(val);
+                  setIsCustomerNameTyping(true);
+                }}
+                setFilter={setCustomerNameFilter}
+                debouncedFunction={debouncedCustomerName}
+                loading={isCustomerNameTyping}
+                width={180}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 190 }}>
                 <TextField
                   label="Phone Number"
                   value={phoneNumberInput}
@@ -556,8 +669,22 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 190 }}>
+              </FormControl> */}
+
+              <SearchInput
+                label="Phone Number"
+                value={phoneNumberInput}
+                setValue={(val) => {
+                  setPhoneNumberInput(val);
+                  setIsPhoneNumberTyping(true);
+                }}
+                setFilter={setPhoneNumberFilter}
+                debouncedFunction={debouncedPhoneNumber}
+                loading={isPhoneNumberTyping}
+                width={180}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 190 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     enableAccessibleFieldDOMStructure={false}
@@ -607,7 +734,14 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                     }}
                   />
                 </LocalizationProvider>
-              </FormControl>
+              </FormControl> */}
+              <CustomDatePicker
+                label="Created At"
+                value={dateInput}
+                setValue={setDateInput}
+                setFilter={setDateFilter}
+                setPage={setPage}
+              />
             </Box>
           </Box>
         )}

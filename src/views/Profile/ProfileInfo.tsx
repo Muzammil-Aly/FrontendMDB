@@ -3,6 +3,7 @@ import AgGridTable from "@/components/ag-grid";
 import { users } from "@/constants/Grid-Table/ColDefs";
 
 import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
+import ClearIcon from "@mui/icons-material/Clear";
 
 import {
   Box,
@@ -33,6 +34,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { getRowStyle } from "@/utils/gridStyles";
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 
 interface SegmentOption {
   id: string;
@@ -212,33 +216,110 @@ const DetailedInfo = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-              Profile Information
-            </Typography>
-            <Box display={"flex"} alignItems={"center"} gap={2}>
-              <FormControl size="small" sx={{ width: 150 }}>
-                <Autocomplete
-                  size="small"
-                  options={sourceOptions}
-                  value={sourceFilter ?? "All"}
-                  onChange={(e, newValue) => {
-                    setSourceFilter(
-                      !newValue || newValue === "All" ? undefined : newValue
-                    );
+            <Box
+              sx={{
+                textAlign: "center",
+                p: 3,
+                // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                borderRadius: "16px",
+                // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              }}
+            >
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 800,
+                  fontSize: "2.5rem",
+                  background: "linear-gradient(90deg, black)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "0.5px",
+                  position: "relative",
+                  display: "inline-block",
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    width: "60%",
+                    height: "4px",
+                    left: "20%",
+                    bottom: -8,
+                    // background: "linear-gradient(90deg, #004080)",
+                    borderRadius: "4px",
+                  },
+                }}
+              >
+                Profile Information
+              </Typography>
+            </Box>
 
-                    setPage(1);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Source"
-                      placeholder="Source"
-                    />
-                  )}
-                />
-              </FormControl>
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              gap={2}
+              justifyContent={"space-between"}
+            >
               <Box>
-                <FormControl size="small">
+                {/* <FormControl size="small" sx={{ width: 150 }}>
+                  <Autocomplete
+                    size="small"
+                    options={sourceOptions}
+                    value={sourceFilter ?? "All"}
+                    onChange={(e, newValue) => {
+                      setSourceFilter(
+                        !newValue || newValue === "All" ? undefined : newValue
+                      );
+
+                      setPage(1);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Source"
+                        placeholder="Source"
+                      />
+                    )}
+                  />
+                </FormControl> */}
+
+                <FormControl size="small" sx={{ width: 180 }}>
+                  <Autocomplete
+                    size="small"
+                    options={[...sourceOptions]}
+                    value={sourceFilter ?? "All"}
+                    onChange={(e, newValue) => {
+                      setSourceFilter(
+                        !newValue || newValue === "All" ? undefined : newValue
+                      );
+                      setPage(1);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Source"
+                        placeholder="Select Source"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#fff",
+                          borderRadius: "12px",
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "12px",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                            "&:hover": {
+                              boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "#1976d2",
+                              borderWidth: "2px",
+                            },
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Box>
+              <Box>
+                {/* <FormControl size="small">
                   <InputLabel>Page Size</InputLabel>
                   <Select
                     value={pageSize}
@@ -253,7 +334,16 @@ const DetailedInfo = () => {
                     <MenuItem value={50}>50</MenuItem>
                     <MenuItem value={100}>100</MenuItem>
                   </Select>
-                </FormControl>
+                </FormControl> */}
+                <CustomSelect
+                  label="Page Size"
+                  value={pageSize}
+                  options={[10, 50, 100]}
+                  onChange={(val) => {
+                    setPageSize(val); // val is already a number
+                    setPage(1);
+                  }}
+                />
               </Box>
             </Box>
           </Box>
@@ -271,7 +361,7 @@ const DetailedInfo = () => {
               gap={2}
               pl={1}
             >
-              <Box mt={-1}>
+              <Box mt={0}>
                 <Box display={"flex"} alignItems="center" gap={1}>
                   <CustomSearchField
                     value={searchInput}
@@ -319,9 +409,10 @@ const DetailedInfo = () => {
                       placeholder="Search by Customer ID"
                     />
                   </FormControl> */}
-                <FormControl size="small" sx={{ width: 140 }}>
+                {/* <FormControl size="small" sx={{ width: 135 }}>
                   <TextField
                     label="Customer ID"
+                    variant="outlined"
                     value={customerIdInput.toUpperCase()}
                     onChange={(e) => {
                       const value = e.target.value;
@@ -329,7 +420,7 @@ const DetailedInfo = () => {
 
                       if (value.trim() === "") {
                         setCustomerIdFilter(undefined);
-                        debouncedCustomerId.cancel(); // cancel pending debounce
+                        debouncedCustomerId.cancel();
                       } else {
                         debouncedCustomerId(value);
                         setIsCustomerIDTyping(true);
@@ -337,18 +428,59 @@ const DetailedInfo = () => {
                     }}
                     size="small"
                     placeholder="Customer ID"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "12px",
+                        boxShadow: "0px 2px 6px rgba(0,0,0,0.05)",
+                        transition: "0.2s",
+                        "&:hover": {
+                          boxShadow: "0px 4px 12px rgba(0,0,0,0.08)",
+                        },
+                      },
+                    }}
                     InputProps={{
-                      endAdornment: customerIdInput.trim() !== "" &&
-                        isCustomerIDTyping && (
+                      endAdornment:
+                        customerIdInput.trim() !== "" ? (
                           <InputAdornment position="end">
-                            <CircularProgress size={20} />
+                            {isCustomerIDTyping ? (
+                              <CircularProgress size={18} />
+                            ) : (
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "#888",
+                                  "&:hover": {
+                                    color: "#d32f2f",
+                                    bgcolor: "transparent",
+                                  },
+                                }}
+                                onClick={() => {
+                                  setCustomerIdInput("");
+                                  setCustomerIdFilter(undefined);
+                                  debouncedCustomerId.cancel();
+                                }}
+                              >
+                                <ClearIcon fontSize="small" />
+                              </IconButton>
+                            )}
                           </InputAdornment>
-                        ),
+                        ) : null,
                     }}
                   />
-                </FormControl>
+                </FormControl> */}
+                <SearchInput
+                  label="Customer ID"
+                  value={customerIdInput}
+                  setValue={(val) => {
+                    setCustomerIdInput(val);
+                    setIsCustomerIDTyping(true);
+                  }}
+                  setFilter={setCustomerIdFilter}
+                  debouncedFunction={debouncedCustomerId}
+                  loading={isCustomerIDTyping}
+                />
               </Box>
-              <FormControl size="small" sx={{ width: 150 }}>
+              {/* <FormControl size="small" sx={{ width: 150 }}>
                 <TextField
                   label="Full Name"
                   value={fullNameInput}
@@ -375,8 +507,21 @@ const DetailedInfo = () => {
                       ),
                   }}
                 />
-              </FormControl>
-              <FormControl size="small" sx={{ width: 200, ml: 2 }}>
+              </FormControl> */}
+
+              <SearchInput
+                label="Full Name"
+                value={fullNameInput}
+                setValue={(val) => {
+                  setFullNameInput(val);
+                  setIsFullNameTyping(true);
+                }}
+                setFilter={setFullNameFilter}
+                debouncedFunction={debouncedFullName}
+                loading={isFullNameTyping}
+              />
+
+              {/* <FormControl size="small" sx={{ width: 200, ml: 2 }}>
                 <TextField
                   label="Phone Number"
                   value={phoneNumberInput}
@@ -403,9 +548,22 @@ const DetailedInfo = () => {
                       ),
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
+              <SearchInput
+                label="Phone Number"
+                value={phoneNumberInput}
+                setValue={(val) => {
+                  setPhoneNumberInput(val);
+                  setIsPhoneNumberTyping(true);
+                }}
+                setFilter={setPhoneNumberFilter}
+                debouncedFunction={debouncedPhoneNumber}
+                loading={isPhoneNumberTyping}
+                width={160}
+              />
+
               <Box display={"flex"} justifyContent={"space-between"} gap={2}>
-                <FormControl size="small" sx={{ width: 190 }}>
+                {/* <FormControl size="small" sx={{ width: 190 }}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       enableAccessibleFieldDOMStructure={false}
@@ -458,10 +616,18 @@ const DetailedInfo = () => {
                       }}
                     />
                   </LocalizationProvider>
-                </FormControl>
+                </FormControl> */}
+
+                <CustomDatePicker
+                  label="Created At"
+                  value={dateInput}
+                  setValue={setDateInput}
+                  setFilter={setDateFilter}
+                  setPage={setPage}
+                />
               </Box>
               <Box>
-                <FormControl size="small" sx={{ width: 190 }}>
+                {/* <FormControl size="small" sx={{ width: 190 }}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       enableAccessibleFieldDOMStructure={false}
@@ -516,7 +682,15 @@ const DetailedInfo = () => {
                       }}
                     />
                   </LocalizationProvider>
-                </FormControl>
+                </FormControl> */}
+
+                <CustomDatePicker
+                  label="Last Order Date"
+                  value={lastDateInput}
+                  setValue={setLastDateInput}
+                  setFilter={setLastDateFilter}
+                  setPage={setPage}
+                />
               </Box>
             </Box>
           </Box>

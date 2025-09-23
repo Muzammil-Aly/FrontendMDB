@@ -55,6 +55,9 @@ import Sidebar from "./Sidebar";
 import CustomerIdFilter from "./TabsContent/Inventory";
 import BadgeIcon from "@mui/icons-material/Badge";
 import Inventory from "./Inventory";
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 import Demo from "./TabsContent/Demo";
 interface SegmentOption {
   id: string;
@@ -525,62 +528,93 @@ const Profile = () => {
             pl={7}
           >
             <Box display={"flex"} flexDirection={"column"}>
-              {/* <Typography
-            variant="h2"
-            p={2}
-            mb={1}
-            color="#0D0D12"
-            fontWeight={700}
-          >
-            Profile Information
-          </Typography> */}
               <Box
                 display={"flex"}
                 alignItems={"center"}
                 justifyContent={"space-between"}
               >
-                <Typography variant="h1" p={2} color="#0D0D12" fontWeight={700}>
-                  Profile
-                </Typography>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 3,
+                    // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                    borderRadius: "16px",
+                    // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: "2.5rem",
+                      background: "linear-gradient(90deg, black)",
+
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      letterSpacing: "0.5px",
+                      position: "relative",
+                      display: "inline-block",
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        width: "60%",
+                        height: "4px",
+                        left: "20%",
+                        bottom: -8,
+                        borderRadius: "4px",
+                      },
+                    }}
+                  >
+                    Profile
+                  </Typography>
+                </Box>
                 <Box display={"flex"} alignItems={"center"} gap={2}>
-                  <FormControl size="small" sx={{ width: 150 }}>
+                  <FormControl size="small" sx={{ width: 180 }}>
                     <Autocomplete
                       size="small"
-                      options={sourceOptions}
+                      options={[...sourceOptions]}
                       value={sourceFilter ?? "All"}
                       onChange={(e, newValue) => {
                         setSourceFilter(
                           !newValue || newValue === "All" ? undefined : newValue
                         );
-
                         setPage(1);
                       }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           label="Source"
-                          placeholder="Source"
+                          placeholder="Select Source"
+                          size="small"
+                          sx={{
+                            backgroundColor: "#fff",
+                            borderRadius: "12px",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px",
+                              boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                              "&:hover": {
+                                boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#1976d2",
+                                borderWidth: "2px",
+                              },
+                            },
+                          }}
                         />
                       )}
                     />
                   </FormControl>
                   <Box>
-                    <FormControl size="small">
-                      <InputLabel>Page Size</InputLabel>
-                      <Select
-                        value={pageSize}
-                        onChange={(e) => {
-                          setPageSize(Number(e.target.value));
-                          setPage(1);
-                        }}
-                        label="Page Size"
-                        sx={{ width: 100 }}
-                      >
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={50}>50</MenuItem>
-                        <MenuItem value={100}>100</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <CustomSelect
+                      label="Page Size"
+                      value={pageSize}
+                      options={[10, 50, 100]}
+                      onChange={(val) => {
+                        setPageSize(val); // val is already a number
+                        setPage(1);
+                      }}
+                    />
                   </Box>
                 </Box>
               </Box>
@@ -598,7 +632,7 @@ const Profile = () => {
                   gap={2}
                   pl={1}
                 >
-                  <Box mt={-1}>
+                  <Box mt={0}>
                     <Box display={"flex"} alignItems="center" gap={1}>
                       <CustomSearchField
                         value={searchInput}
@@ -676,210 +710,63 @@ const Profile = () => {
                       />
                     </FormControl> */}
 
-                    <FormControl size="small" sx={{ width: 140 }}>
-                      <TextField
-                        label="Customer ID"
-                        value={customerIdInput.toUpperCase()}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setCustomerIdInput(value);
-
-                          if (value.trim() === "") {
-                            setCustomerIdFilter(undefined);
-                            debouncedCustomerId.cancel(); // cancel pending debounce
-                          } else {
-                            debouncedCustomerId(value);
-                            setIsCustomerIDTyping(true);
-                          }
-                        }}
-                        size="small"
-                        placeholder="Customer ID"
-                        InputProps={{
-                          endAdornment: customerIdInput.trim() !== "" &&
-                            isCustomerIDTyping && (
-                              <InputAdornment position="end">
-                                <CircularProgress size={20} />
-                              </InputAdornment>
-                            ),
-                        }}
-                      />
-                    </FormControl>
+                    <SearchInput
+                      label="Customer ID"
+                      value={customerIdInput}
+                      setValue={(val) => {
+                        setCustomerIdInput(val);
+                        setIsCustomerIDTyping(true);
+                      }}
+                      setFilter={setCustomerIdFilter}
+                      debouncedFunction={debouncedCustomerId}
+                      loading={isCustomerIDTyping}
+                    />
                   </Box>
-                  <FormControl size="small" sx={{ width: 150 }}>
-                    <TextField
-                      label="Full Name"
-                      value={fullNameInput}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setFullNameInput(value);
+                  <SearchInput
+                    label="Full Name"
+                    value={fullNameInput}
+                    setValue={(val) => {
+                      setFullNameInput(val);
+                      setIsFullNameTyping(true);
+                    }}
+                    setFilter={setFullNameFilter}
+                    debouncedFunction={debouncedFullName}
+                    loading={isFullNameTyping}
+                  />
 
-                        if (value.trim() === "") {
-                          setFullNameFilter(undefined);
-                          debouncedFullName.cancel();
-                        } else {
-                          debouncedFullName(value);
-                          setIsFullNameTyping(true);
-                        }
-                      }}
-                      size="small"
-                      placeholder="Full Name"
-                      InputProps={{
-                        endAdornment: fullNameInput.trim() !== "" &&
-                          isFullNameTyping && (
-                            <InputAdornment position="end">
-                              <CircularProgress size={20} />
-                            </InputAdornment>
-                          ),
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl size="small" sx={{ width: 200, ml: 2 }}>
-                    <TextField
-                      label="Phone Number"
-                      value={phoneNumberInput}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setPhoneNumberInput(value);
-
-                        if (value.trim() === "") {
-                          setPhoneNumberFilter(undefined);
-                          debouncedPhoneNumber.cancel();
-                        } else {
-                          debouncedPhoneNumber(value);
-                          setIsPhoneNumberTyping(true);
-                        }
-                      }}
-                      size="small"
-                      placeholder="Phone Number"
-                      InputProps={{
-                        endAdornment: phoneNumberInput.trim() !== "" &&
-                          isPhoneNumberTyping && (
-                            <InputAdornment position="end">
-                              <CircularProgress size={20} />
-                            </InputAdornment>
-                          ),
-                      }}
-                    />
-                  </FormControl>
+                  <SearchInput
+                    label="Phone Number"
+                    value={phoneNumberInput}
+                    setValue={(val) => {
+                      setPhoneNumberInput(val);
+                      setIsPhoneNumberTyping(true);
+                    }}
+                    setFilter={setPhoneNumberFilter}
+                    debouncedFunction={debouncedPhoneNumber}
+                    loading={isPhoneNumberTyping}
+                    width={160}
+                  />
                   <Box
                     display={"flex"}
                     justifyContent={"space-between"}
                     gap={2}
                   >
-                    <FormControl size="small" sx={{ width: 190 }}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          enableAccessibleFieldDOMStructure={false}
-                          label="Created At"
-                          value={dateInput}
-                          onChange={(newValue) => {
-                            if (!newValue) {
-                              setDateInput(null);
-                              setDateFilter(undefined);
-                            } else {
-                              setDateInput(newValue);
-                              setDateFilter(
-                                dayjs(newValue).format("YYYY-MM-DD")
-                              );
-                            }
-                            setPage(1);
-                          }}
-                          slots={{
-                            textField: (textFieldProps) => {
-                              // filter out unwanted internal props
-                              const {
-                                sectionListRef,
-                                areAllSectionsEmpty,
-                                ...rest
-                              } = textFieldProps;
-
-                              return (
-                                <TextField
-                                  {...rest}
-                                  size="small"
-                                  placeholder="Select Date"
-                                  InputProps={{
-                                    ...rest.InputProps,
-                                    endAdornment: dateInput ? (
-                                      <IconButton
-                                        size="small"
-                                        onClick={() => {
-                                          setDateInput(null);
-                                          setDateFilter(undefined);
-                                          setPage(1);
-                                        }}
-                                      >
-                                        <CloseIcon fontSize="small" />
-                                      </IconButton>
-                                    ) : (
-                                      rest.InputProps?.endAdornment
-                                    ),
-                                  }}
-                                />
-                              );
-                            },
-                          }}
-                        />
-                      </LocalizationProvider>
-                    </FormControl>
+                    <CustomDatePicker
+                      label="Created At"
+                      value={dateInput}
+                      setValue={setDateInput}
+                      setFilter={setDateFilter}
+                      setPage={setPage}
+                    />
                   </Box>
                   <Box>
-                    <FormControl size="small" sx={{ width: 190 }}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          enableAccessibleFieldDOMStructure={false}
-                          label="Last Order Date"
-                          value={lastDateInput}
-                          onChange={(newValue) => {
-                            if (!newValue) {
-                              setLastDateInput(null);
-                              setLastDateFilter(undefined);
-                            } else {
-                              setLastDateInput(newValue);
-                              setLastDateFilter(
-                                dayjs(newValue).format("YYYY-MM-DD")
-                              );
-                            }
-                            setPage(1);
-                          }}
-                          slots={{
-                            textField: (textFieldProps) => {
-                              // filter out unwanted internal props
-                              const {
-                                sectionListRef,
-                                areAllSectionsEmpty,
-                                ...rest
-                              } = textFieldProps;
-
-                              return (
-                                <TextField
-                                  {...rest}
-                                  size="small"
-                                  placeholder="Select Date"
-                                  InputProps={{
-                                    ...rest.InputProps,
-                                    endAdornment: lastDateInput ? (
-                                      <IconButton
-                                        size="small"
-                                        onClick={() => {
-                                          setLastDateInput(null);
-                                          setLastDateFilter(undefined);
-                                          setPage(1);
-                                        }}
-                                      >
-                                        <CloseIcon fontSize="small" />
-                                      </IconButton>
-                                    ) : (
-                                      rest.InputProps?.endAdornment
-                                    ),
-                                  }}
-                                />
-                              );
-                            },
-                          }}
-                        />
-                      </LocalizationProvider>
-                    </FormControl>
+                    <CustomDatePicker
+                      label="Last Order Date"
+                      value={lastDateInput}
+                      setValue={setLastDateInput}
+                      setFilter={setLastDateFilter}
+                      setPage={setPage}
+                    />
                   </Box>
                 </Box>
               </Box>
