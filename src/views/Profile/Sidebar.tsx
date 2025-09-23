@@ -91,8 +91,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Box>
         ) : (
           <Box display="flex" flexDirection="column" alignItems="center">
-            {"UCP".split("").map((char) => (
+            {"UCP".split("").map((char, index) => (
               <Box
+                key={index}
                 sx={{
                   textAlign: "center",
                   // p: 3,
