@@ -6,6 +6,7 @@ import OrderHistory from "./TabsContent/OrderHistory";
 import CustomerSegmentCard from "./CustomerSegmentCard";
 import SupportTickets from "./SupportTickets";
 import MarketingEvents from "./MarketingEvents";
+import Orders from "./Orders";
 
 interface UserDetailsModalProps {
   open: boolean;
@@ -64,6 +65,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     },
     Orders: {
       component: <OrderHistory customerId={userData.customer_id} />,
+      // component: <Orders customerId={userData.customer_id} />,
     },
     "Support Tickets": {
       component: <SupportTickets customerId={userData.customer_id} />,
@@ -171,7 +173,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
           <Box
             flex={1}
             borderRadius={1.5}
-            p={1.5}
+            // p={1.5}
             bgcolor="#FAFAFA"
             overflow="auto"
           >

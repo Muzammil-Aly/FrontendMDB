@@ -52,6 +52,12 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     undefined
   );
   const [orderIdInput, setOrderIdInput] = useState("");
+  const [customerIdInput, setCustomerIdInput] = useState("");
+  const [customerIdFilter, setCustomerIdFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
+
   const [customerNameInput, setCustomerNameInput] = useState("");
   const [shippingAddressInput, setShippingAddressInput] = useState("");
   const [customerReferenceNoInput, setCustomerReferenceNoInput] = useState("");
@@ -73,7 +79,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     page,
     page_size: pageSize,
     order_id: orderIdFilter || undefined,
-    customer_id: customerId || undefined,
+    customer_id: customerIdFilter || undefined,
     customer_name: customerNameFilter || undefined,
     customer_reference_no: customerReferenceNoFilter || undefined,
     shipping_address: shippingAddressFilter || undefined,
@@ -136,7 +142,15 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       }, 5000),
     []
   );
-
+  const debouncedCustomerId = useMemo(
+    () =>
+      debounce((value: string) => {
+        setCustomerIdFilter(value ? value.toUpperCase() : undefined);
+        setPage(1);
+        setIsCustomerIDTyping(false);
+      }, 5000),
+    []
+  );
   const debouncedCustomerName = useMemo(
     () =>
       debounce((value: string) => {
@@ -247,7 +261,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 </Typography>
               </Box>
 
-              <Box mt={0}>
+              <Box mt={1}>
                 <Box display={"flex"} alignItems="center" gap={1}>
                   <CustomSearchField
                     value={searchInput}
@@ -334,6 +348,18 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 setFilter={setOrderIdFilter}
                 debouncedFunction={debouncedOrderId}
                 loading={orderIdtyping}
+                width={150}
+              />
+              <SearchInput
+                label="Customer ID"
+                value={customerIdInput}
+                setValue={(val) => {
+                  setCustomerIdInput(val);
+                  setIsCustomerIDTyping(true);
+                }}
+                setFilter={setCustomerIdFilter}
+                debouncedFunction={debouncedCustomerId}
+                loading={isCustomerIDTyping}
                 width={150}
               />
               {/* 

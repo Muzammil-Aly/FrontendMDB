@@ -283,7 +283,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                   </Typography>
                 </Box>
 
-                <Box mt={-1}>
+                <Box mt={1}>
                   <Box display={"flex"} alignItems="center" gap={1}>
                     <CustomSearchField
                       value={searchInput}

@@ -65,6 +65,7 @@ const DetailedInfo = () => {
     string | undefined
   >(undefined);
   const [customerIdInput, setCustomerIdInput] = useState("");
+
   const [fullNameInput, setFullNameInput] = useState("");
   const [phoneNumberInput, setPhoneNumberInput] = useState("");
   const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
