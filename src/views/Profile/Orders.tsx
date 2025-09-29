@@ -89,6 +89,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
 
   const rowData = useMemo(() => {
     const results = data?.data || [];
+
     return results.map((item: any) => ({
       order_id: item.order_id,
       customer_id: item.customer_id,
@@ -224,74 +225,97 @@ const Orders = ({ customerId }: { customerId?: string }) => {
             pl={7}
             // gap={2}
           >
-            <Box display={"flex"} alignItems={"center"} gap={5}>
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              width="100%"
+              gap={2}
+            >
               <Box
-                sx={{
-                  textAlign: "center",
-                  p: 3,
-                  // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-                  borderRadius: "16px",
-                  // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                }}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                gap={3}
               >
-                <Typography
-                  variant="h3"
+                <Box
                   sx={{
-                    fontWeight: 800,
-                    fontSize: "2.5rem",
-                    background: "linear-gradient(90deg, black)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    letterSpacing: "0.5px",
-                    position: "relative",
-                    display: "inline-block",
-                    "&::after": {
-                      content: '""',
-                      position: "absolute",
-                      width: "60%",
-                      height: "4px",
-                      left: "20%",
-                      bottom: -8,
-                      // background: "linear-gradient(90deg, #004080)",
-                      borderRadius: "4px",
-                    },
+                    textAlign: "center",
+                    p: 3,
+                    // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+                    borderRadius: "16px",
+                    // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                   }}
                 >
-                  Orders
-                </Typography>
-              </Box>
-
-              <Box mt={1}>
-                <Box display={"flex"} alignItems="center" gap={1}>
-                  <CustomSearchField
-                    value={searchInput}
-                    onChange={handleSearchInput}
-                    placeholder="Search by Email"
-                    InputProps={{
-                      endAdornment: searchInput.trim() !== "" && isTyping && (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ),
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: "2.5rem",
+                      background: "linear-gradient(90deg, black)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      letterSpacing: "0.5px",
+                      position: "relative",
+                      display: "inline-block",
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        width: "60%",
+                        height: "4px",
+                        left: "20%",
+                        bottom: -8,
+                        // background: "linear-gradient(90deg, #004080)",
+                        borderRadius: "4px",
+                      },
                     }}
-                  />
+                  >
+                    Orders
+                  </Typography>
+                </Box>
 
-                  {
-                    <Send
-                      onClick={() => {
-                        setSearchTerm(searchInput);
-                        setPage(1);
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        color: "#004FA7",
-                        height: "36px",
-                        width: "36px",
+                <Box mt={1}>
+                  <Box display={"flex"} alignItems="center" gap={1}>
+                    <CustomSearchField
+                      value={searchInput}
+                      onChange={handleSearchInput}
+                      placeholder="Search by Email"
+                      InputProps={{
+                        endAdornment: searchInput.trim() !== "" && isTyping && (
+                          <InputAdornment position="end">
+                            <CircularProgress size={20} />
+                          </InputAdornment>
+                        ),
                       }}
                     />
-                  }
+
+                    {
+                      <Send
+                        onClick={() => {
+                          setSearchTerm(searchInput);
+                          setPage(1);
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          color: "#004FA7",
+                          height: "36px",
+                          width: "36px",
+                        }}
+                      />
+                    }
+                  </Box>
                 </Box>
               </Box>
+
+              <CustomSelect
+                label="Page Size"
+                value={pageSize}
+                options={[10, 50, 100]}
+                onChange={(val) => {
+                  setPageSize(val);
+                  setPage(1);
+                }}
+              />
             </Box>
 
             <Box display="flex" alignItems="center" gap={4} ml={2} mb={2}>
@@ -484,7 +508,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 setFilter={setCustomerReferenceNoFilter}
                 debouncedFunction={debouncedcustomerReferenceNo}
                 loading={customerReferenceNotyping}
-                width={260}
+                width={240}
               />
 
               {/* <FormControl size="small" sx={{ width: 140 }}>
@@ -542,16 +566,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                   <MenuItem value={100}>100</MenuItem>
                 </Select>
               </FormControl> */}
-
-              <CustomSelect
-                label="Page Size"
-                value={pageSize}
-                options={[10, 50, 100]}
-                onChange={(val) => {
-                  setPageSize(val); // val is already a number
-                  setPage(1);
-                }}
-              />
             </Box>
           </Box>
         )}
