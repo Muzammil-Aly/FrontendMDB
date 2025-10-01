@@ -64,8 +64,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
       component: <CustomerSegmentCard custId={userData.customer_id} />,
     },
     Orders: {
-      component: <OrderHistory customerId={userData.customer_id} />,
-      // component: <Orders customerId={userData.customer_id} />,
+      // component: <OrderHistory customerId={userData.customer_id} />,
+      component: <Orders customerId={userData.customer_id} />,
     },
     "Support Tickets": {
       component: <SupportTickets customerId={userData.customer_id} />,
