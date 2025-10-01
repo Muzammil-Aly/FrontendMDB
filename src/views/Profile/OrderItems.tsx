@@ -52,6 +52,7 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
           collection: item.collection,
           quantity: item.quantity,
           amount: item.amount,
+          lot_no: item.lot_no,
         }))
       : [];
   }, [data]);

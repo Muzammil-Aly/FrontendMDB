@@ -18,7 +18,12 @@ const useTouchupsColumn = (columns: Column[]) => {
         case "lot_no":
           return { ...col, headerName: "Lot No", flex: 1, minWidth: 140 };
         case "sku":
-          return { ...col, headerName: "SKU", flex: 1, minWidth: 140 };
+          return {
+            ...col,
+            headerName: "SKU",
+            flex: 1,
+            minWidth: 140,
+          };
         case "customer_id":
           return {
             ...col,
@@ -29,11 +34,26 @@ const useTouchupsColumn = (columns: Column[]) => {
             autoHeight: true,
           };
         case "parts_item_no":
-          return { ...col, headerName: "Parts Item No", flex: 1, minWidth: 160 };
+          return {
+            ...col,
+            headerName: "Parts Item No",
+            flex: 1,
+            minWidth: 160,
+          };
         case "parts_item_name":
-          return { ...col, headerName: "Parts Item Name", flex: 2, minWidth: 200 };
+          return {
+            ...col,
+            headerName: "Parts Item Name",
+            flex: 2,
+            minWidth: 200,
+          };
         case "parts_item_name_2":
-          return { ...col, headerName: "Parts Item Name 2", flex: 2, minWidth: 200 };
+          return {
+            ...col,
+            headerName: "Parts Item Name 2",
+            flex: 2,
+            minWidth: 200,
+          };
         case "touchup_pen_item_no":
           return {
             ...col,

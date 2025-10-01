@@ -115,6 +115,8 @@ const useOrderItems = (columns: Column[]) => {
             minWidth: 140,
             valueGetter: (params: any) => params.data.collection || "-",
           };
+        case "lot_no":
+          return { ...col, headerName: "Lot No", flex: 1, minWidth: 140 };
 
         case "quantity":
           return {

@@ -124,6 +124,9 @@ export const orderItems = [
   },
   // { field: "order_id", headerName: "Order ID" },
   { field: "sku", headerName: "SKU", cellRenderer: CopyCellRenderer },
+
+  { field: "lot_no", headerName: "Lot No", cellRenderer: CopyCellRenderer },
+
   {
     field: "product_name",
     headerName: "Product Name",
