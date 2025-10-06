@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import CustomTextField from "@/components/Common/CustomTextField";
-
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton, InputAdornment } from "@mui/material";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,12 +22,43 @@ export default function SignIn() {
     "error" | "success" | "info" | "warning"
   >("info");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const dummyUser = {
-    email: "drivera@mdbmail.com",
-    password: "drivera123",
-  };
+  // const dummyUser = {
+  //   email: "drivera@mdbmail.com",
+  //   password: "drivera123",
+  // };
+
+  const allowedUsers = [
+    { email: "drivera@mdbmail.com", password: "drivera123" },
+    { email: "Shipping@mdbmail.com", password: "Cs@mdbmail.com" },
+  ];
+
   const router = useRouter();
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (loading) return;
+  //   setLoading(true);
+  //   setMessage("");
+
+  //   setTimeout(() => {
+  //     if (email === dummyUser.email && password === dummyUser.password) {
+  //       setSeverity("success");
+  //       setMessage("Signed in successfully!");
+  //       localStorage.setItem("loggedIn", "true");
+
+  //       setTimeout(() => {
+  //         router.push("/customer-profile");
+  //       }, 500);
+  //     } else {
+  //       setSeverity("error");
+  //       setMessage("Invalid email or password");
+  //     }
+  //     setLoading(false);
+  //   }, 1000);
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +68,12 @@ export default function SignIn() {
     setMessage("");
 
     setTimeout(() => {
-      if (email === dummyUser.email && password === dummyUser.password) {
+      // Check if the entered credentials match any allowed user
+      const user = allowedUsers.find(
+        (u) => u.email === email && u.password === password
+      );
+
+      if (user) {
         setSeverity("success");
         setMessage("Signed in successfully!");
         localStorage.setItem("loggedIn", "true");
@@ -48,6 +85,7 @@ export default function SignIn() {
         setSeverity("error");
         setMessage("Invalid email or password");
       }
+
       setLoading(false);
     }, 1000);
   };
@@ -99,8 +137,7 @@ export default function SignIn() {
             }
             placeholder="Email address "
           />
-
-          <CustomTextField
+          {/* <CustomTextField
             label="Password"
             type="password"
             fullWidth
@@ -109,8 +146,29 @@ export default function SignIn() {
               setPassword(e.target.value)
             }
             placeholder=" password"
+          /> */}
+          <CustomTextField
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            fullWidth
+            value={password}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
+            placeholder="Password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-
           <Button
             type="submit"
             fullWidth
