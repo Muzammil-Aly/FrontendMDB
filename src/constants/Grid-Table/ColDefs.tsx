@@ -94,7 +94,7 @@ export const orders = [
   },
   {
     field: "total_value",
-    headerName: "Total Value",
+    headerName: "Total Order Value",
     cellRenderer: CopyCellRenderer,
   },
   // { field: "discount_code", headerName: "Discount Code" },
@@ -106,6 +106,17 @@ export const orders = [
   {
     field: "fulfillment_status",
     headerName: "Fulfillment Status",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "order_status",
+    headerName: "Order Status",
+    cellRenderer: CopyCellRenderer,
+  },
+
+  {
+    field: "psi_number",
+    headerName: "PSI Number",
     cellRenderer: CopyCellRenderer,
   },
   {

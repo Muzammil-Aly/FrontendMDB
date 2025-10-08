@@ -83,7 +83,10 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       customer_id: item.customer_id ?? "N/A",
       customer_name: item.customer_name || "N/A",
       email: item.email || "N/A",
-      event_timestamp: item.event_timestamp,
+
+      event_timestamp: item.event_timestamp
+        ? item.event_timestamp.split("T")[0]
+        : "N/A",
       campaign_name: item.campaign_name,
     }));
   }, [data]);

@@ -161,8 +161,11 @@ const Profile = () => {
         customer_id: item.customer_id || "",
         join_type: item.join_type || "",
         key: item.key || "",
-        created_at: item.created_at || "",
-        last_order_date: item.last_order_date || "",
+        created_at: item.created_at ? item.created_at.split("T")[0] : "N/A",
+
+        last_order_date: item.last_order_date
+          ? item.last_order_date.split("T")[0]
+          : "N/A",
         total_orders: item.total_orders || "",
       };
     });

@@ -81,6 +81,10 @@ const useOrdersColumn = (columns: Column[]) => {
         // tracking
         case "tracking":
           return { ...col, headerName: "Tracking", flex: 1, minWidth: 140 };
+        case "order_status":
+          return { ...col, headerName: "Order Status", flex: 1, minWidth: 140 };
+        case "psi_number":
+          return { ...col, headerName: "PSI Number", flex: 1, minWidth: 140 };
         case "customer_reference_no":
           return {
             ...col,
@@ -91,7 +95,14 @@ const useOrdersColumn = (columns: Column[]) => {
         case "customer_no":
           return { ...col, headerName: "Customer No", flex: 1, minWidth: 150 };
         case "total_value":
-          return { ...col, headerName: "Total Value", flex: 1, minWidth: 160 };
+          return {
+            ...col,
+            headerName: "Total Order Value",
+            flex: 1,
+            minWidth: 180,
+            align: "center",
+            headerAlign: "center",
+          };
         case "fulfillment_status":
           return {
             ...col,

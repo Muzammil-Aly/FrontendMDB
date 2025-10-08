@@ -97,6 +97,12 @@ export const klaviyoApi = createApi({
         customer_reference_no?: string;
         shipping_address?: string;
         tracking?: string;
+        order_date?: string;
+        profit_name?: string;
+        retailer?: string;
+        fulfillment_status?: string;
+        order_status?: string;
+        psi_number?: string;
       }
     >({
       query: ({
@@ -109,6 +115,12 @@ export const klaviyoApi = createApi({
         shipping_address,
         tracking,
         customer_email,
+        order_date,
+        profit_name,
+        retailer,
+        fulfillment_status,
+        order_status,
+        psi_number,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -121,6 +133,13 @@ export const klaviyoApi = createApi({
         if (shipping_address) params.set("shipping_address", shipping_address);
         if (tracking) params.set("tracking", tracking);
         if (customer_email) params.set("customer_email", customer_email);
+        if (order_date) params.set("order_date", order_date);
+        if (profit_name) params.set("profit_name", profit_name);
+        if (retailer) params.set("retailer", retailer);
+        if (fulfillment_status)
+          params.set("fulfillment_status", fulfillment_status);
+        if (order_status) params.set("order_status", order_status);
+        if (psi_number) params.set("psi_number", psi_number);
 
         return `/customer_orders?${params.toString()}`;
       },

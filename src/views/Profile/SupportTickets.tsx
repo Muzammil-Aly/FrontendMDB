@@ -191,8 +191,10 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
         customer_name: item.customer_name || "",
         email: item.email || "",
         phone_no: item.phone_no || "",
-        created_at: item.created_at || "",
-        resolved_at: item.resolved_at || "",
+        created_at: item.created_at ? item.created_at.split("T")[0] : "N/A",
+
+        // created_at: item.created_at || "",
+        resolved_at: item.resolved_at ? item.resolved_at.split("T")[0] : "N/A",
         status: item.status || "",
         channel: item.channel || "",
         tags: item.tags || "",

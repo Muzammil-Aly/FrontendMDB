@@ -14,6 +14,7 @@ import {
 
 import Loader from "@/components/Common/Loader";
 import debounce from "lodash.debounce";
+import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
 
 import { orders } from "@/constants/Grid-Table/ColDefs";
 import useOrdersColumn from "@/hooks/Ag-Grid/useOrdersColumn";
@@ -74,6 +75,36 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const [highlightedId, setHighlightedId] = useState<string | number | null>(
     null
   );
+  const [dateInput, setDateInput] = useState<any>(null);
+  const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
+  const [profitNametyping, setIsProfitNameTyping] = useState(false);
+  const [profitNameInput, setProfitNameInput] = useState("");
+  const [profitNameFilter, setProfitNameFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [isRetailerNametyping, setIsRetailerNameTyping] = useState(false);
+  const [retailerNameInput, setRetailerNameInput] = useState("");
+  const [retailerNameFilter, setRetailerNameFilter] = useState<
+    string | undefined
+  >(undefined);
+
+  const [isFullfillmenttyping, setIsFullfillmentTyping] = useState(false);
+  const [FullfillmentInput, setFullfillmentInput] = useState("");
+  const [FullfillmentFilter, setFullfillmentFilter] = useState<
+    string | undefined
+  >(undefined);
+
+  const [isOrderStatustyping, setIsOrderStatusTyping] = useState(false);
+  const [OrderStatusInput, setOrderStatusInput] = useState("");
+  const [OrderStatusFilter, setOrderStatusFilter] = useState<
+    string | undefined
+  >(undefined);
+
+  const [isPsiNumbertyping, setIsPsiNumbertyping] = useState(false);
+  const [psiNumberInput, setPsiNumberInput] = useState("");
+  const [psiNumberStatusFilter, setPsiNumberFilter] = useState<
+    string | undefined
+  >(undefined);
 
   const { data, isLoading, isFetching } = useGetCustomerOrdersQuery({
     page,
@@ -85,6 +116,12 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     shipping_address: shippingAddressFilter || undefined,
     tracking: trackigFilter || undefined,
     customer_email: searchTerm || undefined,
+    order_date: dateFilter || "",
+    profit_name: profitNameFilter || undefined,
+    retailer: retailerNameFilter || undefined,
+    fulfillment_status: FullfillmentFilter || undefined,
+    order_status: OrderStatusFilter || undefined,
+    psi_number: psiNumberStatusFilter || undefined,
   });
 
   const rowData = useMemo(() => {
@@ -99,14 +136,18 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       customer_no: item.customer_no,
       phone_no: item.phone_no || "N/A",
       customer_email: item.customer_email || "N/A",
-      order_date: item.order_date,
-      total_value: item.total_value,
+      // order_date: item.order_date,
+      order_date: item.order_date ? item.order_date.split("T")[0] : "N/A",
+
+      total_value: `$${item.total_value}`,
       discount_code: item.discount_code,
       fulfillment_status: item.fulfillment_status,
       shipping_address: item.shipping_address,
       channel: item.channel,
       tracking: item.tracking || "N/A",
       retailer: item.retailer || "N/A",
+      order_status: item.order_status || "N/A",
+      psi_number: item.psi_number || "N/A",
     }));
   }, [data]);
 
@@ -161,6 +202,55 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       }, 5000),
     []
   );
+
+  const debouncedProfitName = useMemo(
+    () =>
+      debounce((value: string) => {
+        setProfitNameFilter(value || undefined);
+        setPage(1);
+        setIsProfitNameTyping(false);
+      }, 5000),
+    []
+  );
+
+  const debouncedRetailerName = useMemo(
+    () =>
+      debounce((value: string) => {
+        setRetailerNameFilter(value || undefined);
+        setPage(1);
+        setIsRetailerNameTyping(false);
+      }, 5000),
+    []
+  );
+  const debouncedPsiNumber = useMemo(
+    () =>
+      debounce((value: string) => {
+        setPsiNumberFilter(value || undefined);
+        setPage(1);
+        setIsPsiNumbertyping(false);
+      }, 5000),
+    []
+  );
+  const debouncedOrderStatus = useMemo(
+    () =>
+      debounce((value: string) => {
+        setOrderStatusFilter(value || undefined);
+        setPage(1);
+        setIsOrderStatusTyping(false);
+      }, 5000),
+    []
+  );
+
+  const debouncedFullfilmentStatus = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFullfillmentFilter(value || undefined);
+        setPage(1);
+        setIsFullfillmentTyping(false);
+      }, 5000),
+    []
+  );
+
   const debouncedShippingAddress = useMemo(
     () =>
       debounce((value: string) => {
@@ -306,16 +396,24 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                   </Box>
                 </Box>
               </Box>
-
-              <CustomSelect
-                label="Page Size"
-                value={pageSize}
-                options={[10, 50, 100]}
-                onChange={(val) => {
-                  setPageSize(val);
-                  setPage(1);
-                }}
-              />
+              <Box display="flex" alignItems="center" gap={2}>
+                <CustomDatePicker
+                  label="Order Date"
+                  value={dateInput}
+                  setValue={setDateInput}
+                  setFilter={setDateFilter}
+                  setPage={setPage}
+                />
+                <CustomSelect
+                  label="Page Size"
+                  value={pageSize}
+                  options={[10, 50, 100]}
+                  onChange={(val) => {
+                    setPageSize(val);
+                    setPage(1);
+                  }}
+                />
+              </Box>
             </Box>
 
             <Box display="flex" alignItems="center" gap={4} ml={2} mb={2}>
@@ -566,6 +664,70 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                   <MenuItem value={100}>100</MenuItem>
                 </Select>
               </FormControl> */}
+            </Box>
+            <Box display="flex" alignItems="center" gap={2} ml={2} mb={2}>
+              <SearchInput
+                label="Profit Name"
+                value={profitNameInput}
+                setValue={(val) => {
+                  setProfitNameInput(val);
+                  setIsProfitNameTyping(true);
+                }}
+                setFilter={setProfitNameFilter}
+                debouncedFunction={debouncedProfitName}
+                loading={profitNametyping}
+                width={200}
+              />
+
+              <SearchInput
+                label="Retailer Name"
+                value={retailerNameInput}
+                setValue={(val) => {
+                  setRetailerNameInput(val);
+                  setIsRetailerNameTyping(true);
+                }}
+                setFilter={setRetailerNameFilter}
+                debouncedFunction={debouncedRetailerName}
+                loading={isRetailerNametyping}
+                width={200}
+              />
+              <SearchInput
+                label="Order Status"
+                value={OrderStatusInput}
+                setValue={(val) => {
+                  setOrderStatusInput(val);
+                  setIsOrderStatusTyping(true);
+                }}
+                setFilter={setOrderStatusFilter}
+                debouncedFunction={debouncedOrderStatus}
+                loading={isOrderStatustyping}
+                width={200}
+              />
+
+              <SearchInput
+                label="Fullfillment Status"
+                value={FullfillmentInput}
+                setValue={(val) => {
+                  setFullfillmentInput(val);
+                  setIsFullfillmentTyping(true);
+                }}
+                setFilter={setFullfillmentFilter}
+                debouncedFunction={debouncedFullfilmentStatus}
+                loading={isFullfillmenttyping}
+                width={200}
+              />
+              <SearchInput
+                label="PSI Number"
+                value={psiNumberInput}
+                setValue={(val) => {
+                  setPsiNumberInput(val);
+                  setIsPsiNumbertyping(true);
+                }}
+                setFilter={setPsiNumberFilter}
+                debouncedFunction={debouncedPsiNumber}
+                loading={isPsiNumbertyping}
+                width={200}
+              />
             </Box>
           </Box>
         )}
