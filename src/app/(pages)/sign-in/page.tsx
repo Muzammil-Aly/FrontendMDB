@@ -32,6 +32,7 @@ export default function SignIn() {
   const allowedUsers = [
     { email: "drivera@mdbmail.com", password: "drivera123" },
     { email: "Shipping@mdbmail.com", password: "Cs@mdbmail.com" },
+    { email: "Cs@mdbmail.com", password: "Cs@mdbmail.com" },
   ];
 
   const router = useRouter();
