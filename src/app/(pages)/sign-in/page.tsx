@@ -31,8 +31,8 @@ export default function SignIn() {
 
   const allowedUsers = [
     { email: "drivera@mdbmail.com", password: "drivera123" },
-    { email: "Shipping@mdbmail.com", password: "Cs@mdbmail.com" },
-    { email: "Cs@mdbmail.com", password: "Cs@mdbmail.com" },
+    { email: "Shipping@mdbmail.com", password: "Shipping123" },
+    { email: "Cs@mdbmail.com", password: "Csmdb123" },
   ];
 
   const router = useRouter();
@@ -179,7 +179,10 @@ export default function SignIn() {
             disabled={loading}
           >
             {loading ? (
-              <CircularProgress size={24} color="inherit" />
+              <>
+                <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                Signing in…
+              </>
             ) : (
               "Sign in"
             )}
