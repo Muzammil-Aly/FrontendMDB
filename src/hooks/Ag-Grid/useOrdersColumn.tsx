@@ -83,6 +83,27 @@ const useOrdersColumn = (columns: Column[]) => {
           return { ...col, headerName: "Tracking", flex: 1, minWidth: 140 };
         case "order_status":
           return { ...col, headerName: "Order Status", flex: 1, minWidth: 140 };
+        case "rma_status":
+          return { ...col, headerName: "RMA Status", flex: 1, minWidth: 140 };
+
+        case "receive":
+          return { ...col, headerName: "Receive", flex: 1, minWidth: 140 };
+
+        case "extend":
+          return { ...col, headerName: "Extend", flex: 1, minWidth: 140 };
+        case "redo":
+          return { ...col, headerName: "Redo", flex: 1, minWidth: 140 };
+
+        case "order_url":
+          return { ...col, headerName: "Order URL", flex: 1, minWidth: 140 };
+
+        case "shipping_zip_code":
+          return {
+            ...col,
+            headerName: "Shipping Zip Code",
+            flex: 1,
+            minWidth: 180,
+          };
         case "psi_number":
           return { ...col, headerName: "PSI Number", flex: 1, minWidth: 140 };
         case "customer_reference_no":

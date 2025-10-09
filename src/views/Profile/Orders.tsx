@@ -110,7 +110,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     page,
     page_size: pageSize,
     order_id: orderIdFilter || undefined,
-    customer_id: customerIdFilter || undefined,
+    customer_id: customerIdFilter || customerId || undefined,
     customer_name: customerNameFilter || undefined,
     customer_reference_no: customerReferenceNoFilter || undefined,
     shipping_address: shippingAddressFilter || undefined,
@@ -148,6 +148,12 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       retailer: item.retailer || "N/A",
       order_status: item.order_status || "N/A",
       psi_number: item.psi_number || "N/A",
+      rma_status: item.rma_status || "N/A",
+      receive: item.receive || "N/A",
+      extend: item.extend || "N/A",
+      redo: item.redo || "N/A",
+      order_url: item.order_url || "N/A",
+      shipping_zip_code: item.shipping_zip_code || "N/A",
     }));
   }, [data]);
 

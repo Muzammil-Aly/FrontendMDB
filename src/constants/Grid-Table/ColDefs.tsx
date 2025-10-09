@@ -119,6 +119,40 @@ export const orders = [
     headerName: "PSI Number",
     cellRenderer: CopyCellRenderer,
   },
+
+  {
+    field: "rma_status",
+    headerName: "RMA Status",
+    cellRenderer: CopyCellRenderer,
+  },
+
+  {
+    field: "receive",
+    headerName: "Receive",
+    cellRenderer: CopyCellRenderer,
+  },
+
+  {
+    field: "extend",
+    headerName: "Extend",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "redo",
+    headerName: "Redo",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "order_url",
+    headerName: "Order URL",
+    cellRenderer: CopyCellRenderer,
+  },
+
+  {
+    field: "shipping_zip_code",
+    headerName: "Shipping Zip Code",
+    cellRenderer: CopyCellRenderer,
+  },
   {
     field: "shipping_address",
     headerName: "Shipping Address",
