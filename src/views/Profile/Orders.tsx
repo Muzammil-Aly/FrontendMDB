@@ -157,17 +157,38 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     }));
   }, [data]);
 
+  // const onRowClicked = (params: any) => {
+  //   const event = params?.event;
+  //   if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
+  //     return; // ignore clicks from any MUI icon button
+  //   }
+  //   if (selectedOrder?.order_id === params.data.order_id) {
+  //     setSelectedOrder(null);
+  //   } else {
+  //     setSelectedOrder(params.data);
+  //   }
+  // };
+
   const onRowClicked = (params: any) => {
     const event = params?.event;
-    if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
-      return; // ignore clicks from any MUI icon button
+    const target = event?.target as HTMLElement;
+
+    // 🛑 ignore clicks from copy icon or from the "Open Order" link
+    if (
+      target.closest(".MuiIconButton-root") ||
+      target.closest(".order-link") // custom class we’ll add
+    ) {
+      return;
     }
+
+    // ✅ your normal logic
     if (selectedOrder?.order_id === params.data.order_id) {
       setSelectedOrder(null);
     } else {
       setSelectedOrder(params.data);
     }
   };
+
   // console.log("Selected order", selectedOrder);
 
   // const getRowStyle = (params: any) => {

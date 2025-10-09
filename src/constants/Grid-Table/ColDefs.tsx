@@ -146,6 +146,8 @@ export const orders = [
     field: "order_url",
     headerName: "Order URL",
     cellRenderer: CopyCellRenderer,
+    suppressClickEdit: true, // ⛔ stops grid from reacting to clicks
+    suppressNavigable: true, // ⛔ avoids keyboard focus behavior
   },
 
   {
