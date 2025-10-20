@@ -98,9 +98,10 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  totalItems: number;
-  pageSize: number;
+
   onPageChange: (page: number) => void;
+  totalItems?: number; // optional now
+  pageSize?: number; // optional now
 }
 
 const PaginationBar: React.FC<PaginationProps> = ({
