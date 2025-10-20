@@ -137,7 +137,7 @@ const ResponsiveDashboard = ({
       },
     ],
     md: [
-      { i: "profiles", x: 0, y: 0, w: 6, h: 16, maxH: 40 },
+      { i: "profiles", x: 0, y: 0, w: hasId ? 6 : 12, h: 16, maxH: 40 },
       { i: "customer_segments", x: 6, y: 0, w: 6, h: 16, maxH: 40 },
       {
         i: "order_items",
@@ -164,7 +164,13 @@ const ResponsiveDashboard = ({
 
   console.log("Selected order id is ", selectedOrderItem);
   return (
-    <Box sx={{ width: "100%", minHeight: "100vh", pl: "50px" }}>
+    <Box
+      sx={{
+        width: "100%",
+        minHeight: "100vh",
+        pl: { xs: 1, sm: 2, md: 4, lg: 6 },
+      }}
+    >
       <ResponsiveGridLayout
         className="layout"
         layouts={layouts}
