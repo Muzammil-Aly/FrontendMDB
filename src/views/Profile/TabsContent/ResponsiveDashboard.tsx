@@ -1,5 +1,5 @@
 "use client";
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import AgGridTable from "@/components/ag-grid";
 import "react-grid-layout/css/styles.css";
@@ -91,36 +91,78 @@ const ResponsiveDashboard = ({
   //     },
   //   ],
   // };
-// layouts
+  // layouts
 
   const hasId = selectedCustId || selectedOrderId || selectedTicket;
   type OrderItem = { order_id: string; [key: string]: any };
-  const [selectedOrderItem, setSelectedOrderItem] = useState<OrderItem | null>(null);
+  const [selectedOrderItem, setSelectedOrderItem] = useState<OrderItem | null>(
+    null
+  );
   const [selectedTouchup, setSelectedTouchup] = useState<any | null>(null);
-useEffect(() => {
-  // Reset when orderId changes or is cleared
-  setSelectedOrderItem(null);
-  setSelectedTouchup(null);
-}, [selectedOrderId]);
-const layouts = {
-  lg: [
-    { i: "profiles", x: 0, y: 0, w: hasId ? 7 : 12, h: 16, minW: 4, minH: 16, maxH: 50 },
-    { i: "customer_segments", x: hasId ? 7 : 0, y: 0, w: hasId ? 5 : 12, h: 16, minW: 3, minH: 16, maxH: 50 },
-    { i: "order_items", x: 0, y: 16, w: 12, h: selectedOrderItem ? 7 : 0, minH: 0, maxH: 40 },
-  ],
-  md: [
-    { i: "profiles", x: 0, y: 0, w: 6, h: 16, maxH: 40 },
-    { i: "customer_segments", x: 6, y: 0, w: 6, h: 16, maxH: 40 },
-    { i: "order_items", x: 0, y: 16, w: 12, h: selectedOrderItem ? 12 : 0, maxH: 40 },
-  ],
-  sm: [
-    { i: "profiles", x: 0, y: 0, w: 12, h: 18, maxH: 40 },
-    { i: "customer_segments", x: 0, y: 18, w: 12, h: 18, maxH: 40 },
-    { i: "order_items", x: 0, y: 36, w: 12, h: selectedOrderItem ? 12 : 0, maxH: 40 },
-  ],
-};
+  useEffect(() => {
+    // Reset when orderId changes or is cleared
+    setSelectedOrderItem(null);
+    setSelectedTouchup(null);
+  }, [selectedOrderId]);
+  const layouts = {
+    lg: [
+      {
+        i: "profiles",
+        x: 0,
+        y: 0,
+        w: hasId ? 7 : 12,
+        h: 16,
+        minW: 4,
+        minH: 16,
+        maxH: 50,
+      },
+      {
+        i: "customer_segments",
+        x: hasId ? 7 : 0,
+        y: 0,
+        w: hasId ? 5 : 12,
+        h: 16,
+        minW: 3,
+        minH: 16,
+        maxH: 50,
+      },
+      {
+        i: "order_items",
+        x: 0,
+        y: 16,
+        w: 12,
+        h: selectedOrderItem ? 7 : 0,
+        minH: 0,
+        maxH: 40,
+      },
+    ],
+    md: [
+      { i: "profiles", x: 0, y: 0, w: 6, h: 16, maxH: 40 },
+      { i: "customer_segments", x: 6, y: 0, w: 6, h: 16, maxH: 40 },
+      {
+        i: "order_items",
+        x: 0,
+        y: 16,
+        w: 12,
+        h: selectedOrderItem ? 12 : 0,
+        maxH: 40,
+      },
+    ],
+    sm: [
+      { i: "profiles", x: 0, y: 0, w: 12, h: 18, maxH: 40 },
+      { i: "customer_segments", x: 0, y: 18, w: 12, h: 18, maxH: 40 },
+      {
+        i: "order_items",
+        x: 0,
+        y: 36,
+        w: 12,
+        h: selectedOrderItem ? 12 : 0,
+        maxH: 40,
+      },
+    ],
+  };
 
-console.log("Selected order id is ",selectedOrderItem);
+  console.log("Selected order id is ", selectedOrderItem);
   return (
     <Box sx={{ width: "100%", minHeight: "100vh", pl: "50px" }}>
       <ResponsiveGridLayout
@@ -172,63 +214,53 @@ console.log("Selected order id is ",selectedOrderItem);
             </Box>
           </Box>
         </Paper>
-{hasId ? (
-  <Paper
-    key="customer_segments"
-    elevation={3}
-    onClick={(e) => e.stopPropagation()}
-    sx={{
-      p: 2,
-      borderRadius: 3,
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      overflow: "hidden",
-    }}
-  >
-    <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
-      {selectedCustId && currentMenu === "profiles" && (
-        <CustomerSegmentCard custId={selectedCustId} />
-      )}
-      {selectedOrderId && currentMenu === "orders" && (
-        <OrderItems
-          orderId={selectedOrderId}
-          setSelectedOrderItem={setSelectedOrderItem}
-        />
-      )}
-      {selectedTicket && currentMenu === "support_tickets" && (
-        <SupportTicketComments ticketId={selectedTicket} />
-      )}
-    </Box>
-  </Paper>
-) : (
-  <Typography>No id is found</Typography>
-)}
+        {hasId ? (
+          <Paper
+            key="customer_segments"
+            elevation={3}
+            onClick={(e) => e.stopPropagation()}
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
+          >
+            <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
+              {selectedCustId && currentMenu === "profiles" && (
+                <CustomerSegmentCard custId={selectedCustId} />
+              )}
+              {selectedOrderId && currentMenu === "orders" && (
+                <OrderItems
+                  orderId={selectedOrderId}
+                  setSelectedOrderItem={setSelectedOrderItem}
+                />
+              )}
+              {selectedTicket && currentMenu === "support_tickets" && (
+                <SupportTicketComments ticketId={selectedTicket} />
+              )}
+            </Box>
+          </Paper>
+        ) : (
+          <Typography>No id is found</Typography>
+        )}
 
-
-{selectedOrderItem && hasId && (
-  <Paper
-    key="order_items"
-    
-    elevation={3}
-    sx={{ p: 2, borderRadius: 3, height: "100%" }}
-  >
-    
-    <Touchups
-      orderId={selectedOrderItem.order_id}
-      setSelectedTouchup={setSelectedTouchup}
-    />
-  </Paper>
-)}
-
-
-
-
-
+        {selectedOrderItem && hasId && (
+          <Paper
+            key="order_items"
+            elevation={3}
+            sx={{ p: 2, borderRadius: 3, height: "100%" }}
+          >
+            <Touchups
+              orderId={selectedOrderItem.order_id}
+              setSelectedTouchup={setSelectedTouchup}
+            />
+          </Paper>
+        )}
       </ResponsiveGridLayout>
-     
     </Box>
-    
   );
 };
 

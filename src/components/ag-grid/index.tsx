@@ -142,6 +142,7 @@ const AgGridTable: React.FC<any> = ({
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={onPageChange}
+            pageSize={paginationPageSize}
           />
         )}
       </Box>

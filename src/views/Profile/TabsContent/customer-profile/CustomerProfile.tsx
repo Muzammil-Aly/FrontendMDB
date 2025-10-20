@@ -191,199 +191,154 @@ const CustomerProfile = () => {
   return (
     <Box flex={1}>
       <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
+        display="flex"
+        flexDirection="column"
+        width="100%"
+        pl={8}
         pr={3}
         mb={2}
-        pl={8}
       >
-        <Box display={"flex"} flexDirection={"column"}>
+        {/* Top row: Search + Page Size */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          flexWrap="wrap"
+          mb={2}
+        >
           <Box
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            gap={110}
+            display="flex"
+            alignItems="center"
+            flex={1}
+            minWidth={200}
+            mb={{ xs: 1, sm: 0 }}
           >
-            <Box mb={2}>
-              <Box display={"flex"} alignItems="center" gap={1}>
-                <CustomSearchField
-                  value={searchInput}
-                  onChange={handleSearchInput}
-                  placeholder="Search by Email"
-                  InputProps={{
-                    endAdornment: searchInput.trim() !== "" && isTyping && (
-                      <InputAdornment position="end">
-                        <CircularProgress size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
-                {
-                  <Send
-                    onClick={() => {
-                      setSearchTerm(searchInput);
-                      setPage(1);
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      color: "#004FA7",
-                      height: "36px",
-                      width: "36px",
-                    }}
-                  />
-                }
-              </Box>
-            </Box>
-            <Box
-              display={"flex"}
-              alignItems={"center"}
-              gap={2}
-              justifyContent={"space-between"}
-            >
-              <Box>
-                <CustomSelect
-                  label="Page Size"
-                  value={pageSize}
-                  options={[10, 50, 100]}
-                  onChange={(val) => {
-                    setPageSize(val); // val is already a number
-                    setPage(1);
-                  }}
-                />
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            gap={0}
-            mb={2}
-            // pl={1}
-          >
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              gap={2}
-              pl={1}
-            >
-              <Box ml={0}>
-                <SearchInput
-                  label="Customer ID"
-                  value={customerIdInput}
-                  setValue={(val) => {
-                    setCustomerIdInput(val);
-                    setIsCustomerIDTyping(true);
-                  }}
-                  setFilter={setCustomerIdFilter}
-                  debouncedFunction={debouncedCustomerId}
-                  loading={isCustomerIDTyping}
-                />
-              </Box>
-
-              <DropdownSearchInput
-                label="Full Name"
-                value={fullNameInput}
-                setValue={setFullNameInput}
-                setFilter={setFullNameFilter}
-                debouncedFunction={debouncedFullName} // suggestion API
-                loading={isFullNameLoading}
-                suggestions={fullNameSuggestions?.results || []}
-              />
-
-              <DropdownSearchInput
-                label="Phone Number"
-                value={phoneNumberInput}
-                setValue={setPhoneNumberInput}
-                setFilter={setPhoneNumberFilter}
-                debouncedFunction={debouncedPhoneNumber}
-                loading={isPhoneLoading}
-                width={160}
-                suggestions={PhoneSuggestions?.results || []}
-              />
-
-              <Box display={"flex"} justifyContent={"space-between"} gap={2}>
-                <CustomDatePicker
-                  label="Created At"
-                  value={dateInput}
-                  setValue={setDateInput}
-                  setFilter={setDateFilter}
-                  setPage={setPage}
-                />
-              </Box>
-              <Box>
-                <CustomDatePicker
-                  label="Last Order Date"
-                  value={lastDateInput}
-                  setValue={setLastDateInput}
-                  setFilter={setLastDateFilter}
-                  setPage={setPage}
-                />
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            gap={40}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                gap: 1,
-                marginLeft: "10px",
+            <CustomSearchField
+              value={searchInput}
+              onChange={handleSearchInput}
+              placeholder="Search by Email"
+              fullWidth
+              InputProps={{
+                endAdornment: searchInput.trim() !== "" && isTyping && (
+                  <InputAdornment position="end">
+                    <CircularProgress size={20} />
+                  </InputAdornment>
+                ),
               }}
-            >
-              {sourceOptions.map((option) => (
-                <Button
-                  key={option}
-                  onClick={() => toggleSouceoptions(option)}
-                  sx={{
-                    minWidth: 90,
-                    height: 36,
-                    fontSize: 13,
-                    textTransform: "none",
-                    borderRadius: "8px",
-                    fontWeight: 800,
-                    border: "1px solid transparent",
-                    color: sourceFilter === option ? "#fff" : "#1C1C1E",
+            />
+            <Send
+              onClick={() => {
+                setSearchTerm(searchInput);
+                setPage(1);
+              }}
+              style={{
+                cursor: "pointer",
+                color: "#004FA7",
+                height: 36,
+                width: 36,
+                marginLeft: 8,
+              }}
+            />
+          </Box>
 
-                    background: sourceFilter === option ? "#0E1B6B" : "#EDEDF0",
-                    transition: "all 0.25s ease",
-                    boxShadow:
-                      sourceFilter === option
-                        ? "0px 4px 10px rgba(0, 79, 167, 0.3)"
-                        : "0px 2px 6px rgba(0,0,0,0.05)",
-
-                    "&:hover": {
-                      color: sourceFilter === option ? "#fff" : "#1C1C1E",
-
-                      background:
-                        sourceFilter === option
-                          ? "#131C55"
-                          : "linear-gradient(90deg, #E5E7EB 0%, #F3F4F6 100%)",
-                      boxShadow:
-                        sourceFilter === option
-                          ? "0px 5px 12px rgba(0, 79, 167, 0.35)"
-                          : "0px 3px 8px rgba(0,0,0,0.08)",
-                      transform: "translateY(-1px)",
-                    },
-                    "&:active": {
-                      transform: "translateY(0)",
-                      boxShadow: "none",
-                    },
-                  }}
-                >
-                  {option}
-                </Button>
-              ))}
-            </Box>
+          <Box minWidth={120}>
+            <CustomSelect
+              label="Page Size"
+              value={pageSize}
+              options={[10, 50, 100]}
+              onChange={(val) => {
+                setPageSize(val);
+                setPage(1);
+              }}
+            />
           </Box>
         </Box>
+
+        {/* Filters row */}
+        <Box display="flex" flexWrap="wrap" gap={2} mb={2}>
+          <SearchInput
+            label="Customer ID"
+            value={customerIdInput}
+            setValue={(val) => {
+              setCustomerIdInput(val);
+              setIsCustomerIDTyping(true);
+            }}
+            setFilter={setCustomerIdFilter}
+            debouncedFunction={debouncedCustomerId}
+            loading={isCustomerIDTyping}
+          />
+
+          <DropdownSearchInput
+            label="Full Name"
+            value={fullNameInput}
+            setValue={setFullNameInput}
+            setFilter={setFullNameFilter}
+            debouncedFunction={debouncedFullName}
+            loading={isFullNameLoading}
+            suggestions={fullNameSuggestions?.results || []}
+          />
+
+          <DropdownSearchInput
+            label="Phone Number"
+            value={phoneNumberInput}
+            setValue={setPhoneNumberInput}
+            setFilter={setPhoneNumberFilter}
+            debouncedFunction={debouncedPhoneNumber}
+            loading={isPhoneLoading}
+            width={160}
+            suggestions={PhoneSuggestions?.results || []}
+          />
+
+          <CustomDatePicker
+            label="Created At"
+            value={dateInput}
+            setValue={setDateInput}
+            setFilter={setDateFilter}
+            setPage={setPage}
+          />
+
+          <CustomDatePicker
+            label="Last Order Date"
+            value={lastDateInput}
+            setValue={setLastDateInput}
+            setFilter={setLastDateFilter}
+            setPage={setPage}
+          />
+        </Box>
+
+        {/* Source buttons */}
+        <Box display="flex" flexWrap="wrap" gap={1}>
+          {sourceOptions.map((option) => (
+            <Button
+              key={option}
+              onClick={() => toggleSouceoptions(option)}
+              sx={{
+                minWidth: 90,
+                height: 36,
+                fontSize: 13,
+                textTransform: "none",
+                borderRadius: "8px",
+                fontWeight: 800,
+                border: "1px solid transparent",
+                color: sourceFilter === option ? "#fff" : "#1C1C1E",
+                background: sourceFilter === option ? "#0E1B6B" : "#EDEDF0",
+                transition: "all 0.25s ease",
+                boxShadow:
+                  sourceFilter === option
+                    ? "0px 4px 10px rgba(0, 79, 167, 0.3)"
+                    : "0px 2px 6px rgba(0,0,0,0.05)",
+                "&:hover": {
+                  color: sourceFilter === option ? "#fff" : "#1C1C1E",
+                  background: sourceFilter === option ? "#131C55" : "#E5E7EB",
+                },
+              }}
+            >
+              {option}
+            </Button>
+          ))}
+        </Box>
       </Box>
+
       {/* Table */}
       {isLoading || isFetching ? (
         <Loader />

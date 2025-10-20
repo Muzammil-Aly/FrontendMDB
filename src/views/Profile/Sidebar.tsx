@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 color: "#ffff",
               }}
             >
-              UCP
+              CXi
             </Typography>
           </Box>
         </Box>

@@ -248,54 +248,57 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       <Box flex={1} p={1}>
         {!customerId && (
           <Box
-            display={"flex"}
+            display="flex"
             flexDirection="column"
-            justifyContent={"space-between"}
-            alignItems={"flex-start"}
+            justifyContent="flex-start"
+            alignItems="stretch"
             pl={8}
-            gap={1}
+            gap={2} // uniform spacing between rows
             mb={2}
           >
+            {/* Top row: Email search + Status + Page Size */}
             <Box
               display="flex"
+              flexWrap="wrap"
               justifyContent="space-between"
-              alignItems={"center"}
-              gap={90}
+              alignItems="center"
+              gap={2}
             >
-              <Box display="flex" alignItems="center" gap={2} ml={2}>
-                <Box mt={1}>
-                  <Box display={"flex"} alignItems="center" gap={1}>
-                    <CustomSearchField
-                      value={searchInput}
-                      onChange={handleSearchInput}
-                      placeholder="Search by Email"
-                      InputProps={{
-                        endAdornment: searchInput.trim() !== "" && isTyping && (
-                          <InputAdornment position="end">
-                            <CircularProgress size={20} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-
-                    {
-                      <Send
-                        onClick={() => {
-                          setSearchTerm(searchInput);
-                          setPage(1);
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          color: "#004FA7",
-                          height: "36px",
-                          width: "36px",
-                        }}
-                      />
-                    }
-                  </Box>
-                </Box>
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={1}
+                flex={1}
+                minWidth={200}
+              >
+                <CustomSearchField
+                  value={searchInput}
+                  onChange={handleSearchInput}
+                  placeholder="Search by Email"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: searchInput.trim() !== "" && isTyping && (
+                      <InputAdornment position="end">
+                        <CircularProgress size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Send
+                  onClick={() => {
+                    setSearchTerm(searchInput);
+                    setPage(1);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    color: "#004FA7",
+                    height: 36,
+                    width: 36,
+                  }}
+                />
               </Box>
-              <Box display="flex" alignItems="center" gap={3} ml={0}>
+
+              <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
                 <FormControl size="small" sx={{ width: 140 }}>
                   <Autocomplete
                     size="small"
@@ -329,25 +332,21 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                               borderWidth: "1.5px",
                             },
                           },
-                          "& .MuiInputBase-input": {
-                            padding: "6px 10px",
-                          },
+                          "& .MuiInputBase-input": { padding: "6px 10px" },
                         }}
                       />
                     )}
                     slotProps={{
                       paper: {
                         sx: {
-                          fontSize: "12px", // smaller font for dropdown
+                          fontSize: "12px",
                           borderRadius: "8px",
                           padding: "2px 0",
                         },
                       },
                       listbox: {
                         sx: {
-                          "& .MuiAutocomplete-option": {
-                            padding: "2px 10px", // smaller option height
-                          },
+                          "& .MuiAutocomplete-option": { padding: "2px 10px" },
                         },
                       },
                     }}
@@ -359,13 +358,15 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                   value={pageSize}
                   options={[10, 50, 100]}
                   onChange={(val) => {
-                    setPageSize(val); // val is already a number
+                    setPageSize(val);
                     setPage(1);
                   }}
                 />
               </Box>
             </Box>
-            <Box display={"flex"} alignItems={"center"} gap={2} ml={2}>
+
+            {/* Filters row */}
+            <Box display="flex" flexWrap="wrap" gap={2}>
               <SearchInput
                 label="Customer ID"
                 value={customerIdInput}

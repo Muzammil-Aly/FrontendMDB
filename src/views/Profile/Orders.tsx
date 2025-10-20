@@ -374,58 +374,56 @@ const Orders = ({ customerId }: { customerId?: string }) => {
         {!customerId && (
           <Box
             display="flex"
-            flexDirection={"column"}
-            justifyContent="space-between"
-            alignItems="flex-start"
+            flexDirection="column"
+            justifyContent="flex-start"
+            alignItems="stretch"
             pl={7}
-            // gap={2}
+            width="100%"
+            gap={2} // uniform spacing between rows
           >
+            {/* Top row: Email search + Date + Page Size */}
             <Box
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"space-between"}
-              width="100%"
+              display="flex"
+              flexWrap="wrap"
+              justifyContent="space-between"
+              alignItems="center"
               gap={2}
             >
               <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                gap={3}
+                display="flex"
+                alignItems="center"
+                flex={1}
+                minWidth={200}
+                gap={1}
               >
-                <Box mt={1} ml={2}>
-                  <Box display={"flex"} alignItems="center" gap={1}>
-                    <CustomSearchField
-                      value={searchInput}
-                      onChange={handleSearchInput}
-                      placeholder="Search by Email"
-                      InputProps={{
-                        endAdornment: searchInput.trim() !== "" && isTyping && (
-                          <InputAdornment position="end">
-                            <CircularProgress size={20} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-
-                    {
-                      <Send
-                        onClick={() => {
-                          setSearchTerm(searchInput);
-                          setPage(1);
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          color: "#004FA7",
-                          height: "36px",
-                          width: "36px",
-                        }}
-                      />
-                    }
-                  </Box>
-                </Box>
+                <CustomSearchField
+                  value={searchInput}
+                  onChange={handleSearchInput}
+                  placeholder="Search by Email"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: searchInput.trim() !== "" && isTyping && (
+                      <InputAdornment position="end">
+                        <CircularProgress size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Send
+                  onClick={() => {
+                    setSearchTerm(searchInput);
+                    setPage(1);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    color: "#004FA7",
+                    height: 36,
+                    width: 36,
+                  }}
+                />
               </Box>
-              <Box display="flex" alignItems="center" gap={2}>
+
+              <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
                 <CustomDatePicker
                   label="Order Date"
                   value={dateInput}
@@ -445,57 +443,8 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               </Box>
             </Box>
 
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={4}
-              ml={2}
-              mb={2}
-              mt={2}
-            >
-              {/* <FormControl size="small">
-                <TextField
-                  label="Order ID"
-                  value={(orderIdFilter || "").toUpperCase()}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setOrderIdFilter(value ? value.toUpperCase() : undefined);
-                    setPage(1);
-                  }}
-                  size="small"
-                  placeholder="Search by Order ID"
-                />
-              </FormControl> */}
-
-              {/* <FormControl size="small" sx={{ width: 160 }}>
-                <TextField
-                  label="Order ID"
-                  value={orderIdInput.toUpperCase()}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setOrderIdInput(value);
-
-                    if (value.trim() === "") {
-                      setOrderIdFilter(undefined);
-                      debouncedOrderId.cancel(); // cancel pending debounce
-                    } else {
-                      debouncedOrderId(value);
-                      setIsOrderIdTyping(true);
-                    }
-                  }}
-                  size="small"
-                  placeholder="Order ID"
-                  InputProps={{
-                    endAdornment: orderIdInput.trim() !== "" &&
-                      orderIdtyping && (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ),
-                  }}
-                />
-              </FormControl> */}
-
+            {/* First filter row */}
+            <Box display="flex" flexWrap="wrap" gap={2}>
               <SearchInput
                 label="Order ID"
                 value={orderIdInput}
@@ -520,36 +469,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 loading={isCustomerIDTyping}
                 width={150}
               />
-              {/* 
-              <FormControl size="small" sx={{ width: 200 }}>
-                <TextField
-                  label="Customer Name"
-                  value={customerNameInput}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setCustomerNameInput(value);
-
-                    if (value.trim() === "") {
-                      setCustomerNameFilter(undefined);
-                      debouncedCustomerName.cancel(); // cancel pending debounce
-                    } else {
-                      debouncedCustomerName(value);
-                      setIsCustomerNameTyping(true);
-                    }
-                  }}
-                  size="small"
-                  placeholder="Customer Name"
-                  InputProps={{
-                    endAdornment: customerNameInput.trim() !== "" &&
-                      customerNametyping && (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ),
-                  }}
-                />
-              </FormControl> */}
-
               <DropdownSearchInput
                 label="Customer Name"
                 value={customerNameInput}
@@ -560,36 +479,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 suggestions={customerNameSuggestions?.results || []}
                 width={150}
               />
-
-              {/* <FormControl size="small" sx={{ width: 210 }}>
-                <TextField
-                  label="Shipping Address"
-                  value={shippingAddressInput}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setShippingAddressInput(value);
-
-                    if (value.trim() === "") {
-                      setShippingAddressFilter(undefined);
-                      debouncedShippingAddress.cancel(); // cancel pending debounce
-                    } else {
-                      setIsShippingAddressTyping(true);
-                      debouncedShippingAddress(value);
-                    }
-                  }}
-                  size="small"
-                  placeholder="Shipping Address"
-                  InputProps={{
-                    endAdornment: shippingAddressInput.trim() !== "" &&
-                      shippingAddresstyping && (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ),
-                  }}
-                />
-              </FormControl> */}
-
               <SearchInput
                 label="Shipping Address"
                 value={shippingAddressInput}
@@ -602,34 +491,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 loading={shippingAddresstyping}
                 width={150}
               />
-
-              {/* <FormControl size="small" sx={{ width: 230 }}>
-                <TextField
-                  label="Customer Reference No "
-                  value={customerReferenceNoInput}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setCustomerReferenceNoInput(value);
-                    if (value.trim() === "") {
-                      setCustomerReferenceNoFilter(undefined);
-                      debouncedcustomerReferenceNo.cancel(); // cancel pending debounce
-                    } else {
-                      setIsCustomerReferenceNoTyping(true);
-                      debouncedcustomerReferenceNo(value);
-                    }
-                  }}
-                  size="small"
-                  placeholder="Customer Reference No"
-                  InputProps={{
-                    endAdornment: customerReferenceNoInput.trim() !== "" &&
-                      customerReferenceNotyping && (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ),
-                  }}
-                />
-              </FormControl> */}
               <SearchInput
                 label="Customer Reference No"
                 value={customerReferenceNoInput}
@@ -642,34 +503,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 loading={customerReferenceNotyping}
                 width={150}
               />
-
-              {/* <FormControl size="small" sx={{ width: 140 }}>
-                <TextField
-                  label="Tracking"
-                  value={trackingInput}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setTrackingInput(value);
-                    if (value.trim() === "") {
-                      setTrackingFilter(undefined);
-                      debouncedTracking.cancel(); // cancel pending debounce
-                    } else {
-                      debouncedTracking(value);
-                      setIsTrackingTyping(true);
-                    }
-                  }}
-                  size="small"
-                  placeholder="Tracking"
-                  InputProps={{
-                    endAdornment: trackingInput.trim() !== "" &&
-                      trackingtyping && (
-                        <InputAdornment position="end">
-                          <CircularProgress size={20} />
-                        </InputAdornment>
-                      ),
-                  }}
-                />
-              </FormControl> */}
               <SearchInput
                 label="Tracking"
                 value={trackingInput}
@@ -682,25 +515,10 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 loading={trackingtyping}
                 width={150}
               />
-
-              {/* <FormControl size="small" sx={{ width: 100 }}>
-                <InputLabel>Page Size</InputLabel>
-                <Select
-                  value={pageSize}
-                  onChange={(e) => {
-                    setPageSize(Number(e.target.value));
-                    setPage(1);
-                  }}
-                  label="Page Size"
-                  sx={{ width: 100 }}
-                >
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={50}>50</MenuItem>
-                  <MenuItem value={100}>100</MenuItem>
-                </Select>
-              </FormControl> */}
             </Box>
-            <Box display="flex" alignItems="center" gap={2} ml={2} mb={2}>
+
+            {/* Second filter row */}
+            <Box display="flex" flexWrap="wrap" gap={2}>
               <DropdownSearchInput
                 label="Profit Name"
                 value={profitNameInput}
@@ -711,7 +529,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 suggestions={profitNameSuggestions?.results || []}
                 width={150}
               />
-
               <DropdownSearchInput
                 label="Retailer Name"
                 value={retailerNameInput}
@@ -732,7 +549,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 suggestions={statusSuggestions?.results || []}
                 width={150}
               />
-
               <DropdownSearchInput
                 label="Fullfillment Status"
                 value={FullfillmentInput}
