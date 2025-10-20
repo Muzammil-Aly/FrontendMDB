@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (isAuthenticated === null && !isAuthPage) {
     return (
       <Box sx={{ height: 600 }}>
-        <Loader title="UCP" />
+        <Loader title="CXi" />
       </Box>
     );
   }
