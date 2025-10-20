@@ -374,6 +374,7 @@ const DetailedInfo = () => {
           totalPages={data?.total_pages || 1}
           onPageChange={(newPage: any) => setPage(newPage)}
           pagination={false}
+          paginationPageSize={pageSize}
         />
       )}
       <UserDetailsModal
