@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Modal, Typography, Stack } from "@mui/material";
 
-import OrderHistory from "./TabsContent/OrderHistory";
-import CustomerSegmentCard from "./CustomerSegmentCard";
-import SupportTickets from "./SupportTickets";
-import MarketingEvents from "./MarketingEvents";
-import Orders from "./Orders";
+import OrderHistory from "../OrderHistory";
+import CustomerSegmentCard from "../../CustomerSegmentCard";
+import SupportTickets from "../../SupportTickets";
+import MarketingEvents from "../../MarketingEvents";
+import Orders from "../../Orders";
 
 interface UserDetailsModalProps {
   open: boolean;

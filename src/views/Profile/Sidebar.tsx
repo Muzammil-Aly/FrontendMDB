@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Button, Typography, Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 interface SidebarItem {
@@ -23,19 +23,33 @@ const Sidebar: React.FC<SidebarProps> = ({
   setActiveMenu,
   onLogout,
 }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadUser = () => {
+      const storedName = localStorage.getItem("userName");
+      const storedEmail = localStorage.getItem("userEmail");
+      setUserName(storedName);
+      setUserEmail(storedEmail);
+    };
+
+    loadUser();
+
+    // Also re-check after a short delay (helps after fast route changes)
+    const timer = setTimeout(loadUser, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <Box
-      onMouseEnter={() => setIsSidebarOpen(true)}
-      onMouseLeave={() => setIsSidebarOpen(false)}
       sx={{
         position: "fixed",
-        width: isSidebarOpen ? 200 : 70,
+        width: 200,
         height: "100vh",
         borderRight: "1px solid #ddd",
-        bgcolor: "#f9f9f9",
-        p: 2,
+        bgcolor: "#131C55",
         transition: "width 0.3s ease",
         overflow: "hidden",
         zIndex: 1200,
@@ -46,91 +60,43 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <Box
         sx={{
-          height: 150,
           display: "flex",
-          alignItems: "center",
           justifyContent: "center",
-          mb: 2,
+          marginBottom: "20px",
         }}
       >
-        {isSidebarOpen ? (
+        <Box
+          sx={{
+            textAlign: "center",
+            borderRadius: "16px",
+          }}
+        >
           <Box
             sx={{
-              textAlign: "center",
-              p: 3,
-              // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-              borderRadius: "16px",
-              // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              width: 256,
+              height: 64,
+              padding: 1.25, // 10px
+              backgroundColor: " #0E1B6B",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <Typography
-              variant="h3"
               sx={{
-                fontWeight: 800,
-                fontSize: "2.5rem",
-                background: "linear-gradient(90deg, black)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                letterSpacing: "0.5px",
-                position: "relative",
-                display: "inline-block",
-                "&::after": {
-                  content: '""',
-                  position: "absolute",
-                  width: "60%",
-                  height: "4px",
-                  left: "20%",
-                  bottom: -8,
-                  // background: "linear-gradient(90deg, #004080)",
-                  borderRadius: "4px",
-                },
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 900,
+                fontStyle: "normal",
+                fontSize: "24px",
+                lineHeight: "100%",
+                letterSpacing: 0,
+                color: "#ffff",
               }}
             >
               UCP
             </Typography>
           </Box>
-        ) : (
-          <Box display="flex" flexDirection="column" alignItems="center">
-            {"UCP".split("").map((char, index) => (
-              <Box
-                key={index}
-                sx={{
-                  textAlign: "center",
-                  // p: 3,
-                  // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-                  borderRadius: "16px",
-                  // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: "2.5rem",
-                    background: "linear-gradient(90deg, black)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    letterSpacing: "0.5px",
-                    position: "relative",
-                    display: "inline-block",
-                    "&::after": {
-                      content: '""',
-                      position: "absolute",
-                      width: "60%",
-                      height: "4px",
-                      left: "20%",
-                      bottom: -8,
-                      // background: "linear-gradient(90deg, #004080)",
-                      borderRadius: "4px",
-                    },
-                  }}
-                >
-                  {char}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        )}
+        </Box>
       </Box>
 
       {/* Menu Items */}
@@ -141,20 +107,20 @@ const Sidebar: React.FC<SidebarProps> = ({
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: isSidebarOpen ? 1.5 : 0,
+            gap: 1.5,
             p: 1.5,
             cursor: "pointer",
             fontSize: 14,
             fontWeight: activeMenu === item.key ? "bold" : "normal",
-            bgcolor: activeMenu === item.key ? "#e0e0e0" : "transparent",
+            color: activeMenu === item.key ? "#FFFFFF" : "#8E92AD", // <-- add this line
+
             borderRadius: "10px",
-            justifyContent: isSidebarOpen ? "flex-start" : "center",
-            "&:hover": { bgcolor: "#F3F4F6" },
-            transition: "all 0.2s ease",
+            justifyContent: "flex-start",
+            "&:hover": { color: "#F3F4F6" },
           }}
         >
           {item.icon}
-          {isSidebarOpen && item.label}
+          {item.label}
         </Box>
       ))}
 
@@ -164,28 +130,39 @@ const Sidebar: React.FC<SidebarProps> = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 60,
+          // height: 60,
         }}
       >
-        <Button
+        <Box
           sx={{
+            // backgroundColor: "#3f51b5",
+            padding: "10px",
+            borderRadius: "8px",
             display: "flex",
-            backgroundColor: "#4C4C4C",
-            color: "#fff",
-            padding: "8px",
-            width: 150, // 👈 fixed width so size never jumps
-            borderRadius: "10px",
-            fontSize: "16px",
-            justifyContent: "center",
             alignItems: "center",
-            transition: "all 0.3s ease",
+            maxWidth: 300,
           }}
-          startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
-          onClick={onLogout}
-          variant="outlined"
         >
-          {isSidebarOpen ? "Logout" : null}
-        </Button>
+          <Avatar
+            alt="Tim Cook"
+            src="https://www.example.com/tim-cook.jpg"
+            sx={{
+              marginRight: "10px",
+              width: 40,
+              height: 40,
+            }}
+          />
+          <Box sx={{ color: "#fff" }}>
+            <Typography
+              sx={{ fontWeight: 700, fontSize: "16px", color: "#fff" }}
+            >
+              {userName || "Guest User"}
+            </Typography>
+            <Typography sx={{ fontSize: "10px", color: "#fff", mt: "-9px" }}>
+              {userEmail || "No email found"}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

@@ -78,7 +78,8 @@ export default function SignIn() {
         setSeverity("success");
         setMessage("Signed in successfully!");
         localStorage.setItem("loggedIn", "true");
-
+        localStorage.setItem("userEmail", user.email);
+        localStorage.setItem("userName", user.email.split("@")[0]);
         setTimeout(() => {
           router.push("/customer-profile");
         }, 500);

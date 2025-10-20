@@ -1,0 +1,432 @@
+"use client";
+import AgGridTable from "@/components/ag-grid";
+import { users } from "@/constants/Grid-Table/ColDefs";
+
+import useUsersColumn from "@/hooks/Ag-Grid/useUsersColumn";
+import ClearIcon from "@mui/icons-material/Clear";
+
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+  TextField,
+  Autocomplete,
+  ListSubheader,
+  InputAdornment,
+  CircularProgress,
+  IconButton,
+  Button,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+import React, { useState, useMemo, useEffect } from "react";
+import UserDetailsModal from "../profile-Information/UserDetailsModal";
+import CustomSearchField from "@/components/Common/CustomSearch";
+import { Phone, Send } from "@mui/icons-material";
+import debounce from "lodash.debounce";
+import { useGetProfilesQuery } from "@/redux/services/profileApi";
+import Loader from "@/components/Common/Loader";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { getRowStyle } from "@/utils/gridStyles";
+import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
+import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
+import {
+  useGetFullNamesQuery,
+  useGetPhoneQuery,
+} from "@/redux/services/profileApi";
+import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
+
+interface SegmentOption {
+  id: string;
+  name: string;
+}
+const DetailedInfo = () => {
+  const userCol = useUsersColumn(users);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const [sourceFilter, setSourceFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [customerIdFilter, setCustomerIdFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [fullNameFilter, setFullNameFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [phoneNumberFilter, setPhoneNumberFilter] = useState<
+    string | undefined
+  >(undefined);
+  const [customerIdInput, setCustomerIdInput] = useState("");
+
+  const [fullNameInput, setFullNameInput] = useState("");
+  const [phoneNumberInput, setPhoneNumberInput] = useState("");
+  const [isCustomerIDTyping, setIsCustomerIDTyping] = useState(false);
+  const [isFullNameTyping, setIsFullNameTyping] = useState(false);
+  const [isPhoneNumberTyping, setIsPhoneNumberTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
+  const [lastDateFilter, setLastDateFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [lastDateInput, setLastDateInput] = useState<any>(null);
+
+  const [dateInput, setDateInput] = useState<any>(null);
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
+  const { data, isLoading, refetch, isFetching } = useGetProfilesQuery(
+    {
+      page,
+      page_size: pageSize,
+      email: searchTerm || undefined,
+      source: sourceFilter || undefined,
+      customer_id: customerIdFilter || undefined,
+      full_name: fullNameFilter || undefined,
+      phone: phoneNumberFilter || undefined,
+      created_at: dateFilter || undefined,
+      last_order_date: lastDateFilter || undefined,
+    },
+    { skip: false }
+  );
+  const { data: fullNameSuggestions = [], isFetching: isFullNameLoading } =
+    useGetFullNamesQuery(fullNameInput, {
+      skip: fullNameInput.trim().length < 1,
+    });
+
+  const { data: PhoneSuggestions = [], isFetching: isPhoneLoading } =
+    useGetPhoneQuery(phoneNumberInput, {
+      skip: phoneNumberInput.trim().length < 1,
+    });
+
+  const rowData = useMemo(() => {
+    const results = data?.data || [];
+
+    return results.map((item: any) => {
+      return {
+        email: item.email,
+        phone: item.phone || "",
+        full_name: item.full_name || "",
+        source: item.source || "",
+        customer_id: item.customer_id || "",
+        join_type: item.join_type || "",
+        key: item.key || "",
+        created_at: item.created_at ? item.created_at.split("T")[0] : "N/A",
+
+        last_order_date: item.last_order_date
+          ? item.last_order_date.split("T")[0]
+          : "N/A",
+        total_orders: item.total_orders || "",
+      };
+    });
+  }, [data]);
+
+  const onRowClicked = (params: any) => {
+    const event = params?.event;
+    if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
+      return; // ignore clicks from any MUI icon button
+    }
+    const { customer_id } = params.data;
+
+    setSelectedUser(params.data);
+
+    setHighlightedId(customer_id);
+
+    setModalOpen(true);
+  };
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+
+    if (value.trim() === "") {
+      setSearchTerm("");
+      setPage(1);
+      debouncedSearch.cancel(); // cancel pending debounce
+    } else {
+      debouncedSearch(value);
+      setIsTyping(true);
+    }
+  };
+
+  const sourceOptions = ["Klaviyo", "Shopify", "Wismo", "Zendesk"];
+  const debouncedCustomerId = useMemo(
+    () =>
+      debounce((value: string) => {
+        setCustomerIdFilter(value ? value.toUpperCase() : undefined);
+        setPage(1);
+        setIsCustomerIDTyping(false);
+      }, 5000),
+    []
+  );
+
+  const debouncedFullName = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFullNameFilter(value ? value : undefined);
+        setPage(1);
+        setIsFullNameTyping(false);
+      }, 5000),
+    []
+  );
+
+  const debouncedPhoneNumber = useMemo(
+    () =>
+      debounce((value: string) => {
+        setPhoneNumberFilter(value ? value : undefined);
+        setPage(1);
+        setIsPhoneNumberTyping(false);
+      }, 5000),
+    []
+  );
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchTerm(value);
+        setPage(1);
+        setIsTyping(false);
+      }, 5000),
+    []
+  );
+
+  const toggleSouceoptions = (option: string) => {
+    // If same option clicked again → clear selection
+    setSourceFilter((prev) => (prev === option ? "" : option));
+  };
+
+  return (
+    <Box flex={1} pl={8}>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        pr={3}
+        mb={2}
+      >
+        <Box display={"flex"} flexDirection={"column"}>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            gap={110}
+          >
+            <Box mb={2}>
+              <Box display={"flex"} alignItems="center" gap={1}>
+                <CustomSearchField
+                  value={searchInput}
+                  onChange={handleSearchInput}
+                  placeholder="Search by Email"
+                  InputProps={{
+                    endAdornment: searchInput.trim() !== "" && isTyping && (
+                      <InputAdornment position="end">
+                        <CircularProgress size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                {
+                  <Send
+                    onClick={() => {
+                      setSearchTerm(searchInput);
+                      setPage(1);
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#004FA7",
+                      height: "36px",
+                      width: "36px",
+                    }}
+                  />
+                }
+              </Box>
+            </Box>
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              gap={2}
+              justifyContent={"space-between"}
+            >
+              <Box>
+                <CustomSelect
+                  label="Page Size"
+                  value={pageSize}
+                  options={[10, 50, 100]}
+                  onChange={(val) => {
+                    setPageSize(val); // val is already a number
+                    setPage(1);
+                  }}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            gap={0}
+            mb={2}
+            // pl={1}
+          >
+            <Box
+              display={"flex"}
+              justifyContent={"space-between"}
+              gap={2}
+              pl={1}
+            >
+              <Box ml={0}>
+                <SearchInput
+                  label="Customer ID"
+                  value={customerIdInput}
+                  setValue={(val) => {
+                    setCustomerIdInput(val);
+                    setIsCustomerIDTyping(true);
+                  }}
+                  setFilter={setCustomerIdFilter}
+                  debouncedFunction={debouncedCustomerId}
+                  loading={isCustomerIDTyping}
+                />
+              </Box>
+
+              <DropdownSearchInput
+                label="Full Name"
+                value={fullNameInput}
+                setValue={setFullNameInput}
+                setFilter={setFullNameFilter}
+                debouncedFunction={debouncedFullName} // suggestion API
+                loading={isFullNameLoading}
+                suggestions={fullNameSuggestions?.results || []}
+              />
+
+              <DropdownSearchInput
+                label="Phone Number"
+                value={phoneNumberInput}
+                setValue={setPhoneNumberInput}
+                setFilter={setPhoneNumberFilter}
+                debouncedFunction={debouncedPhoneNumber}
+                loading={isPhoneLoading}
+                width={160}
+                suggestions={PhoneSuggestions?.results || []}
+              />
+
+              <Box display={"flex"} justifyContent={"space-between"} gap={2}>
+                <CustomDatePicker
+                  label="Created At"
+                  value={dateInput}
+                  setValue={setDateInput}
+                  setFilter={setDateFilter}
+                  setPage={setPage}
+                />
+              </Box>
+              <Box>
+                <CustomDatePicker
+                  label="Last Order Date"
+                  value={lastDateInput}
+                  setValue={setLastDateInput}
+                  setFilter={setLastDateFilter}
+                  setPage={setPage}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            gap={40}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                marginLeft: "10px",
+              }}
+            >
+              {sourceOptions.map((option) => (
+                <Button
+                  key={option}
+                  onClick={() => toggleSouceoptions(option)}
+                  sx={{
+                    minWidth: 90,
+                    height: 36,
+                    fontSize: 13,
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    fontWeight: 800,
+                    border: "1px solid transparent",
+                    color: sourceFilter === option ? "#fff" : "#1C1C1E",
+
+                    background: sourceFilter === option ? "#0E1B6B" : "#EDEDF0",
+                    transition: "all 0.25s ease",
+                    boxShadow:
+                      sourceFilter === option
+                        ? "0px 4px 10px rgba(0, 79, 167, 0.3)"
+                        : "0px 2px 6px rgba(0,0,0,0.05)",
+
+                    "&:hover": {
+                      color: sourceFilter === option ? "#fff" : "#1C1C1E",
+
+                      background:
+                        sourceFilter === option
+                          ? "#131C55"
+                          : "linear-gradient(90deg, #E5E7EB 0%, #F3F4F6 100%)",
+                      boxShadow:
+                        sourceFilter === option
+                          ? "0px 5px 12px rgba(0, 79, 167, 0.35)"
+                          : "0px 3px 8px rgba(0,0,0,0.08)",
+                      transform: "translateY(-1px)",
+                    },
+                    "&:active": {
+                      transform: "translateY(0)",
+                      boxShadow: "none",
+                    },
+                  }}
+                >
+                  {option}
+                </Button>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+
+      {isLoading || isFetching ? (
+        <Loader />
+      ) : (
+        <AgGridTable
+          rowData={rowData}
+          columnDefs={userCol}
+          onRowClicked={onRowClicked}
+          // getRowStyle={getRowStyle}
+          getRowStyle={getRowStyle(highlightedId)}
+          height={465}
+          enablePagination
+          currentPage={page}
+          totalPages={data?.total_pages || 1}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          pagination={false}
+        />
+      )}
+      <UserDetailsModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        userData={selectedUser}
+      />
+    </Box>
+  );
+};
+
+export default DetailedInfo;

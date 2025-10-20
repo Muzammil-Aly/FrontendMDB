@@ -20,7 +20,8 @@ import { getRowStyle } from "@/utils/gridStyles";
 import debounce from "lodash.debounce";
 import SearchInput from "@/components/Common/CustomSearch/SearchInput";
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
-
+import { useGetLocationCodesQuery } from "@/redux/services/InventoryApi";
+import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
 interface Inventory {
   "Location Code": string;
   "Item No_": string;
@@ -86,7 +87,12 @@ const Inventory = () => {
         }))
       : [];
   }, [data]);
-
+  const {
+    data: locationCodeSuggestions = [],
+    isFetching: isLocationCodeLoading,
+  } = useGetLocationCodesQuery(locationCodeInput, {
+    skip: locationCodeInput.trim().length < 1,
+  });
   // Row click handler
   const onRowClicked = (params: any) => {
     if (selectedTIDetail?.["Item No_"] === params.data["Item No_"]) {
@@ -148,118 +154,22 @@ const Inventory = () => {
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Box>
-          <Box
-            sx={{
-              textAlign: "center",
-              p: 3,
-              // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-              borderRadius: "16px",
-              // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-            }}
-          >
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 800,
-                fontSize: "2.5rem",
-                background: "linear-gradient(90deg, black)",
-                WebkitBackgroundClip: "text",
-                // WebkitTextFillColor: "transparent",
-                letterSpacing: "0.5px",
-                position: "relative",
-                display: "inline-block",
-                "&::after": {
-                  content: '""',
-                  position: "absolute",
-                  width: "60%",
-                  height: "4px",
-                  left: "20%",
-                  bottom: -8,
-                  // background: "linear-gradient(90deg, #004080)",
-                  borderRadius: "4px",
-                },
-              }}
-            >
-              Inventory
-            </Typography>
-          </Box>
-        </Box>
-        <Box display={"flex"} gap={2}>
+        <Box display={"flex"} gap={2} mb={2}>
           <Box>
-            {/* <FormControl size="small" sx={{ width: 160 }}>
-              <TextField
-                label="Location Code"
-                value={locationCodeInput.toUpperCase()}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setLocationCodeInput(value);
-
-                  if (value.trim() === "") {
-                    setLocationCodeFilter(undefined);
-                    debouncedLocationCode.cancel(); // cancel pending debounce
-                  } else {
-                    debouncedLocationCode(value);
-                    setLocationCodeInputTyping(true);
-                  }
-                }}
-                size="small"
-                placeholder="Location Code"
-                InputProps={{
-                  endAdornment: locationCodeInput.trim() !== "" &&
-                    islocationCodeInputTyping && (
-                      <InputAdornment position="end">
-                        <CircularProgress size={20} />
-                      </InputAdornment>
-                    ),
-                }}
-              />
-            </FormControl> */}
-
-            <SearchInput
+            <DropdownSearchInput
               label="Location Code"
               value={locationCodeInput}
               // setValue={setDescriptionInput}
-              setValue={(val) => {
-                setLocationCodeInput(val);
-                setLocationCodeInputTyping(true);
-              }}
+              setValue={setLocationCodeInput}
               setFilter={setLocationCodeFilter}
               debouncedFunction={debouncedLocationCode}
-              loading={islocationCodeInputTyping}
-              width={160}
+              loading={isLocationCodeLoading}
+              suggestions={locationCodeSuggestions?.results || []}
+              width={150}
             />
           </Box>
 
           <Box>
-            {/* <FormControl size="small" sx={{ width: 160 }}>
-              <TextField
-                label="Item No"
-                value={itemNoInput}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setItemNoInput(value);
-
-                  if (value.trim() === "") {
-                    setItemNoFilter(undefined);
-                    debouncedItemNo.cancel(); // cancel pending debounce
-                  } else {
-                    debouncedItemNo(value);
-                    setItemNoInputTyping(true);
-                  }
-                }}
-                size="small"
-                placeholder="Item No"
-                InputProps={{
-                  endAdornment: itemNoInput.trim() !== "" &&
-                    isItemNoInputTyping && (
-                      <InputAdornment position="end">
-                        <CircularProgress size={20} />
-                      </InputAdornment>
-                    ),
-                }}
-              />
-            </FormControl> */}
             <SearchInput
               label="Item No"
               value={itemNoInput}
@@ -271,36 +181,9 @@ const Inventory = () => {
               setFilter={setItemNoFilter}
               debouncedFunction={debouncedItemNo}
               loading={isItemNoInputTyping}
+              width={150}
             />
           </Box>
-          {/* <FormControl size="small" sx={{ width: 160 }}>
-            <TextField
-              label="Description"
-              value={descriptionInput}
-              onChange={(e) => {
-                const value = e.target.value;
-                setDescriptionInput(value);
-
-                if (value.trim() === "") {
-                  setDescriptionFilter(undefined);
-                  debouncedDescription.cancel(); // cancel pending debounce
-                } else {
-                  debouncedDescription(value);
-                  setDescriptionTyping(true);
-                }
-              }}
-              size="small"
-              placeholder="Description"
-              InputProps={{
-                endAdornment: descriptionInput.trim() !== "" &&
-                  descriptionTyping && (
-                    <InputAdornment position="end">
-                      <CircularProgress size={20} />
-                    </InputAdornment>
-                  ),
-              }}
-            />
-          </FormControl> */}
 
           <SearchInput
             label="Description"
@@ -313,18 +196,19 @@ const Inventory = () => {
             setFilter={setDescriptionFilter}
             debouncedFunction={debouncedDescription}
             loading={descriptionTyping}
+            width={150}
           />
-          <Box>
-            <CustomSelect
-              label="Page Size"
-              value={pageSize}
-              options={[10, 50, 100]}
-              onChange={(val) => {
-                setPageSize(val); // val is already a number
-                setPage(1);
-              }}
-            />
-          </Box>
+        </Box>
+        <Box mt={-2}>
+          <CustomSelect
+            label="Page Size"
+            value={pageSize}
+            options={[10, 50, 100]}
+            onChange={(val) => {
+              setPageSize(val);
+              setPage(1);
+            }}
+          />
         </Box>
       </Box>
       {isLoading || isFetching ? (

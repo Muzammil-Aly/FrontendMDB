@@ -387,6 +387,19 @@ export const klaviyoApi = createApi({
     //   },
     // }),
 
+    getFullNames: builder.query<any, string | void>({
+      query: (name = "") => ({
+        url: "/customer/full-names",
+        params: name ? { name } : {},
+      }),
+    }),
+
+    getPhone: builder.query<any, string | void>({
+      query: (name = "") => ({
+        url: "/customer/phone",
+        params: name ? { name } : {},
+      }),
+    }),
     getSegments: builder.query<any, { page?: number; page_size?: number }>({
       query: ({ page, page_size } = {}) => {
         return `/segments?page=${page}&page_size=${page_size}`;
@@ -410,4 +423,6 @@ export const {
   useGetCustomerEventsQuery,
   useGetTouchupsQuery,
   useGetInventoryQuery,
+  useGetFullNamesQuery,
+  useGetPhoneQuery
 } = klaviyoApi;

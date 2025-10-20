@@ -30,6 +30,16 @@ import { Phone, Send } from "@mui/icons-material";
 import { getRowStyle } from "@/utils/gridStyles";
 import SearchInput from "@/components/Common/CustomSearch/SearchInput";
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
+
+import {
+  useGetCustomerNamesQuery,
+  useGetProfitNamesQuery,
+  useGetRetailersQuery,
+  useGetStatusesQuery,
+  useGetFullfillmentStatusesQuery,
+} from "@/redux/services/ordersApi";
+import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
+
 const Orders = ({ customerId }: { customerId?: string }) => {
   const orderCol = useOrdersColumn(orders);
 
@@ -122,6 +132,34 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     fulfillment_status: FullfillmentFilter || undefined,
     order_status: OrderStatusFilter || undefined,
     psi_number: psiNumberStatusFilter || undefined,
+  });
+  const {
+    data: customerNameSuggestions = [],
+    isFetching: isCustomerNameLoading,
+  } = useGetCustomerNamesQuery(customerNameInput, {
+    skip: customerNameInput.trim().length < 1,
+  });
+
+  const { data: profitNameSuggestions = [], isFetching: isProfitNameLoading } =
+    useGetProfitNamesQuery(profitNameInput, {
+      skip: profitNameInput.trim().length < 1,
+    });
+
+  const { data: retailerSuggestions = [], isFetching: isRetailerLoading } =
+    useGetRetailersQuery(retailerNameInput, {
+      skip: retailerNameInput.trim().length < 1,
+    });
+
+  const { data: statusSuggestions = [], isFetching: isStatusLoading } =
+    useGetStatusesQuery(OrderStatusInput, {
+      skip: OrderStatusInput.trim().length < 1,
+    });
+
+  const {
+    data: fullfillmentStatusSuggestions = [],
+    isFetching: isFullfillmentStatusLoading,
+  } = useGetFullfillmentStatusesQuery(FullfillmentInput, {
+    skip: FullfillmentInput.trim().length < 1,
   });
 
   const rowData = useMemo(() => {
@@ -355,43 +393,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 justifyContent={"space-between"}
                 gap={3}
               >
-                <Box
-                  sx={{
-                    textAlign: "center",
-                    p: 3,
-                    // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-                    borderRadius: "16px",
-                    // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                  }}
-                >
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      fontWeight: 800,
-                      fontSize: "2.5rem",
-                      background: "linear-gradient(90deg, black)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      letterSpacing: "0.5px",
-                      position: "relative",
-                      display: "inline-block",
-                      "&::after": {
-                        content: '""',
-                        position: "absolute",
-                        width: "60%",
-                        height: "4px",
-                        left: "20%",
-                        bottom: -8,
-                        // background: "linear-gradient(90deg, #004080)",
-                        borderRadius: "4px",
-                      },
-                    }}
-                  >
-                    Orders
-                  </Typography>
-                </Box>
-
-                <Box mt={1}>
+                <Box mt={1} ml={2}>
                   <Box display={"flex"} alignItems="center" gap={1}>
                     <CustomSearchField
                       value={searchInput}
@@ -443,7 +445,14 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               </Box>
             </Box>
 
-            <Box display="flex" alignItems="center" gap={4} ml={2} mb={2}>
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={4}
+              ml={2}
+              mb={2}
+              mt={2}
+            >
               {/* <FormControl size="small">
                 <TextField
                   label="Order ID"
@@ -541,17 +550,15 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 />
               </FormControl> */}
 
-              <SearchInput
+              <DropdownSearchInput
                 label="Customer Name"
                 value={customerNameInput}
-                setValue={(val) => {
-                  setCustomerNameInput(val);
-                  setIsCustomerNameTyping(true);
-                }}
+                setValue={setCustomerNameInput}
                 setFilter={setCustomerNameFilter}
                 debouncedFunction={debouncedCustomerName}
-                loading={customerNametyping}
-                width={200}
+                loading={isCustomerNameLoading}
+                suggestions={customerNameSuggestions?.results || []}
+                width={150}
               />
 
               {/* <FormControl size="small" sx={{ width: 210 }}>
@@ -593,7 +600,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 setFilter={setShippingAddressFilter}
                 debouncedFunction={debouncedShippingAddress}
                 loading={shippingAddresstyping}
-                width={200}
+                width={150}
               />
 
               {/* <FormControl size="small" sx={{ width: 230 }}>
@@ -633,7 +640,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 setFilter={setCustomerReferenceNoFilter}
                 debouncedFunction={debouncedcustomerReferenceNo}
                 loading={customerReferenceNotyping}
-                width={240}
+                width={150}
               />
 
               {/* <FormControl size="small" sx={{ width: 140 }}>
@@ -673,6 +680,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 setFilter={setTrackingFilter}
                 debouncedFunction={debouncedTracking}
                 loading={trackingtyping}
+                width={150}
               />
 
               {/* <FormControl size="small" sx={{ width: 100 }}>
@@ -693,55 +701,47 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               </FormControl> */}
             </Box>
             <Box display="flex" alignItems="center" gap={2} ml={2} mb={2}>
-              <SearchInput
+              <DropdownSearchInput
                 label="Profit Name"
                 value={profitNameInput}
-                setValue={(val) => {
-                  setProfitNameInput(val);
-                  setIsProfitNameTyping(true);
-                }}
+                setValue={setProfitNameInput}
                 setFilter={setProfitNameFilter}
                 debouncedFunction={debouncedProfitName}
-                loading={profitNametyping}
-                width={200}
+                loading={isProfitNameLoading}
+                suggestions={profitNameSuggestions?.results || []}
+                width={150}
               />
 
-              <SearchInput
+              <DropdownSearchInput
                 label="Retailer Name"
                 value={retailerNameInput}
-                setValue={(val) => {
-                  setRetailerNameInput(val);
-                  setIsRetailerNameTyping(true);
-                }}
+                setValue={setRetailerNameInput}
                 setFilter={setRetailerNameFilter}
                 debouncedFunction={debouncedRetailerName}
-                loading={isRetailerNametyping}
-                width={200}
+                loading={isRetailerLoading}
+                suggestions={retailerSuggestions?.results || []}
+                width={150}
               />
-              <SearchInput
+              <DropdownSearchInput
                 label="Order Status"
                 value={OrderStatusInput}
-                setValue={(val) => {
-                  setOrderStatusInput(val);
-                  setIsOrderStatusTyping(true);
-                }}
+                setValue={setOrderStatusInput}
                 setFilter={setOrderStatusFilter}
                 debouncedFunction={debouncedOrderStatus}
-                loading={isOrderStatustyping}
-                width={200}
+                loading={isStatusLoading}
+                suggestions={statusSuggestions?.results || []}
+                width={150}
               />
 
-              <SearchInput
+              <DropdownSearchInput
                 label="Fullfillment Status"
                 value={FullfillmentInput}
-                setValue={(val) => {
-                  setFullfillmentInput(val);
-                  setIsFullfillmentTyping(true);
-                }}
+                setValue={setFullfillmentInput}
                 setFilter={setFullfillmentFilter}
                 debouncedFunction={debouncedFullfilmentStatus}
-                loading={isFullfillmenttyping}
-                width={200}
+                loading={isFullfillmentStatusLoading}
+                suggestions={fullfillmentStatusSuggestions?.results || []}
+                width={150}
               />
               <SearchInput
                 label="PSI Number"
@@ -753,7 +753,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 setFilter={setPsiNumberFilter}
                 debouncedFunction={debouncedPsiNumber}
                 loading={isPsiNumbertyping}
-                width={200}
+                width={150}
               />
             </Box>
           </Box>

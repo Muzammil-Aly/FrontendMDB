@@ -31,6 +31,8 @@ import { getRowStyle } from "@/utils/gridStyles";
 import SearchInput from "@/components/Common/CustomSearch/SearchInput";
 import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
+import { useGetCustomerNamesQuery } from "@/redux/services/MarketingEvents";
+import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
 interface MarketingEventsProps {
   customerId?: string; // optional prop
 }
@@ -90,6 +92,14 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
       campaign_name: item.campaign_name,
     }));
   }, [data]);
+
+  const {
+    data: customerNameSuggestions = [],
+    isFetching: isCustomerNameLoading,
+  } = useGetCustomerNamesQuery(customerNameInput, {
+    skip: customerNameInput.trim().length < 1,
+  });
+
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput(value);
@@ -160,49 +170,6 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
             flexDirection={"column"}
             // pr={3}
           >
-            <Box
-              display={"flex"}
-              justifyContent="center"
-              alignItems={"flex-start"}
-              // gap={7}
-              mb={2}
-            >
-              <Box
-                sx={{
-                  textAlign: "center",
-                  p: 3,
-                  // background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-                  borderRadius: "16px",
-                  // boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: "2.5rem",
-                    background: "linear-gradient(90deg, black)",
-                    WebkitBackgroundClip: "text",
-                    // WebkitTextFillColor: "transparent",
-                    letterSpacing: "0.5px",
-                    position: "relative",
-                    display: "inline-block",
-                    "&::after": {
-                      content: '""',
-                      position: "absolute",
-                      width: "60%",
-                      height: "4px",
-                      left: "20%",
-                      bottom: -8,
-                      // background: "linear-gradient(90deg, #004080)",
-                      borderRadius: "4px",
-                    },
-                  }}
-                >
-                  Marketing Events
-                </Typography>
-              </Box>
-            </Box>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -340,7 +307,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                   }}
                 />
               </FormControl> */}
-              <SearchInput
+              {/* <SearchInput
                 label="Customer Name"
                 value={customerNameInput || ""}
                 setValue={(val) => {
@@ -351,6 +318,16 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                 debouncedFunction={debouncedCustomerName}
                 loading={isCustomerNameTyping}
                 width={180}
+              /> */}
+              <DropdownSearchInput
+                label="Customer Name"
+                value={customerNameInput}
+                setValue={setCustomerNameInput}
+                setFilter={setCustomerNameFilter}
+                debouncedFunction={debouncedCustomerName}
+                loading={isCustomerNameLoading}
+                suggestions={customerNameSuggestions?.results || []}
+                width={150}
               />
               {/* <FormControl size="small" sx={{ width: 200 }}>
                 <TextField
@@ -389,6 +366,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                 setFilter={setEventIdFilter}
                 debouncedFunction={debouncedEventId}
                 loading={isEventIdTyping}
+                width={150}
               />
 
               {/* <FormControl size="small" sx={{ width: 200 }}>
@@ -429,6 +407,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                 setFilter={setCustomerIdFilter}
                 debouncedFunction={debouncedCustomerId}
                 loading={isCustomerIdTyping}
+                width={150}
               />
 
               {/* <FormControl size="small" sx={{ width: 220 }}>
@@ -489,6 +468,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
                 setFilter={setDateFilter}
                 setPage={setPage}
               />
+
               <CustomSelect
                 label="Page Size"
                 value={pageSize}
