@@ -260,10 +260,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   const fullName = userData?.full_name || "N/A";
   const email = userData?.email || "N/A";
   const userFields = [
-    { label: "Full name", value: userData.full_name },
     { label: "Customer ID", value: userData.customer_id },
     { label: "Join type", value: userData.join_type },
-    { label: "Email", value: userData.email },
     { label: "Key", value: userData.key },
     { label: "Source", value: userData.source },
     { label: "Phone number", value: userData.phone },
