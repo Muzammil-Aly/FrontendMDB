@@ -343,21 +343,23 @@ const CustomerProfile = () => {
       {isLoading || isFetching ? (
         <Loader />
       ) : (
-        <ResponsiveDashboard
-          rowData={rowData}
-          userCol={userCol}
-          onRowClicked={onRowClicked}
-          height={465}
-          getRowStyle={getRowStyle(highlightedId)}
-          selectedCustId={selectedUser?.customer_id}
-          enablePagination
-          currentPage={page}
-          totalPages={data?.total_pages || 1}
-          onPageChange={(newPage: any) => setPage(newPage)}
-          pagination={false}
-          currentMenu="profiles"
-          paginationPageSize={pageSize}
-        />
+        <Box ml={5}>
+          <ResponsiveDashboard
+            rowData={rowData}
+            userCol={userCol}
+            onRowClicked={onRowClicked}
+            height={465}
+            getRowStyle={getRowStyle(highlightedId)}
+            selectedCustId={selectedUser?.customer_id}
+            enablePagination
+            currentPage={page}
+            totalPages={data?.total_pages || 1}
+            onPageChange={(newPage: any) => setPage(newPage)}
+            pagination={false}
+            currentMenu="profiles"
+            paginationPageSize={pageSize}
+          />
+        </Box>
       )}
     </Box>
   );

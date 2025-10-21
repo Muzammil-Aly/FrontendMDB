@@ -168,7 +168,7 @@ const ResponsiveDashboard = ({
       sx={{
         width: "100%",
         minHeight: "100vh",
-        pl: { xs: 1, sm: 2, md: 4, lg: 6 },
+        // pl: { xs: 1, sm: 2, md: 4, lg: 6 },
       }}
     >
       <ResponsiveGridLayout

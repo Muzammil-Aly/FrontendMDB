@@ -245,7 +245,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
 
   return (
     <Box display="flex">
-      <Box flex={1} p={1}>
+      <Box flex={1} p={customerId ? 0 : 1}>
         {!customerId && (
           <Box
             display="flex"
@@ -440,21 +440,23 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
         {isLoading || isFetching ? (
           <Loader />
         ) : (
-          <ResponsiveDashboard
-            rowData={rowData}
-            userCol={ticketColumns}
-            onRowClicked={onRowClicked}
-            // getRowStyle={getRowStyle}
-            getRowStyle={getRowStyle(highlightedId)}
-            selectedTicket={selectedTicket?.ticket_id}
-            enablePagination
-            currentPage={page}
-            totalPages={data?.total_pages || 1}
-            onPageChange={(newPage: any) => setPage(newPage)}
-            pagination={false}
-            currentMenu="support_tickets"
-            paginationPageSize={pageSize}
-          />
+          <Box ml={customerId ? 0 : 5}>
+            <ResponsiveDashboard
+              rowData={rowData}
+              userCol={ticketColumns}
+              onRowClicked={onRowClicked}
+              // getRowStyle={getRowStyle}
+              getRowStyle={getRowStyle(highlightedId)}
+              selectedTicket={selectedTicket?.ticket_id}
+              enablePagination
+              currentPage={page}
+              totalPages={data?.total_pages || 1}
+              onPageChange={(newPage: any) => setPage(newPage)}
+              pagination={false}
+              currentMenu="support_tickets"
+              paginationPageSize={pageSize}
+            />
+          </Box>
         )}
       </Box>
     </Box>

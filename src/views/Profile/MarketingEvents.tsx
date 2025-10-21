@@ -161,7 +161,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
   );
   return (
     <Box display="flex">
-      <Box flex={1} pl={8}>
+      <Box flex={1} pl={customerId ? 0 : 8}>
         {!customerId && (
           <Box
             display="flex"
@@ -280,20 +280,22 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
         {isLoading || isFetching ? (
           <Loader />
         ) : (
-          <AgGridTable
-            rowData={rowData}
-            columnDefs={eventCol}
-            // onRowClicked={onRowClicked}
-            getRowStyle={getRowStyle(highlightedId)}
-            height={480}
-            enablePagination
-            currentPage={page}
-            totalPages={data?.total_pages || 1}
-            onPageChange={(newPage: any) => setPage(newPage)}
-            pagination={false}
-            style={{ width: "100%", overflowX: "auto" }}
-            paginationPageSize={pageSize}
-          />
+          <Box p={customerId ? 1 : 0}>
+            <AgGridTable
+              rowData={rowData}
+              columnDefs={eventCol}
+              // onRowClicked={onRowClicked}
+              getRowStyle={getRowStyle(highlightedId)}
+              height={480}
+              enablePagination
+              currentPage={page}
+              totalPages={data?.total_pages || 1}
+              onPageChange={(newPage: any) => setPage(newPage)}
+              pagination={false}
+              style={{ width: "100%", overflowX: "auto" }}
+              paginationPageSize={pageSize}
+            />
+          </Box>
         )}
       </Box>
     </Box>
