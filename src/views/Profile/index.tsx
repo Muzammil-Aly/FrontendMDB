@@ -65,7 +65,7 @@ const Profile = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f8f9fa" }}>
+    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#f8f9fa" }}>
       {/* Sidebar (fixed) */}
       <Box sx={{ width: 130, flexShrink: 0 }}>
         <Sidebar
@@ -86,6 +86,7 @@ const Profile = () => {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
+          height: "100vh",
           // gap: 2,
         }}
       >
@@ -137,7 +138,7 @@ const Profile = () => {
         </Box>
 
         {/* Dynamic Page Content */}
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
           {menuConfig[activeMenu]?.component || (
             <Box sx={{ p: 2 }}>Select a menu item</Box>
           )}

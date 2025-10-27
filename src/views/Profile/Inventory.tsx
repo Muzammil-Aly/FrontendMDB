@@ -306,7 +306,6 @@ const Inventory = () => {
             />
           </Box>
         </Box>
-
         {/* All tables in one scrollable container */}
         <Box display="flex" flexDirection="column" gap={5}>
           {isLoading || isFetching ? (
@@ -329,6 +328,7 @@ const Inventory = () => {
           )}
 
           {/* Render the other tables */}
+
           <AllTouchups />
           <AllTouchupsPens />
         </Box>

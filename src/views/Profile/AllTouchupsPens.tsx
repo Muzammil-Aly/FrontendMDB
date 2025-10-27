@@ -53,7 +53,13 @@ const AllTouchupsPens: React.FC = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" width="100%" gap={2}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      height={"100vh"}
+      width="100%"
+      gap={2}
+    >
       <Typography variant="h6">All Touchup Pens</Typography>
 
       {isLoading || isFetching ? (
