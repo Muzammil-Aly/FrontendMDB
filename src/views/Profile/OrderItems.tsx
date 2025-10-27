@@ -13,7 +13,7 @@ import { RootState } from "../../redux/store";
 interface Props {
   orderId: string;
   setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
-  orderItemSec: boolean;
+  orderItemSec?: boolean;
   filters?: string;
 }
 interface OrderItem {
