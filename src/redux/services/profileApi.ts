@@ -268,6 +268,8 @@ export const klaviyoApi = createApi({
     getTouchups: builder.query<
       any,
       {
+        page?: number;
+        page_size?: number;
         order_id?: string;
         lot_no?: string;
         sku?: string;
@@ -280,11 +282,11 @@ export const klaviyoApi = createApi({
         brand?: string;
         color_slug?: string;
         color_name?: string;
-        page?: number;
-        page_size?: number;
       }
     >({
       query: ({
+        page = 1,
+        page_size = 10,
         order_id,
         lot_no,
         sku,
@@ -297,8 +299,6 @@ export const klaviyoApi = createApi({
         brand,
         color_slug,
         color_name,
-        page = 1,
-        page_size = 10,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -323,32 +323,91 @@ export const klaviyoApi = createApi({
       },
     }),
 
+    // getTouchupPens: builder.query<
+    //   any[],
+    //   {
+    //     page?: number;
+    //     page_size?: number;
+    //     color_slug?: string;
+    //   }
+    // >({
+    //   query: ({ page = 1, page_size = 10, color_slug } = {}) => {
+    //     const params = new URLSearchParams();
+    //     params.append("page", String(page));
+    //     params.append("page_size", String(page_size));
+    //     if (color_slug) params.append("Colorslug", color_slug);
+    //     return `/touchup_pen?${params.toString()}`;
+    //   },
+    //   transformResponse: (response: any) => {
+    //     const items = response?.data || response || [];
+    //     return Array.isArray(items)
+    //       ? items.map((item: any) => ({
+    //           ItemNum: item.ItemNum,
+    //           ItemName: item.ItemName,
+    //           ItemName2: item.ItemName2,
+    //           Colorslug: item.Colorslug,
+    //           ColorName: item.ColorName,
+    //         }))
+    //       : [];
+    //   },
+    // }),
+
     getTouchupPens: builder.query<
-      any[],
+      any,
       {
         page?: number;
         page_size?: number;
         color_slug?: string;
+        item_num?: string;
+        item_name?: string;
+        item_name2?: string;
+        color_name?: string;
       }
     >({
-      query: ({ page = 1, page_size = 10, color_slug } = {}) => {
+      query: ({
+        page = 1,
+        page_size = 10,
+        color_slug,
+        item_num,
+        item_name,
+        item_name2,
+        color_name,
+      }) => {
         const params = new URLSearchParams();
-        params.append("page", String(page));
-        params.append("page_size", String(page_size));
-        if (color_slug) params.append("Colorslug", color_slug);
-        return `/touchup_pen?${params.toString()}`;
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+
+        if (color_slug) params.set("Colorslug", color_slug);
+        if (item_num) params.set("item_num", item_num);
+        if (item_name) params.set("item_name", item_name);
+        if (item_name2) params.set("item_name2", item_name2);
+        if (color_name) params.set("color_name", color_name);
+
+        return `touchup_pen?${params.toString()}`;
       },
+
       transformResponse: (response: any) => {
-        const items = response?.data || response || [];
-        return Array.isArray(items)
-          ? items.map((item: any) => ({
-              ItemNum: item.ItemNum,
-              ItemName: item.ItemName,
-              ItemName2: item.ItemName2,
-              Colorslug: item.Colorslug,
-              ColorName: item.ColorName,
-            }))
-          : [];
+        // Example API response:
+        // {
+        //   data: [...],
+        //   total_pages: 5,
+        //   count: 50
+        // }
+
+        const items = response?.data || [];
+        return {
+          results: Array.isArray(items)
+            ? items.map((item: any) => ({
+                ItemNum: item.ItemNum,
+                ItemName: item.ItemName,
+                ItemName2: item.ItemName2,
+                Colorslug: item.Colorslug,
+                ColorName: item.ColorName,
+              }))
+            : [],
+          total_pages: response?.total_pages ?? 1,
+          count: response?.count ?? items.length,
+        };
       },
     }),
 

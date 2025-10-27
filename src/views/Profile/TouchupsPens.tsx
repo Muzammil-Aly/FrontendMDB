@@ -46,18 +46,27 @@ const TouchupsPens: React.FC<Props> = ({ orderId, Colorslug }) => {
   const [pageSize] = useState(10);
 
   // --- API Call ---
+  // const { data, isLoading, isFetching } = useGetTouchupPensQuery(
+  //   {
+  //     page,
+  //     page_size: pageSize,
+  //     color_slug: Colorslug ?? undefined,
+  //   },
+  //   { skip: !orderId || !Colorslug }
+  // );
+
   const { data, isLoading, isFetching } = useGetTouchupPensQuery(
     {
       page,
       page_size: pageSize,
       color_slug: Colorslug ?? undefined,
     },
-    { skip: !orderId || !Colorslug }
+    { skip: !Colorslug } // skip if null/undefined
   );
 
   // --- Memoized data ---
-  const rowData = useMemo(() => data ?? [], [data]);
-
+  // const rowData = useMemo(() => data ?? [], [data]);
+  const rowData = useMemo(() => data?.results ?? [], [data]);
   // --- Row click handler ---
   const onRowClicked = (params: any) => {
     const clickedItem = params.data as Touchup;
@@ -87,35 +96,37 @@ const TouchupsPens: React.FC<Props> = ({ orderId, Colorslug }) => {
     <Box display="flex" flexDirection="column" width="100%" gap={2}>
       {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography
-          className="drag-handle"
-          variant="caption"
-          sx={{
-            fontWeight: 600,
-            color: "#fff",
-            background: "#1976d2",
-            px: 1.5,
-            py: 0.5,
-            fontSize: "1em",
-            borderRadius: "3px 5px 5px 3px",
-            position: "relative",
-            display: "inline-block",
-            "::before": {
-              content: '""',
-              position: "absolute",
-              left: -8,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 0,
-              height: 0,
-              borderTop: "8px solid transparent",
-              borderBottom: "8px solid transparent",
-              borderRight: "8px solid #1976d2",
-            },
-          }}
-        >
-          Color Slug: {Colorslug ?? "N/A"}
-        </Typography>
+        {Colorslug && (
+          <Typography
+            className="drag-handle"
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              color: "#fff",
+              background: "#1976d2",
+              px: 1.5,
+              py: 0.5,
+              fontSize: "1em",
+              borderRadius: "3px 5px 5px 3px",
+              position: "relative",
+              display: "inline-block",
+              "::before": {
+                content: '""',
+                position: "absolute",
+                left: -8,
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 0,
+                height: 0,
+                borderTop: "8px solid transparent",
+                borderBottom: "8px solid transparent",
+                borderRight: "8px solid #1976d2",
+              },
+            }}
+          >
+            Color Slug: {Colorslug ?? "N/A"}
+          </Typography>
+        )}
       </Box>
 
       {/* Loader / Table */}
@@ -126,9 +137,14 @@ const TouchupsPens: React.FC<Props> = ({ orderId, Colorslug }) => {
           rowData={rowData}
           columnDefs={touchupsPenCol}
           height={200}
-          enablePagination={false}
           onRowClicked={onRowClicked}
+          enablePagination
           getRowStyle={getRowStyle(highlightedId)}
+          pagination={false}
+          currentPage={page}
+          totalPages={data?.total_pages || 1}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          paginationPageSize={pageSize}
         />
       )}
     </Box>

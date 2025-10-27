@@ -649,7 +649,7 @@ const ResponsiveDashboard = ({
       x: 0,
       y: 16,
       w: 12,
-      h: 15,
+      h: 20,
       minW: 3,
       minH: 8,
     });

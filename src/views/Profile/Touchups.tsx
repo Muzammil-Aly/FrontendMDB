@@ -13,6 +13,7 @@ import {
   TextField,
   CircularProgress,
   InputAdornment,
+  Pagination,
 } from "@mui/material";
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
@@ -47,6 +48,7 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
   const { isActive, activeTabName, isTouchupPensOpen } = useSelector(
     (state: RootState) => state.tab
   );
+
   const touchupsCol = useTouchupsColumn(touchups_columns);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [selectedTouchupDetail, setSelectedTouchupDetail] =
@@ -63,15 +65,25 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
   const [pageSize, setPageSize] = useState(10);
 
   // Fetch touchups from API
+  // const { data, isLoading, isFetching, refetch } = useGetTouchupsQuery(
+  //   {
+  //     order_id: orderId,
+  //     page,
+  //     page_size: pageSize,
+  //     lot_no: lotNoFilter,
+  //   },
+
+  //   { skip: !orderId }
+  // );
+
   const { data, isLoading, isFetching, refetch } = useGetTouchupsQuery(
     {
-      order_id: orderId,
+      order_id: orderId || undefined, // allow undefined to fetch all
       page,
       page_size: pageSize,
       lot_no: lotNoFilter,
     },
-
-    { skip: !orderId }
+    { skip: false } // always run
   );
 
   // Map API response -> rowData
@@ -111,7 +123,8 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
     }
   };
   useEffect(() => {
-    if (isTouchupPensOpen && data?.data?.length > 0) {
+    //  if (data?.data?.length > 0)
+    if (data?.data?.length > 0 && typeof setSelectedTouchup === "function") {
       setSelectedTouchupDetail?.(data.data[0]);
       setSelectedTouchup(data.data[0]);
     }
@@ -139,35 +152,37 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Typography
-          className="drag-handle"
-          variant="caption"
-          sx={{
-            fontWeight: 600,
-            color: "#fff",
-            background: "#1976d2",
-            px: 1.5,
-            py: 0.5,
-            fontSize: "1em",
-            borderRadius: "3px 5px 5px 3px",
-            position: "relative",
-            display: "inline-block",
-            "::before": {
-              content: '""',
-              position: "absolute",
-              left: -8,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 0,
-              height: 0,
-              borderTop: "8px solid transparent",
-              borderBottom: "8px solid transparent",
-              borderRight: "8px solid #1976d2",
-            },
-          }}
-        >
-          Touchups for Order: {orderId ?? "N/A"}
-        </Typography>
+        {orderId && (
+          <Typography
+            className="drag-handle"
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              color: "#fff",
+              background: "#1976d2",
+              px: 1.5,
+              py: 0.5,
+              fontSize: "1em",
+              borderRadius: "3px 5px 5px 3px",
+              position: "relative",
+              display: "inline-block",
+              "::before": {
+                content: '""',
+                position: "absolute",
+                left: -8,
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 0,
+                height: 0,
+                borderTop: "8px solid transparent",
+                borderBottom: "8px solid transparent",
+                borderRight: "8px solid #1976d2",
+              },
+            }}
+          >
+            Touchups for Order: {orderId ?? "N/A"}
+          </Typography>
+        )}
 
         <FormControl sx={{ width: 150 }}>
           <TextField
@@ -227,10 +242,16 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
         <AgGridTable
           rowData={rowData}
           columnDefs={touchupsCol}
-          height={200}
-          enablePagination={false}
+          height={300}
           onRowClicked={onRowClicked}
           getRowStyle={getRowStyle(highlightedId)}
+          enablePagination
+          pagination={false}
+          currentPage={page}
+          totalPages={data?.total_pages || 1}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          paginationPageSize={pageSize}
+
           // filters={filters}
         />
       )}
