@@ -323,6 +323,35 @@ export const klaviyoApi = createApi({
       },
     }),
 
+    getTouchupPens: builder.query<
+      any[],
+      {
+        page?: number;
+        page_size?: number;
+        color_slug?: string;
+      }
+    >({
+      query: ({ page = 1, page_size = 10, color_slug } = {}) => {
+        const params = new URLSearchParams();
+        params.append("page", String(page));
+        params.append("page_size", String(page_size));
+        if (color_slug) params.append("Colorslug", color_slug);
+        return `/touchup_pen?${params.toString()}`;
+      },
+      transformResponse: (response: any) => {
+        const items = response?.data || response || [];
+        return Array.isArray(items)
+          ? items.map((item: any) => ({
+              ItemNum: item.ItemNum,
+              ItemName: item.ItemName,
+              ItemName2: item.ItemName2,
+              Colorslug: item.Colorslug,
+              ColorName: item.ColorName,
+            }))
+          : [];
+      },
+    }),
+
     getInventory: builder.query<
       any,
       {
@@ -424,5 +453,6 @@ export const {
   useGetTouchupsQuery,
   useGetInventoryQuery,
   useGetFullNamesQuery,
-  useGetPhoneQuery
+  useGetPhoneQuery,
+  useGetTouchupPensQuery,
 } = klaviyoApi;

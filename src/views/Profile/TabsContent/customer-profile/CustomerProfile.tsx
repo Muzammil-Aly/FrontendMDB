@@ -27,7 +27,12 @@ import {
   useGetPhoneQuery,
 } from "@/redux/services/profileApi";
 import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 const CustomerProfile = () => {
+  const { isActive, activeTabName } = useSelector(
+    (state: RootState) => state.tab
+  );
   const userCol = useUsersColumn(users);
   const router = useRouter();
 
@@ -187,7 +192,11 @@ const CustomerProfile = () => {
     // If same option clicked again → clear selection
     setSourceFilter((prev) => (prev === option ? "" : option));
   };
-
+  useEffect(() => {
+    if (isActive && data?.data?.length > 0) {
+      setSelectedUser?.(data.data[0]);
+    }
+  }, [data]);
   return (
     <Box flex={1}>
       <Box
@@ -358,6 +367,15 @@ const CustomerProfile = () => {
             pagination={false}
             currentMenu="profiles"
             paginationPageSize={pageSize}
+            filters={{
+              searchTerm,
+              sourceFilter,
+              customerIdFilter,
+              fullNameFilter,
+              phoneNumberFilter,
+              dateFilter,
+              lastDateFilter,
+            }}
           />
         </Box>
       )}

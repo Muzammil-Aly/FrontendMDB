@@ -356,16 +356,16 @@ export const touchups_columns = [
     headerName: "Parts Item Name 2",
     cellRenderer: CopyCellRenderer,
   },
-  {
-    field: "touchup_pen_item_no",
-    headerName: "Touchup Pen Item No",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "touchup_pen_item_name",
-    headerName: "Touchup Pen Item Name",
-    cellRenderer: CopyCellRenderer,
-  },
+  // {
+  //   field: "touchup_pen_item_no",
+  //   headerName: "Touchup Pen Item No",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+  // {
+  //   field: "touchup_pen_item_name",
+  //   headerName: "Touchup Pen Item Name",
+  //   cellRenderer: CopyCellRenderer,
+  // },
   {
     field: "brand",
     headerName: "Brand",
@@ -382,6 +382,35 @@ export const touchups_columns = [
     cellRenderer: CopyCellRenderer,
   },
 ];
+
+export const touchups_pens = [
+  {
+    field: "ItemNum",
+    headerName: "Item Number",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "ItemName",
+    headerName: "Item Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "ItemName2",
+    headerName: "Item Name 2",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Colorslug",
+    headerName: "Color Slug",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "ColorName",
+    headerName: "Color Name",
+    cellRenderer: CopyCellRenderer,
+  },
+];
+
 export const inventory_columns = [
   {
     field: "Location Code",

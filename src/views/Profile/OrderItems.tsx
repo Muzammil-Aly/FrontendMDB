@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import AgGridTable from "@/components/ag-grid";
 import { orderItems } from "@/constants/Grid-Table/ColDefs";
 import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
@@ -7,10 +8,13 @@ import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
 import { useGetOrderItemsQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 interface Props {
   orderId: string;
   setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
+  orderItemSec: boolean;
+  filters?: string;
 }
 interface OrderItem {
   line_no: string | number;
@@ -23,9 +27,16 @@ interface OrderItem {
   quantity: number;
   amount: number;
 }
-const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
+const OrderItems = ({
+  orderId,
+  setSelectedOrderItem,
+  orderItemSec,
+  filters,
+}: Props) => {
   const orderItemsCol = useOrderItems(orderItems);
-
+  const { isActive, activeTabName, isTouchupsOpen } = useSelector(
+    (state: RootState) => state.tab
+  );
   const [highlightedId, setHighlightedId] = useState<string | number | null>(
     null
   );
@@ -56,6 +67,7 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
         }))
       : [];
   }, [data]);
+
   // const onRowClicked = (params: any) => {
   //   const event = params?.event;
   //   if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
@@ -67,6 +79,7 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
   //     setSelectedItemDetail(params.data);
   //   }
   // };
+  const [orderItemSecOpen, setOrderItemSecOpen] = useState<boolean>(false);
 
   const onRowClicked = (params: any) => {
     const event = params?.event;
@@ -80,8 +93,30 @@ const OrderItems = ({ orderId, setSelectedOrderItem }: Props) => {
     } else {
       setSelectedItemDetail(params.data as OrderItem);
       setSelectedOrderItem?.(params.data as OrderItem);
+      setOrderItemSecOpen(true);
+
+      //  setOrderItemSec(true);
     }
   };
+  // useEffect(() => {
+  //   if (isActive && filters && orderItemSecOpen && data?.data?.length > 0) {
+  //     setSelectedOrderItem?.(data.data[0]);
+  //   }
+  // }, [isActive, data, setSelectedOrderItem, filters]);
+
+  // useEffect(() => {
+  //   if (orderItemSecOpen && data?.data?.length > 0) {
+  //     setSelectedOrderItem?.(data.data[0]);
+  //   }
+  // }, [data, orderItemSecOpen, setSelectedOrderItem]);
+
+  useEffect(() => {
+    if (isTouchupsOpen && data?.data?.length > 0) {
+      setSelectedOrderItem?.(data.data[0]);
+      setSelectedItemDetail(data.data[0]);
+    }
+  }, [data]);
+  console.log("touchupsec", orderItemSecOpen);
   console.log("selectedItemDetail", selectedItemDetail);
   // return (
   //   <Box display="flex" width="100%"

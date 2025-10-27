@@ -1,7 +1,8 @@
 "use client";
+import { useEffect } from "react";
 import AgGridTable from "@/components/ag-grid";
-import { touchups_columns } from "@/constants/Grid-Table/ColDefs"; // your touchups colDefs
-import useTouchupsColumn from "@/hooks/Ag-Grid/useTouchupsColumn"; // the hook we built earlier
+import { touchups_columns } from "@/constants/Grid-Table/ColDefs";
+import useTouchupsColumn from "@/hooks/Ag-Grid/useTouchupsColumn";
 import {
   Box,
   FormControl,
@@ -16,14 +17,14 @@ import {
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
 import { useGetTouchupsQuery } from "@/redux/services/profileApi";
-// <-- adjust if your API hook has different name
 import { getRowStyle } from "@/utils/gridStyles";
 import debounce from "lodash.debounce";
 import { flex } from "@mui/system";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 interface Props {
   orderId: string;
-  setSelectedTouchup?: React.Dispatch<React.SetStateAction<any | null>>;
+  setSelectedTouchup: React.Dispatch<React.SetStateAction<any | null>>;
 }
 
 interface Touchup {
@@ -39,14 +40,20 @@ interface Touchup {
   brand: string | null;
   color_slug: string | null;
   color_name: string | null;
+  filters?: any;
 }
 
 const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
+  const { isActive, activeTabName, isTouchupPensOpen } = useSelector(
+    (state: RootState) => state.tab
+  );
   const touchupsCol = useTouchupsColumn(touchups_columns);
-
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [selectedTouchupDetail, setSelectedTouchupDetail] =
     useState<Touchup | null>(null);
+  const [selectedTouchupp, setSelectedTouchupp] = useState<Touchup | null>(
+    null
+  );
   const [lotNoInput, setLotNoInput] = useState("");
 
   const [isLotNoTyping, setIsLotNoTyping] = useState(false);
@@ -88,16 +95,28 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
       : [];
   }, [data]);
 
-  // Row click handler
   const onRowClicked = (params: any) => {
-    if (selectedTouchupDetail?.order_id === params.data.order_id) {
+    const clicked = params.data as Touchup;
+
+    if (highlightedId === clicked.order_id) {
+      // Deselect row
       setSelectedTouchupDetail(null);
       setHighlightedId(null);
+      setSelectedTouchup(null);
     } else {
-      setSelectedTouchupDetail(params.data as Touchup);
-      setHighlightedId(params.data.order_id);
+      // Select new row
+      setSelectedTouchupDetail(clicked);
+      setHighlightedId(clicked.order_id);
+      setSelectedTouchup(clicked); //  use clicked, not old detail
     }
   };
+  useEffect(() => {
+    if (isTouchupPensOpen && data?.data?.length > 0) {
+      setSelectedTouchupDetail?.(data.data[0]);
+      setSelectedTouchup(data.data[0]);
+    }
+  }, [data]);
+  console.log("selectedTouchupDetail Toucup", selectedTouchupDetail);
   const debouncedItemNo = useMemo(
     () =>
       debounce((value: string) => {
@@ -112,20 +131,14 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
       display="flex"
       flexDirection="column"
       width="100%"
-      // justifyContent="center"
-      // alignItems="center"
       // className="drag-handle"
       gap={2}
     >
-      {/* Show Order ID */}
       <Box
         display={"flex"}
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        {/* <Typography variant="h6" sx={{ mb: 2 }}>
-          Touchups for Order: {orderId ?? "N/A"}
-        </Typography> */}
         <Typography
           className="drag-handle"
           variant="caption"
@@ -133,16 +146,16 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
             fontWeight: 600,
             color: "#fff",
             background: "#1976d2",
-            px: 1.5, // smaller horizontal padding
-            py: 0.5, // smaller vertical padding
-            fontSize: "1em", // very small text
+            px: 1.5,
+            py: 0.5,
+            fontSize: "1em",
             borderRadius: "3px 5px 5px 3px",
             position: "relative",
             display: "inline-block",
             "::before": {
               content: '""',
               position: "absolute",
-              left: -8, // smaller triangle
+              left: -8,
               top: "50%",
               transform: "translateY(-50%)",
               width: 0,
@@ -176,9 +189,9 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
             variant="outlined"
             sx={{
               "& .MuiOutlinedInput-root": {
-                borderRadius: "20px", // modern pill shape
-                backgroundColor: "#ffffff", // clean white
-                border: "1px solid #e0e0e0", // subtle border
+                borderRadius: "20px",
+                backgroundColor: "#ffffff",
+                border: "1px solid #e0e0e0",
                 fontSize: "0.8rem",
                 fontWeight: 500,
                 transition: "all 0.25s ease",
@@ -208,7 +221,6 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
         </FormControl>
       </Box>
 
-      {/* Loader or Table */}
       {isLoading || isFetching ? (
         <Loader />
       ) : (
@@ -219,6 +231,7 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
           enablePagination={false}
           onRowClicked={onRowClicked}
           getRowStyle={getRowStyle(highlightedId)}
+          // filters={filters}
         />
       )}
     </Box>

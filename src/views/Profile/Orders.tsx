@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -30,6 +30,8 @@ import { Phone, Send } from "@mui/icons-material";
 import { getRowStyle } from "@/utils/gridStyles";
 import SearchInput from "@/components/Common/CustomSearch/SearchInput";
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 import {
   useGetCustomerNamesQuery,
@@ -115,6 +117,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const [psiNumberStatusFilter, setPsiNumberFilter] = useState<
     string | undefined
   >(undefined);
+  const { isActive, activeTabName } = useSelector(
+    (state: RootState) => state.tab
+  );
 
   const { data, isLoading, isFetching } = useGetCustomerOrdersQuery({
     page,
@@ -207,6 +212,72 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   //   }
   // };
 
+  useEffect(() => {
+    // Whenever filters or searchTerm change, reset selected order
+    setSelectedOrder(null);
+  }, [
+    orderIdFilter,
+    customerIdFilter,
+    customerNameFilter,
+    customerReferenceNoFilter,
+    shippingAddressFilter,
+    trackigFilter,
+    dateFilter,
+    profitNameFilter,
+    retailerNameFilter,
+    FullfillmentFilter,
+    OrderStatusFilter,
+    psiNumberStatusFilter,
+    searchTerm,
+  ]);
+
+  // Auto-select first order when search/filter results load
+  useEffect(() => {
+    // If any search or filter is active
+    const hasActiveFilter =
+      orderIdFilter ||
+      customerIdFilter ||
+      customerNameFilter ||
+      customerReferenceNoFilter ||
+      shippingAddressFilter ||
+      trackigFilter ||
+      dateFilter ||
+      profitNameFilter ||
+      retailerNameFilter ||
+      FullfillmentFilter ||
+      OrderStatusFilter ||
+      psiNumberStatusFilter ||
+      searchTerm;
+
+    // When data updates and filters are active
+    if (isActive && hasActiveFilter && data?.data?.length > 0) {
+      setSelectedOrder(data.data[0]); // 👈 auto-select the first order
+    }
+  }, [
+    data, // refires when API data changes
+    orderIdFilter,
+    customerIdFilter,
+    customerNameFilter,
+    customerReferenceNoFilter,
+    shippingAddressFilter,
+    trackigFilter,
+    dateFilter,
+    profitNameFilter,
+    retailerNameFilter,
+    FullfillmentFilter,
+    OrderStatusFilter,
+    psiNumberStatusFilter,
+    searchTerm,
+  ]);
+
+  useEffect(() => {
+    if (
+      orderIdFilter && // user searched by Order ID
+      data?.orders?.length === 1 // only one match
+    ) {
+      setSelectedOrder(data.orders[0]); // auto-select it
+    }
+  }, [orderIdFilter, data]);
   const onRowClicked = (params: any) => {
     const event = params?.event;
     const target = event?.target as HTMLElement;
@@ -594,6 +665,16 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               pagination={false}
               currentMenu="orders"
               paginationPageSize={pageSize}
+              filters={{
+                orderIdFilter,
+                customerIdFilter,
+                customerNameFilter,
+                profitNameFilter,
+                retailerNameFilter,
+                OrderStatusFilter,
+                FullfillmentFilter,
+                searchTerm,
+              }}
             />
           </Box>
         )}

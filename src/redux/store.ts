@@ -4,6 +4,7 @@ import { OrdersApi } from "./services/ordersApi";
 import { supportTicketsApi } from "./services/supportTicketsApi";
 import { InventoryApi } from "./services/InventoryApi";
 import { MarketingEventsApi } from "./services/MarketingEvents";
+import tabReducer from "../app/redux/tabSlice";
 export const store = configureStore({
   reducer: {
     [klaviyoApi.reducerPath]: klaviyoApi.reducer,
@@ -11,6 +12,7 @@ export const store = configureStore({
     [supportTicketsApi.reducerPath]: supportTicketsApi.reducer,
     [MarketingEventsApi.reducerPath]: MarketingEventsApi.reducer,
     [InventoryApi.reducerPath]: InventoryApi.reducer,
+    tab: tabReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

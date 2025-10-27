@@ -28,6 +28,7 @@ interface CommentProps {
 interface SupportTicketCommentsProps {
   // customerId: string;
   ticketId?: string;
+  filters?: any;
 }
 
 const SupportTicketComments: React.FC<SupportTicketCommentsProps> = ({
