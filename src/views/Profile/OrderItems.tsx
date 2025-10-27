@@ -10,6 +10,14 @@ import { useGetOrderItemsQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { useDispatch } from "react-redux";
+import {
+  setActiveTab,
+  setOrderItemsOpen,
+  setTouchupsOpen,
+  setTouchupPensOpen,
+  resetAllTabs,
+} from "../../app/redux/tabSlice";
 interface Props {
   orderId: string;
   setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
@@ -48,7 +56,7 @@ const OrderItems = ({
     { orderId },
     { skip: !orderId }
   );
-
+  const dispatch = useDispatch();
   // Map API data to rowData for AgGrid
   const rowData = useMemo(() => {
     const items = data?.data || data || []; // flexible for API shape
@@ -90,6 +98,7 @@ const OrderItems = ({
     if (selectedItemDetail?.order_id === params.data.order_id) {
       setSelectedItemDetail(null);
       setSelectedOrderItem?.(null);
+      dispatch(setTouchupsOpen(false));
     } else {
       setSelectedItemDetail(params.data as OrderItem);
       setSelectedOrderItem?.(params.data as OrderItem);
