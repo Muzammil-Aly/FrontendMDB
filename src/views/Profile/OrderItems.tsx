@@ -76,17 +76,6 @@ const OrderItems = ({
       : [];
   }, [data]);
 
-  // const onRowClicked = (params: any) => {
-  //   const event = params?.event;
-  //   if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
-  //     return; // ignore clicks from any MUI icon button
-  //   }
-  //   if (selectedItemDetail?.line_no === params.data.line_no) {
-  //     setSelectedItemDetail(null);
-  //   } else {
-  //     setSelectedItemDetail(params.data);
-  //   }
-  // };
   const [orderItemSecOpen, setOrderItemSecOpen] = useState<boolean>(false);
 
   const onRowClicked = (params: any) => {
@@ -107,17 +96,6 @@ const OrderItems = ({
       //  setOrderItemSec(true);
     }
   };
-  // useEffect(() => {
-  //   if (isActive && filters && orderItemSecOpen && data?.data?.length > 0) {
-  //     setSelectedOrderItem?.(data.data[0]);
-  //   }
-  // }, [isActive, data, setSelectedOrderItem, filters]);
-
-  // useEffect(() => {
-  //   if (orderItemSecOpen && data?.data?.length > 0) {
-  //     setSelectedOrderItem?.(data.data[0]);
-  //   }
-  // }, [data, orderItemSecOpen, setSelectedOrderItem]);
 
   useEffect(() => {
     if (isTouchupsOpen && data?.data?.length > 0) {
@@ -127,22 +105,6 @@ const OrderItems = ({
   }, [data]);
   console.log("touchupsec", orderItemSecOpen);
   console.log("selectedItemDetail", selectedItemDetail);
-  // return (
-  //   <Box display="flex" width="100%"
-  //   justifyContent="center"
-  // alignItems="center">
-  //     {isLoading || isFetching ? (
-  //       <Loader />
-  //     ) : (
-  //       <AgGridTable
-  //         rowData={rowData}
-  //         columnDefs={orderItemsCol}
-  //         height={480}
-  //         enablePagination={false}
-  //       />
-  //     )}
-  //   </Box>
-  // );
 
   return (
     <Box

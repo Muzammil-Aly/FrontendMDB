@@ -191,19 +191,6 @@ export const klaviyoApi = createApi({
       },
     }),
 
-    // getSupportTicketsCommnets: builder.query<any, { customerId: number }>({
-    //        query: ({ customerId }) => `support_ticket_comments?customer_id=${customerId}`,
-    // }),
-
-    // getSupportTicketsCommnets: builder.query<any, { customerId?: number; ticketId?: number,  page?: number;
-    //   page_size?: number; }>({
-    //   query: ({ customerId, ticketId, page = 1, page_size = 50, }) => {
-    //     let queryParams: string[] = [];
-    //     if (customerId) queryParams.push(`customer_id=${customerId}`);
-    //     if (ticketId) queryParams.push(`ticket_id=${ticketId}`);
-    //     return `support_ticket_comments?${queryParams.join("&")}`;
-    //   },
-    // }),
     getSupportTicketsCommnets: builder.query<
       any,
       {
@@ -323,41 +310,12 @@ export const klaviyoApi = createApi({
       },
     }),
 
-    // getTouchupPens: builder.query<
-    //   any[],
-    //   {
-    //     page?: number;
-    //     page_size?: number;
-    //     color_slug?: string;
-    //   }
-    // >({
-    //   query: ({ page = 1, page_size = 10, color_slug } = {}) => {
-    //     const params = new URLSearchParams();
-    //     params.append("page", String(page));
-    //     params.append("page_size", String(page_size));
-    //     if (color_slug) params.append("Colorslug", color_slug);
-    //     return `/touchup_pen?${params.toString()}`;
-    //   },
-    //   transformResponse: (response: any) => {
-    //     const items = response?.data || response || [];
-    //     return Array.isArray(items)
-    //       ? items.map((item: any) => ({
-    //           ItemNum: item.ItemNum,
-    //           ItemName: item.ItemName,
-    //           ItemName2: item.ItemName2,
-    //           Colorslug: item.Colorslug,
-    //           ColorName: item.ColorName,
-    //         }))
-    //       : [];
-    //   },
-    // }),
-
     getTouchupPens: builder.query<
       any,
       {
         page?: number;
         page_size?: number;
-        color_slug?: string;
+        color_slug?: string | null;
         item_num?: string;
         item_name?: string;
         item_name2?: string;
@@ -380,8 +338,8 @@ export const klaviyoApi = createApi({
         if (color_slug) params.set("Colorslug", color_slug);
         if (item_num) params.set("item_num", item_num);
         if (item_name) params.set("item_name", item_name);
-        if (item_name2) params.set("item_name2", item_name2);
-        if (color_name) params.set("color_name", color_name);
+        if (item_name2) params.set("ItemName2", item_name2);
+        if (color_name) params.set("ColorName", color_name);
 
         return `touchup_pen?${params.toString()}`;
       },
@@ -464,16 +422,6 @@ export const klaviyoApi = createApi({
         return `inventory_Availability?${params.toString()}`;
       },
     }),
-
-    // getInventory: builder.query<any, void>({
-    //   query: () => {
-    //     const params = new URLSearchParams();
-    //     params.set("page", "1");
-    //     params.set("page_size", "10");
-
-    //     return `inventory_Availability?${params.toString()}`;
-    //   },
-    // }),
 
     getFullNames: builder.query<any, string | void>({
       query: (name = "") => ({

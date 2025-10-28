@@ -65,7 +65,7 @@ const Profile = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#f8f9fa" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f8f9fa" }}>
       {/* Sidebar (fixed) */}
       <Box sx={{ width: 130, flexShrink: 0 }}>
         <Sidebar

@@ -1,71 +1,52 @@
 "use client";
+import { useState, useMemo } from "react";
+import { Responsive, WidthProvider } from "react-grid-layout";
 import AgGridTable from "@/components/ag-grid";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+import { Box, Paper } from "@mui/material";
+import Touchups from "./Touchups";
+import TouchupsPens from "./TouchupsPens";
 import { inventory_columns } from "@/constants/Grid-Table/ColDefs";
 import useInventoryColumn from "@/hooks/Ag-Grid/useInventoryColumn";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Typography,
-  TextField,
-  CircularProgress,
-  InputAdornment,
-} from "@mui/material";
-import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
 import { useGetInventoryQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
-import debounce from "lodash.debounce";
 import SearchInput from "@/components/Common/CustomSearch/SearchInput";
+import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 import { useGetLocationCodesQuery } from "@/redux/services/InventoryApi";
-import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
-import Touchups from "./Touchups";
-import TouchupsPens from "./TouchupsPens";
-import AllTouchupsPens from "./AllTouchupsPens";
-import AllTouchups from "./AllTouchups";
-interface Inventory {
-  "Location Code": string;
-  "Item No_": string;
-  Description: string;
-  Qty_: number;
-  ETA: string | null;
-  "Qty_ Available": number;
-  "Avail_ Qty_ on Hand": number;
-  "Avail_ Qty_ to Commit": number;
-  "Qty_ on Blocked Lot_Bin": number;
-}
+import debounce from "lodash.debounce";
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Inventory = () => {
   const tiCol = useInventoryColumn(inventory_columns);
 
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
-  const [selectedTIDetail, setSelectedTIDetail] = useState<Inventory | null>(
-    null
-  );
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [locationCodeInput, setLocationCodeInput] = useState("");
-  const [islocationCodeInputTyping, setLocationCodeInputTyping] =
-    useState(false);
   const [locationCodeFilter, setLocationCodeFilter] = useState<
     string | undefined
   >(undefined);
   const [itemNoInput, setItemNoInput] = useState("");
-  const [isItemNoInputTyping, setItemNoInputTyping] = useState(false);
   const [ItemNoFilter, setItemNoFilter] = useState<string | undefined>(
     undefined
   );
-
   const [descriptionInput, setDescriptionInput] = useState("");
-  const [descriptionTyping, setDescriptionTyping] = useState(false);
   const [descriptionFilter, setDescriptionFilter] = useState<
     string | undefined
   >(undefined);
+  const [descriptionTyping, setDescriptionTyping] = useState(false);
 
-  // Fetch TI data from API
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState<
+    any | null
+  >(null);
+  const [selectedTouchup, setSelectedTouchup] = useState<any | null>(null);
+  const [isItemNoInputTyping, setItemNoInputTyping] = useState(false);
+  const [islocationCodeInputTyping, setLocationCodeInputTyping] =
+    useState(false);
   const { data, isLoading, isFetching } = useGetInventoryQuery({
     page,
     page_size: pageSize,
@@ -74,7 +55,6 @@ const Inventory = () => {
     description: descriptionFilter,
   });
 
-  // Map API response -> rowData
   const rowData = useMemo(() => {
     const items = data?.data || data || [];
     return Array.isArray(items)
@@ -91,23 +71,19 @@ const Inventory = () => {
         }))
       : [];
   }, [data]);
+
   const {
     data: locationCodeSuggestions = [],
     isFetching: isLocationCodeLoading,
   } = useGetLocationCodesQuery(locationCodeInput, {
     skip: locationCodeInput.trim().length < 1,
   });
-  // Row click handler
+
   const onRowClicked = (params: any) => {
-    if (selectedTIDetail?.["Item No_"] === params.data["Item No_"]) {
-      //   setSelectedTIDetail(null);
-      setHighlightedId(null);
-    } else {
-      //   setSelectedTIDetail(params.data as TI);
-      setHighlightedId(params.data["Item No_"]);
-      // bubble up to parent if provided
-    }
+    setHighlightedId(params.data["Item No_"]);
+    setSelectedInventoryItem(params.data);
   };
+
   const debouncedLocationCode = useMemo(
     () =>
       debounce((value: string) => {
@@ -136,204 +112,171 @@ const Inventory = () => {
       }, 5000),
     []
   );
-
-  // const debouncedCustomerId = debounce((val: string) => {
-  //   setDescriptionFilter(val);
-  //   setDescriptionTyping(false);
-  // }, 500);
+  const baseLayout = [
+    {
+      i: "inventory",
+      x: 0,
+      y: 0,
+      w: 12,
+      h: 15,
+      minW: 6,
+      minH: 10,
+    },
+    {
+      i: "touchups",
+      x: 0,
+      y: 20,
+      w: 12,
+      h: 17,
+      minH: 8,
+    },
+    {
+      i: "touchups_pens",
+      x: 0,
+      y: 35,
+      w: 12,
+      h: 17,
+      minH: 8,
+    },
+  ];
 
   return (
-    <>
-      {/* <Box
-        display="flex"
-        flexDirection="column"
-        width="100%"
-        //   justifyContent="space-between"
-        //   alignItems="flex-start"
-        className="drag-handle"
-        pl={8}
-      >
-        {" "}
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
-          <Box display={"flex"} gap={2} mb={2}>
-            <Box>
-              <DropdownSearchInput
-                label="Location Code"
-                value={locationCodeInput}
-                // setValue={setDescriptionInput}
-                setValue={setLocationCodeInput}
-                setFilter={setLocationCodeFilter}
-                debouncedFunction={debouncedLocationCode}
-                loading={isLocationCodeLoading}
-                suggestions={locationCodeSuggestions?.results || []}
-                width={150}
-              />
-            </Box>
-
-            <Box>
-              <SearchInput
-                label="Item No"
-                value={itemNoInput}
-                // setValue={setDescriptionInput}
-                setValue={(val) => {
-                  setItemNoInput(val);
-                  setItemNoInputTyping(true);
-                }}
-                setFilter={setItemNoFilter}
-                debouncedFunction={debouncedItemNo}
-                loading={isItemNoInputTyping}
-                width={150}
-              />
-            </Box>
-
-            <SearchInput
-              label="Description"
-              value={descriptionInput}
-              // setValue={setDescriptionInput}
-              setValue={(val) => {
-                setDescriptionInput(val);
-                setDescriptionTyping(true);
-              }}
-              setFilter={setDescriptionFilter}
-              debouncedFunction={debouncedDescription}
-              loading={descriptionTyping}
-              width={150}
-            />
-          </Box>
-          <Box mt={-2}>
-            <CustomSelect
-              label="Page Size"
-              value={pageSize}
-              options={[10, 50, 100]}
-              onChange={(val) => {
-                setPageSize(val);
-                setPage(1);
-              }}
-            />
-          </Box>
-        </Box>
-        {isLoading || isFetching ? (
-          <Loader />
-        ) : (
-          <AgGridTable
-            rowData={rowData}
-            columnDefs={tiCol}
-            height={480}
-            enablePagination
-            onRowClicked={onRowClicked}
-            getRowStyle={getRowStyle(highlightedId)}
-            currentPage={page}
-            totalPages={data?.total_pages || 1}
-            onPageChange={(newPage: any) => setPage(newPage)}
-            pagination={false}
-            currentMenu="profiles"
-            paginationPageSize={pageSize}
-          />
-        )}
-        <Box sx={{ margin: 5 }}>
-          <AllTouchupsPens />
-          <AllTouchups />
-          <Box sx={{ marginTop: 5 }}></Box>
-        </Box>
-      </Box> */}
-
-      <Box
-        display="flex"
-        flexDirection="column"
-        width="100%"
-        height="100vh" // full viewport height
-        overflow="auto" // enable scroll for entire container
-        className="drag-handle"
-        pl={8}
-      >
-        {/* Filters and Page Size */}
+    <Box
+      sx={{
+        width: "100%",
+        minHeight: "100vh",
+        overflow: "hidden",
+        // ml: 5,
+        // mr: 5,
+        mb: 2,
+        mt: 2,
+      }}
+    >
+      {/* Filters */}
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box
           display="flex"
-          justifyContent="space-between"
-          alignItems="center"
+          // justifyContent="space-between"
+          gap={2}
           mb={2}
+          mt={2}
+          ml={10}
         >
-          <Box display="flex" gap={2}>
-            <DropdownSearchInput
-              label="Location Code"
-              value={locationCodeInput}
-              setValue={setLocationCodeInput}
-              setFilter={setLocationCodeFilter}
-              debouncedFunction={debouncedLocationCode}
-              loading={isLocationCodeLoading}
-              suggestions={locationCodeSuggestions?.results || []}
-              width={150}
-            />
-            <SearchInput
-              label="Item No"
-              value={itemNoInput}
-              setValue={(val) => {
-                setItemNoInput(val);
-                setItemNoInputTyping(true);
-              }}
-              setFilter={setItemNoFilter}
-              debouncedFunction={debouncedItemNo}
-              loading={isItemNoInputTyping}
-              width={150}
-            />
-            <SearchInput
-              label="Description"
-              value={descriptionInput}
-              setValue={(val) => {
-                setDescriptionInput(val);
-                setDescriptionTyping(true);
-              }}
-              setFilter={setDescriptionFilter}
-              debouncedFunction={debouncedDescription}
-              loading={descriptionTyping}
-              width={150}
-            />
-          </Box>
-
-          <Box mt={2}>
-            <CustomSelect
-              label="Page Size"
-              value={pageSize}
-              options={[10, 50, 100]}
-              onChange={(val) => {
-                setPageSize(val);
-                setPage(1);
-              }}
-            />
-          </Box>
+          <DropdownSearchInput
+            label="Location Code"
+            value={locationCodeInput}
+            setValue={setLocationCodeInput}
+            setFilter={setLocationCodeFilter}
+            debouncedFunction={debouncedLocationCode}
+            loading={isLocationCodeLoading}
+            suggestions={locationCodeSuggestions?.results || []}
+            width={150}
+          />
+          <SearchInput
+            label="Item No"
+            value={itemNoInput}
+            setValue={(val) => {
+              setItemNoInput(val);
+              setItemNoInputTyping(true);
+            }}
+            setFilter={setItemNoFilter}
+            debouncedFunction={debouncedItemNo}
+            loading={isItemNoInputTyping}
+            width={150}
+          />
+          <SearchInput
+            label="Description"
+            value={descriptionInput}
+            setValue={(val) => {
+              setDescriptionInput(val);
+              setDescriptionTyping(true);
+            }}
+            setFilter={setDescriptionFilter}
+            debouncedFunction={debouncedDescription}
+            loading={descriptionTyping}
+            width={150}
+          />
         </Box>
-        {/* All tables in one scrollable container */}
-        <Box display="flex" flexDirection="column" gap={5}>
+        <Box>
+          <CustomSelect
+            label="Page Size"
+            value={pageSize}
+            options={[10, 50, 100]}
+            onChange={(val) => setPageSize(val)}
+          />
+        </Box>
+      </Box>
+      {/* Responsive Layout */}
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={{ lg: baseLayout, md: baseLayout, sm: baseLayout }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 4 }}
+        rowHeight={30}
+        isDraggable
+        isResizable
+        draggableHandle=".drag-handle"
+        draggableCancel=".no-drag"
+        resizeHandles={["se", "e", "s"]}
+      >
+        {/* Inventory Table */}
+        <Paper
+          key="inventory"
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            height: "100%",
+            overflow: "hidden",
+            ml: 5,
+          }}
+        >
           {isLoading || isFetching ? (
             <Loader />
           ) : (
             <AgGridTable
               rowData={rowData}
               columnDefs={tiCol}
-              height={undefined} // remove fixed height
-              enablePagination
               onRowClicked={onRowClicked}
               getRowStyle={getRowStyle(highlightedId)}
+              enablePagination
               currentPage={page}
               totalPages={data?.total_pages || 1}
-              onPageChange={(newPage: any) => setPage(newPage)}
-              pagination={false}
-              currentMenu="profiles"
+              onPageChange={setPage}
+              pagination
               paginationPageSize={pageSize}
             />
           )}
+        </Paper>
 
-          {/* Render the other tables */}
+        {/* Touchups */}
+        <Paper
+          key="touchups"
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            height: "100%",
+            overflow: "hidden",
+            ml: 5,
+          }}
+        >
+          <Touchups />
+        </Paper>
 
-          <AllTouchups />
-          <AllTouchupsPens />
-        </Box>
-      </Box>
-    </>
+        {/* Touchups Pens */}
+        <Paper
+          key="touchups_pens"
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            height: "100%",
+            overflow: "hidden",
+            ml: 5,
+          }}
+        >
+          <TouchupsPens />
+        </Paper>
+      </ResponsiveGridLayout>
+    </Box>
   );
 };
 
