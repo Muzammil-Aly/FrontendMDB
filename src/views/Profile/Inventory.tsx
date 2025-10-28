@@ -148,8 +148,8 @@ const Inventory = () => {
         overflow: "hidden",
         // ml: 5,
         // mr: 5,
-        mb: 2,
-        mt: 2,
+        mb: 1,
+        // mt: 2,
       }}
     >
       {/* Filters */}

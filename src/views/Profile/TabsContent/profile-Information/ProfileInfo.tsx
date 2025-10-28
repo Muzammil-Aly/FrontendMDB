@@ -254,7 +254,7 @@ const DetailedInfo = () => {
             />
           </Box>
 
-          <Box minWidth={120}>
+          <Box minWidth={120} mt={2}>
             <CustomSelect
               label="Page Size"
               value={pageSize}

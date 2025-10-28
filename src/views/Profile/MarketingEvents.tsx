@@ -170,7 +170,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
             alignItems="stretch"
             gap={2}
             mb={2}
-            pl={2}
+            pl={1}
           >
             {/* Top row: Email search + Event Time + Page Size */}
             <Box
@@ -179,6 +179,7 @@ const MarketingEvents: React.FC<MarketingEventsProps> = ({ customerId }) => {
               justifyContent="space-between"
               alignItems="center"
               gap={2}
+              mt="1px"
             >
               {/* Email Search */}
               <Box

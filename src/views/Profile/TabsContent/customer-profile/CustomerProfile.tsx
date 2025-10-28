@@ -204,7 +204,7 @@ const CustomerProfile = () => {
         flexDirection="column"
         width="100%"
         pl={8}
-        pr={3}
+        // pr={0}
         mb={2}
       >
         {/* Top row: Search + Page Size */}
@@ -250,7 +250,7 @@ const CustomerProfile = () => {
             />
           </Box>
 
-          <Box minWidth={120}>
+          <Box minWidth={120} mt={2}>
             <CustomSelect
               label="Page Size"
               value={pageSize}

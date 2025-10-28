@@ -87,6 +87,7 @@ const Profile = () => {
           flexDirection: "column",
           overflow: "hidden",
           height: "100vh",
+
           // gap: 2,
         }}
       >
