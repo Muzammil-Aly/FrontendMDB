@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useRef } from "react";
 import {
   Autocomplete,
   TextField,
@@ -34,6 +34,7 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
   loading = false,
   setLoading,
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const handleSelect = (selected: string | null) => {
     const chosen = selected || "";
     setValue(chosen);
@@ -61,6 +62,7 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
         (s) => s.toLowerCase() === value.toLowerCase()
       );
       handleSelect(match || value);
+      inputRef.current?.blur();
     }
   };
 
@@ -88,6 +90,7 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
         renderInput={(params) => (
           <TextField
             {...params}
+            inputRef={inputRef}
             label={label}
             size="small"
             onKeyDown={handleKeyDown}
