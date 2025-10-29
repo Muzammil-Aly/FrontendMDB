@@ -64,7 +64,7 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
 
   const handlePageSizeChange = (value: number) => {
     setPageSizeInput(value);
-    setPage(value); // reset to page 1
+    setPage(1); // reset to page 1
   };
 
   const [isTyping, setIsTyping] = useState({
@@ -355,7 +355,7 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
           currentPage={page}
           totalPages={data?.total_pages || 1}
           onPageChange={(newPage: number) => setPage(newPage)}
-          paginationPageSize={pageSize}
+          paginationPageSize={pageSizeInput}
         />
       )}
     </Box>
