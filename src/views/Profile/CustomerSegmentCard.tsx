@@ -268,8 +268,10 @@ interface Props {
 }
 
 const CustomerSegmentCard: React.FC<Props> = ({ custId }) => {
-  const { isActive } = useSelector((state: RootState) => state.tab);
-
+  const { isActive, isCustomerSegmentsOpen } = useSelector(
+    (state: RootState) => state.tab
+  );
+  console.log("isCustomerSegmentsOpen", isCustomerSegmentsOpen);
   // ✅ Fetch data
   const { data, error, isLoading, isFetching } = useGetCustomerSegmentQuery(
     { custId: String(custId) },
@@ -281,10 +283,10 @@ const CustomerSegmentCard: React.FC<Props> = ({ custId }) => {
 
   // ✅ Handle data once loaded
   useEffect(() => {
-    if (isActive && data?.data?.length > 0) {
+    if (isCustomerSegmentsOpen && data?.data?.length > 0) {
       setSelectedConsumer(data.data[0]);
     }
-  }, [data, isActive]);
+  }, [data, isCustomerSegmentsOpen]);
 
   // ✅ Loading State
   if (isLoading || isFetching) {

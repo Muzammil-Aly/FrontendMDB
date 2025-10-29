@@ -127,7 +127,7 @@ const Inventory = () => {
       x: 0,
       y: 20,
       w: 12,
-      h: 17,
+      h: 14,
       minH: 8,
     },
     {
@@ -135,7 +135,7 @@ const Inventory = () => {
       x: 0,
       y: 35,
       w: 12,
-      h: 17,
+      h: 14,
       minH: 8,
     },
   ];
@@ -226,7 +226,8 @@ const Inventory = () => {
             p: 2,
             borderRadius: 3,
             height: "100%",
-            overflow: "hidden",
+            overflowY: "auto",
+            overflowX: "hidden",
             ml: 5,
           }}
         >
@@ -255,7 +256,8 @@ const Inventory = () => {
             p: 2,
             borderRadius: 3,
             height: "100%",
-            overflow: "hidden",
+            overflowY: "auto",
+            overflowX: "hidden",
             ml: 5,
           }}
         >
@@ -269,7 +271,8 @@ const Inventory = () => {
             p: 2,
             borderRadius: 3,
             height: "100%",
-            overflow: "hidden",
+            overflowY: "auto",
+            overflowX: "hidden",
             ml: 5,
           }}
         >

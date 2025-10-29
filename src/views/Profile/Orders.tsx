@@ -117,7 +117,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const [psiNumberStatusFilter, setPsiNumberFilter] = useState<
     string | undefined
   >(undefined);
-  const { isActive, activeTabName } = useSelector(
+  const { isActive, isOrderItemsOpen, activeTabName } = useSelector(
     (state: RootState) => state.tab
   );
 

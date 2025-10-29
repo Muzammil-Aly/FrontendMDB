@@ -9,6 +9,7 @@ import {
   CircularProgress,
   InputAdornment,
   IconButton,
+  MenuItem,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import debounce from "lodash.debounce";
@@ -59,6 +60,12 @@ const TouchupsPens: React.FC<Props> = ({ orderId, Colorslug }) => {
 
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
+  const [pageSizeInput, setPageSizeInput] = useState(pageSize);
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSizeInput(value);
+    setPage(value); // reset to page 1
+  };
 
   // --- Debounce filter handler ---
   const handleFilterChange = useMemo(
@@ -88,7 +95,7 @@ const TouchupsPens: React.FC<Props> = ({ orderId, Colorslug }) => {
   } = useGetTouchupPensQuery(
     {
       page,
-      page_size: pageSize,
+      page_size: pageSizeInput,
       color_slug: Colorslug || filters.Colorslug,
       // colorslug: filters.Colorslug,
       color_name: filters.ColorName,
@@ -218,6 +225,44 @@ const TouchupsPens: React.FC<Props> = ({ orderId, Colorslug }) => {
           {renderFilter("Color slug", "Colorslug", inputValues.Colorslug)}
           {renderFilter("Color Name", "ColorName", inputValues.ColorName)}
           {renderFilter("Item Name 2", "ItemName2", inputValues.ItemName2)}
+          <FormControl sx={{ width: 150 }}>
+            <TextField
+              select
+              value={pageSizeInput}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              size="small"
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "20px",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e0e0e0",
+                  fontSize: "0.8rem",
+                  fontWeight: 500,
+                  transition: "all 0.25s ease",
+                  "&:hover": {
+                    borderColor: "#42a5f5",
+                    boxShadow: "0 2px 6px rgba(66, 165, 245, 0.15)",
+                  },
+                  "&.Mui-focused": {
+                    borderColor: "#1976d2",
+                    boxShadow: "0 0 6px rgba(25, 118, 210, 0.25)",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "6px 14px",
+                  textTransform: "none",
+                },
+              }}
+              InputLabelProps={{ style: { display: "none" } }}
+            >
+              {[10, 50, 100].map((size) => (
+                <MenuItem key={size} value={size}>
+                  {size}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
         </Box>
       </Box>
 

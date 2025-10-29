@@ -71,10 +71,10 @@ const tabSlice = createSlice({
       state.activeTabName = action.payload.name || "";
     },
     setOrderItemsOpen: (state, action: PayloadAction<boolean>) => {
-      state.isCustomerSegmentsOpen = action.payload;
+      state.isOrderItemsOpen = action.payload;
     },
     setCustomerSegmentsOpen: (state, action: PayloadAction<boolean>) => {
-      state.isOrderItemsOpen = action.payload;
+      state.isCustomerSegmentsOpen = action.payload;
     },
 
     setTouchupsOpen: (state, action: PayloadAction<boolean>) => {

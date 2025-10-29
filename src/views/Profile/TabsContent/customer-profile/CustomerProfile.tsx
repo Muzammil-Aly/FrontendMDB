@@ -27,10 +27,20 @@ import {
   useGetPhoneQuery,
 } from "@/redux/services/profileApi";
 import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import {
+  setActiveTab,
+  setOrderItemsOpen,
+  setTouchupsOpen,
+  setTouchupPensOpen,
+  resetAllTabs,
+  setCustomerSegmentsOpen,
+} from "../../../../app/redux/tabSlice";
 const CustomerProfile = () => {
-  const { isActive, activeTabName } = useSelector(
+  const dispatch = useDispatch();
+
+  const { isCustomerSegmentsOpen, activeTabName } = useSelector(
     (state: RootState) => state.tab
   );
   const userCol = useUsersColumn(users);
@@ -181,6 +191,7 @@ const CustomerProfile = () => {
       setSearchTerm("");
       setPage(1);
       debouncedSearch.cancel();
+      dispatch(setCustomerSegmentsOpen(false));
     } else {
       debouncedSearch(value);
       setIsTyping(true);
@@ -192,11 +203,51 @@ const CustomerProfile = () => {
     // If same option clicked again → clear selection
     setSourceFilter((prev) => (prev === option ? "" : option));
   };
+  // useEffect(() => {
+  //   if (isCustomerSegmentsOpen && data?.data?.length > 0) {
+  //     setSelectedUser?.(data.data[0]);
+  //   }
+  // }, [data]);
+
+  // 🔹 Reset selectedUser whenever any filter/search changes
   useEffect(() => {
-    if (isActive && data?.data?.length > 0) {
-      setSelectedUser?.(data.data[0]);
+    setSelectedUser(null);
+  }, [
+    searchTerm,
+    customerIdFilter,
+    fullNameFilter,
+    phoneNumberFilter,
+    dateFilter,
+    lastDateFilter,
+    sourceFilter,
+  ]);
+
+  // 🔹 Auto-select first user when data loads and filters/search are active
+  useEffect(() => {
+    const hasActiveFilter =
+      searchTerm ||
+      customerIdFilter ||
+      fullNameFilter ||
+      phoneNumberFilter ||
+      dateFilter ||
+      lastDateFilter;
+    // sourceFilter;
+
+    if (isCustomerSegmentsOpen && hasActiveFilter && data?.data?.length > 0) {
+      setSelectedUser(data.data[0]);
     }
-  }, [data]);
+  }, [
+    data,
+    searchTerm,
+    customerIdFilter,
+    fullNameFilter,
+    phoneNumberFilter,
+    dateFilter,
+    lastDateFilter,
+    // sourceFilter,
+    isCustomerSegmentsOpen,
+  ]);
+
   return (
     <Box flex={1}>
       <Box

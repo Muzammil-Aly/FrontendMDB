@@ -11,6 +11,7 @@ import {
   InputAdornment,
   FormControl,
   IconButton,
+  MenuItem,
 } from "@mui/material";
 import { Cancel as CancelIcon } from "@mui/icons-material";
 import Loader from "@/components/Common/Loader";
@@ -49,6 +50,8 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [selectedTouchupDetail, setSelectedTouchupDetail] =
     useState<Touchup | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
 
   // Filters
   const [lotNoInput, setLotNoInput] = useState("");
@@ -56,6 +59,13 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
   const [customerIdInput, setCustomerIdInput] = useState("");
   const [skuInput, setSkuInput] = useState("");
   const [colorSlugInput, setColorSlugInput] = useState("");
+  //  state for page size selection
+  const [pageSizeInput, setPageSizeInput] = useState(pageSize);
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSizeInput(value);
+    setPage(value); // reset to page 1
+  };
 
   const [isTyping, setIsTyping] = useState({
     lot_no: false,
@@ -72,9 +82,6 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
     sku?: string;
     color_slug?: string;
   }>({});
-
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
 
   // 🔹 Debounced filter handler
   const handleFilterChange = useMemo(
@@ -95,7 +102,7 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
     {
       order_id: filters.order_id || orderId || undefined,
       page,
-      page_size: pageSize,
+      page_size: pageSizeInput,
       lot_no: filters.lot_no,
       customer_id: filters.customer_id,
       sku: filters.sku,
@@ -293,6 +300,44 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
           {renderFilter("Customer ID", customerIdInput, "customer_id")}
           {renderFilter("SKU", skuInput, "sku")}
           {renderFilter("Color Slug", colorSlugInput, "color_slug")}
+          <FormControl sx={{ width: 150 }}>
+            <TextField
+              select
+              value={pageSizeInput}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              size="small"
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "20px",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e0e0e0",
+                  fontSize: "0.8rem",
+                  fontWeight: 500,
+                  transition: "all 0.25s ease",
+                  "&:hover": {
+                    borderColor: "#42a5f5",
+                    boxShadow: "0 2px 6px rgba(66, 165, 245, 0.15)",
+                  },
+                  "&.Mui-focused": {
+                    borderColor: "#1976d2",
+                    boxShadow: "0 0 6px rgba(25, 118, 210, 0.25)",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "6px 14px",
+                  textTransform: "none",
+                },
+              }}
+              InputLabelProps={{ style: { display: "none" } }}
+            >
+              {[10, 50, 100].map((size) => (
+                <MenuItem key={size} value={size}>
+                  {size}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
         </Box>
       </Box>
 
