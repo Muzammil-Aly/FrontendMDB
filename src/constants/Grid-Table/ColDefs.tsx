@@ -321,11 +321,11 @@ export const support_ticket_comments = [
 ];
 
 export const touchups_columns = [
-  {
-    field: "order_id",
-    headerName: "Order ID",
-    cellRenderer: CopyCellRenderer,
-  },
+  // {
+  //   field: "order_id",
+  //   headerName: "Order ID",
+  //   cellRenderer: CopyCellRenderer,
+  // },
   {
     field: "lot_no",
     headerName: "Lot No",

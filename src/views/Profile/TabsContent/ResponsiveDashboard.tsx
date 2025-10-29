@@ -240,7 +240,7 @@ const ResponsiveDashboard = ({
             {selectedOrderItem && (
               <>
                 <Touchups
-                  orderId={selectedOrderItem.order_id}
+                  orderId={selectedOrderItem.lot_no}
                   setSelectedTouchup={handleSelectTouchup}
                 />
 

@@ -13,8 +13,8 @@ const useTouchupsColumn = (columns: Column[]) => {
   return useMemo(() => {
     return columns.map((col: any) => {
       switch (col.field) {
-        case "order_id":
-          return { ...col, headerName: "Order ID", flex: 1, minWidth: 150 };
+        // case "order_id":
+        //   return { ...col, headerName: "Order ID", flex: 1, minWidth: 150 };
         case "lot_no":
           return { ...col, headerName: "Lot No", flex: 1, minWidth: 140 };
         case "sku":

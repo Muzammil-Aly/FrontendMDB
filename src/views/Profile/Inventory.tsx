@@ -17,6 +17,7 @@ import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearch
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 import { useGetLocationCodesQuery } from "@/redux/services/InventoryApi";
 import debounce from "lodash.debounce";
+import AllTouchups from "./AllTouchups";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -261,7 +262,7 @@ const Inventory = () => {
             ml: 5,
           }}
         >
-          <Touchups />
+          <AllTouchups />
         </Paper>
 
         {/* Touchups Pens */}

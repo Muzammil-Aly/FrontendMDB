@@ -100,19 +100,19 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
   // 🔹 Fetch data
   const { data, isLoading, isFetching } = useGetTouchupsQuery(
     {
-      order_id: filters.order_id || orderId || undefined,
+      order_id: filters.order_id || undefined,
       page,
       page_size: pageSizeInput,
-      lot_no: filters.lot_no,
+      lot_no: filters.lot_no || orderId ? orderId : "",
       customer_id: filters.customer_id,
       sku: filters.sku,
       color_slug: filters.color_slug,
-    },
-    { skip: false }
+    }
+    // { skip: !orderId }
   );
 
   const rowData = useMemo(() => {
-    const items = data?.data || data || [];
+    const items = (orderId && data)?.data || data || [];
     return Array.isArray(items)
       ? items.map((item: any) => ({
           order_id: item.order_id,
@@ -296,10 +296,10 @@ const Touchups = ({ orderId, setSelectedTouchup }: Props) => {
 
         <Box display="flex" gap={1.5} flexWrap="wrap" marginRight={3}>
           {renderFilter("Lot No", lotNoInput, "lot_no")}
-          {renderFilter("Order ID", orderIdInput, "order_id")}
-          {renderFilter("Customer ID", customerIdInput, "customer_id")}
+          {/* {renderFilter("Order ID", orderIdInput, "order_id")} */}
+          {/* {renderFilter("Customer ID", customerIdInput, "customer_id")} */}
           {renderFilter("SKU", skuInput, "sku")}
-          {renderFilter("Color Slug", colorSlugInput, "color_slug")}
+          {/* {renderFilter("Color Slug", colorSlugInput, "color_slug")} */}
           <FormControl sx={{ width: 150 }}>
             <TextField
               select
