@@ -182,7 +182,9 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
       customer_name: customerNameFilter || undefined,
       phone_no: phoneNumberFilter || undefined,
       email: searchTerm || undefined,
-      status: statusFilter || undefined,
+      // status: statusFilter || undefined,
+      status: statusFilter === "All" ? undefined : statusFilter || undefined,
+
       tags: tagsFilter || undefined,
       created_at: dateFilter || undefined,
     },
