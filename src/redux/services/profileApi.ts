@@ -258,7 +258,7 @@ export const klaviyoApi = createApi({
         page?: number;
         page_size?: number;
         order_id?: string;
-        lot_no?: string;
+        lot_no?: string | null;
         sku?: string;
         customer_id?: string;
         parts_item_no?: string;

@@ -59,7 +59,7 @@ const OrderItems = ({
   const dispatch = useDispatch();
   // Map API data to rowData for AgGrid
   const rowData = useMemo(() => {
-    const items = data?.data || data || []; // flexible for API shape
+    const items = data?.data || data || [];
     return Array.isArray(items)
       ? items.map((item: any) => ({
           line_no: item.line_no,
@@ -84,7 +84,7 @@ const OrderItems = ({
       return; // ignore clicks from any MUI icon button
     }
 
-    if (selectedItemDetail?.order_id === params.data.order_id) {
+    if (selectedItemDetail?.line_no === params.data.line_no) {
       setSelectedItemDetail(null);
       setSelectedOrderItem?.(null);
       dispatch(setTouchupsOpen(false));

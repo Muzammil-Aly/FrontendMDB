@@ -262,7 +262,8 @@ const Inventory = () => {
             ml: 5,
           }}
         >
-          <AllTouchups />
+          {/* <AllTouchups /> */}
+          <Touchups />
         </Paper>
 
         {/* Touchups Pens */}
