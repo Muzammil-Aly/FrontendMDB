@@ -68,7 +68,7 @@ const InventoryQTYone: React.FC<InventoryQTYone> = ({
     if (data?.data?.length > 0) {
       setSelectedQtyoneItem?.(data.data[0]);
     }
-  }, [data]);
+  }, [data, setSelectedQtyoneItem]);
   return (
     <Box sx={{ width: "100%", minHeight: "100vh", p: 3 }}>
       <Paper sx={{ p: 2, borderRadius: 3, height: "85vh" }}>
