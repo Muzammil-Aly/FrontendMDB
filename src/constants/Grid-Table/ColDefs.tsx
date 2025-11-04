@@ -626,32 +626,63 @@ export const touchups_pens = [
 
 // 👇 This small helper makes certain cells clickable
 
-export const ClickableCellRenderer =
-  (
-    onClick: (type: "qty" | "so" | "po", data: any) => void,
-    type: "qty" | "so" | "po"
-  ) =>
-  (params: any) =>
-    (
-      <span
-        style={{
-          color:
-            type === "qty"
-              ? "#1976d2" // blue for qty
-              : type === "so"
-              ? "#9c27b0" // purple for so
-              : "#2e7d32", // green for po
-          cursor: "pointer",
-          textDecoration: "underline",
-        }}
-        onClick={(e) => {
-          e.stopPropagation(); // stop triggering row click
-          onClick(type, params.data); // call parent handler
-        }}
-      >
-        {params.value ?? "-"}
-      </span>
-    );
+// export const ClickableCellRenderer =
+//   (
+//     onClick: (type: "qty" | "so" | "po", data: any) => void,
+//     type: "qty" | "so" | "po"
+//   ) =>
+//   (params: any) =>
+//     (
+//       <span
+//         style={{
+//           color:
+//             type === "qty"
+//               ? "#1976d2" // blue for qty
+//               : type === "so"
+//               ? "#9c27b0" // purple for so
+//               : "#2e7d32", // green for po
+//           cursor: "pointer",
+//           textDecoration: "underline",
+//         }}
+//         onClick={(e) => {
+//           e.stopPropagation(); // stop triggering row click
+//           onClick(type, params.data); // call parent handler
+//         }}
+//       >
+//         {params.value ?? "-"}
+//       </span>
+//     );
+
+export const ClickableCellRenderer = (
+  onClick: (type: "qty" | "so" | "po", data: any) => void,
+  type: "qty" | "so" | "po"
+) => {
+  const Renderer = (params: any) => (
+    <span
+      style={{
+        color:
+          type === "qty"
+            ? "#1976d2" // blue for qty
+            : type === "so"
+            ? "#9c27b0" // purple for so
+            : "#2e7d32", // green for po
+        cursor: "pointer",
+        textDecoration: "underline",
+      }}
+      onClick={(e) => {
+        e.stopPropagation(); // stop triggering row click
+        onClick(type, params.data); // call parent handler
+      }}
+    >
+      {params.value ?? "-"}
+    </span>
+  );
+
+  // ✅ Give it a display name for ESLint
+  Renderer.displayName = `ClickableCellRenderer_${type}`;
+
+  return Renderer;
+};
 
 // 👇 now accepts a click handler for qty, so, and po
 export const inventory_columns = (
