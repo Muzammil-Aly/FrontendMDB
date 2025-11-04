@@ -402,9 +402,9 @@ export const klaviyoApi = createApi({
         params.set("page", page.toString());
         params.set("page_size", page_size.toString());
 
-        if (item_no) params.set("`Item No_`", item_no);
-        if (location_code) params.set("`Location Code`", location_code);
-        if (description) params.set("Description", description);
+        if (item_no) params.set("item_no", item_no);
+        if (location_code) params.set("location_code", location_code);
+        if (description) params.set("description", description);
         if (eta) params.set("eta", eta);
         if (qty !== undefined) params.set("qty", qty.toString());
         if (qty_available !== undefined)

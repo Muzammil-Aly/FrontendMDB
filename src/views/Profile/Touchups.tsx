@@ -728,7 +728,7 @@ const Touchups = ({
             },
           }}
         >
-          Touchups
+          Replacements Parts
         </Typography>
 
         {/* 🔹 Filters */}

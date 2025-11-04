@@ -13,7 +13,7 @@ import Orders from "./Orders";
 import SupportTickets from "./SupportTickets";
 import MarketingEvents from "./MarketingEvents";
 import DetailedInfo from "./TabsContent/profile-Information/ProfileInfo";
-import Inventory from "./Inventory";
+import Inventory from "./TabsContent/inventory/Inventory";
 import { useRouter } from "next/navigation";
 import CustomerProfile from "./TabsContent/customer-profile/CustomerProfile";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";

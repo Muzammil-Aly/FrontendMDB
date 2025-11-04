@@ -411,50 +411,532 @@ export const touchups_pens = [
   },
 ];
 
-export const inventory_columns = [
+// export const inventory_columns = [
+//   {
+//     field: "Location Code",
+//     headerName: "Location Code",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "Item No",
+//     headerName: "Item No",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "Description",
+//     headerName: "Description",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty_",
+//     headerName: "Quantity",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "eta",
+//     headerName: "ETA",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty_available",
+//     headerName: "Qty Available",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "avail_qty_on_hand",
+//     headerName: "Avail Qty on Hand",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "avail_qty_to_commit",
+//     headerName: "Avail Qty to Commit",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "Qty_ on Blocked Lot_Bin",
+//     headerName: "Qty on Blocked Lot/Bin",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     headerName: "Qty on SO",
+//     field: "qty_on_so",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     headerName: "Life Cycle Status",
+//     field: "life_cycle_status_code",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     headerName: "Qty on PO",
+//     field: "qty_on_po",
+//     cellRenderer: CopyCellRenderer,
+//   },
+// ];
+// export const inventory_columns = [
+//   {
+//     field: "location_code",
+//     headerName: "Location Code",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "item_no",
+//     headerName: "Item No",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "description",
+//     headerName: "Description",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty",
+//     headerName: "Quantity",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "eta",
+//     headerName: "ETA",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty_available",
+//     headerName: "Qty Available",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "avail_qty_on_hand",
+//     headerName: "Avail Qty on Hand",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "avail_qty_to_commit",
+//     headerName: "Avail Qty to Commit",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty_on_blocked_lot_bin",
+//     headerName: "Qty on Blocked Lot/Bin",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty_on_so",
+//     headerName: "Qty on SO",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "life_cycle_status_code",
+//     headerName: "Life Cycle Status",
+//     cellRenderer: CopyCellRenderer,
+//   },
+//   {
+//     field: "qty_on_po",
+//     headerName: "Qty on PO",
+//     cellRenderer: CopyCellRenderer,
+//   },
+// ];
+// columns base: fields must match row object keys
+// export const inventory_columns = [
+//   {
+//     field: "location_code",
+//     headerName: "Location Code",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 150,
+//   },
+//   {
+//     field: "item_no",
+//     headerName: "Item No",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 150,
+//   },
+//   {
+//     field: "description",
+//     headerName: "Description",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 250,
+//     autoHeight: true,
+//   },
+//   {
+//     field: "qty",
+//     headerName: "Quantity",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 120,
+//   },
+//   {
+//     field: "eta",
+//     headerName: "ETA",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "qty_available",
+//     headerName: "Qty Available",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 160,
+//   },
+//   {
+//     field: "avail_qty_on_hand",
+//     headerName: "Avail Qty on Hand",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 180,
+//   },
+//   {
+//     field: "avail_qty_to_commit",
+//     headerName: "Avail Qty to Commit",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 200,
+//   },
+//   {
+//     field: "qty_on_blocked_lot_bin",
+//     headerName: "Qty on Blocked Lot/Bin",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 220,
+//   },
+//   {
+//     field: "qty_on_so",
+//     headerName: "Qty on SO",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 160,
+//   },
+//   {
+//     field: "life_cycle_status_code",
+//     headerName: "Life Cycle Status",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 180,
+//   },
+//   {
+//     field: "qty_on_po",
+//     headerName: "Qty on PO",
+//     cellRenderer: CopyCellRenderer,
+//     flex: 1,
+//     minWidth: 160,
+//   },
+// ];
+
+// 👇 This small helper makes certain cells clickable
+
+export const ClickableCellRenderer =
+  (
+    onClick: (type: "qty" | "so" | "po", data: any) => void,
+    type: "qty" | "so" | "po"
+  ) =>
+  (params: any) =>
+    (
+      <span
+        style={{
+          color:
+            type === "qty"
+              ? "#1976d2" // blue for qty
+              : type === "so"
+              ? "#9c27b0" // purple for so
+              : "#2e7d32", // green for po
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+        onClick={(e) => {
+          e.stopPropagation(); // stop triggering row click
+          onClick(type, params.data); // call parent handler
+        }}
+      >
+        {params.value ?? "-"}
+      </span>
+    );
+
+// 👇 now accepts a click handler for qty, so, and po
+export const inventory_columns = (
+  onCellClick: (type: "qty" | "so" | "po", data: any) => void
+) => [
   {
-    field: "Location Code",
+    field: "location_code",
     headerName: "Location Code",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
   },
   {
-    field: "Item No_",
+    field: "item_no",
     headerName: "Item No",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
   },
   {
-    field: "Description",
+    field: "description",
     headerName: "Description",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 250,
+    autoHeight: true,
   },
   {
-    field: "Qty_",
+    field: "qty",
     headerName: "Quantity",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 120,
   },
   {
-    field: "ETA",
+    field: "eta",
     headerName: "ETA",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 140,
   },
   {
-    field: "Qty_ Available",
+    // 👇 clicking this opens qty drawer
+    field: "qty_available",
     headerName: "Qty Available",
-    cellRenderer: CopyCellRenderer,
+    cellRenderer: ClickableCellRenderer(onCellClick, "qty"),
+    flex: 1,
+    minWidth: 160,
   },
   {
-    field: "Avail_ Qty_ on Hand",
+    field: "avail_qty_on_hand",
     headerName: "Avail Qty on Hand",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 180,
   },
   {
-    field: "Avail_ Qty_ to Commit",
+    field: "avail_qty_to_commit",
     headerName: "Avail Qty to Commit",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 200,
   },
   {
-    field: "Qty_ on Blocked Lot_Bin",
+    field: "qty_on_blocked_lot_bin",
     headerName: "Qty on Blocked Lot/Bin",
     cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 220,
+  },
+  {
+    // 👇 clicking this opens SO drawer
+    field: "qty_on_so",
+    headerName: "Qty on SO",
+    cellRenderer: ClickableCellRenderer(onCellClick, "so"),
+    flex: 1,
+    minWidth: 160,
+  },
+  {
+    field: "life_cycle_status_code",
+    headerName: "Life Cycle Status",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 180,
+  },
+  {
+    // 👇 clicking this opens PO drawer
+    field: "qty_on_po",
+    headerName: "Qty on PO",
+    cellRenderer: ClickableCellRenderer(onCellClick, "po"),
+    flex: 1,
+    minWidth: 160,
+  },
+];
+
+export const sales_orders = [
+  {
+    field: "document_no",
+    headerName: "Document No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "location_code",
+    headerName: "Location Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "item_no",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "customer_name",
+    headerName: "Customer Name",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "qty",
+    headerName: "Quantity",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "qty_commited",
+    headerName: "Quantity Committed",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+];
+export const purchase_orders = [
+  {
+    field: "location_code",
+    headerName: "Location Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "item_no",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+
+  {
+    field: "shipment_status",
+    headerName: "Shipment Status",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "expected_receipt_date",
+    headerName: "Expected Receipt Date",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "qty_on_po",
+    headerName: "Quantity on PO",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 200,
+  },
+];
+
+export const qty_one = [
+  {
+    field: "item_no",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "location_code",
+    headerName: "Location Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "test_quality",
+    headerName: "Test Quality",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "lot_no",
+    headerName: "Lot No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 180,
+  },
+  {
+    field: "blocked",
+    headerName: "Blocked",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: "total_qty",
+    headerName: "Total Quantity",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "parts_version",
+    headerName: "Parts Version",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+];
+
+export const qty_two = [
+  {
+    field: "item_no",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    cellRenderer: CopyCellRenderer,
+    flex: 2,
+    minWidth: 220,
+  },
+  {
+    field: "description_2",
+    headerName: "Description 2",
+    cellRenderer: CopyCellRenderer,
+    flex: 2,
+    minWidth: 220,
+  },
+  {
+    field: "location_code",
+    headerName: "Location Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "zone_code",
+    headerName: "Zone Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "lot_no",
+    headerName: "Lot No",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 180,
+  },
+  {
+    field: "total_qty",
+    headerName: "Total Quantity",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: "parts_version",
+    headerName: "Parts Version",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
   },
 ];

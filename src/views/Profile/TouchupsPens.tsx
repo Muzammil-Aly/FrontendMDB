@@ -560,7 +560,7 @@ const TouchupsPens: React.FC<Props> = ({
           }}
         >
           Please select or provide a valid <strong>Color Slug</strong> to view
-          touchupPens details.
+          touchup-Pen details.
         </Typography>
       </Box>
     );
@@ -602,7 +602,7 @@ const TouchupsPens: React.FC<Props> = ({
             },
           }}
         >
-          Touchups Pens
+          Touch-up Pens
         </Typography>
 
         {/* Filters */}
