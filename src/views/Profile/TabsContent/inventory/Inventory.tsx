@@ -371,6 +371,8 @@ const Inventory = () => {
             borderRadius: 3,
             height: "100%",
             overflowY: "auto",
+            overflowX: "hidden",
+
             ml: 5,
           }}
         >
@@ -385,6 +387,7 @@ const Inventory = () => {
             borderRadius: 3,
             height: "100%",
             overflowY: "auto",
+            overflowX: "hidden",
             ml: 5,
           }}
         >
