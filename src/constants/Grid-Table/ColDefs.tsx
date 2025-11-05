@@ -684,43 +684,82 @@ export const touchups_pens = [
 //   return Renderer;
 // };
 
-export const ClickableCellRenderer =
-  (
-    onClick: (type: "qty" | "so" | "po", data: any) => void,
-    type: "qty" | "so" | "po",
-    loadingType?: "qty" | "so" | "po" | null
-  ) =>
-  (params: any) =>
-    (
-      <span
-        style={{
-          color:
-            type === "qty" ? "#1976d2" : type === "so" ? "#2e7d32" : "#9c27b0",
-          cursor: "pointer",
-          fontWeight: "bold",
-        }}
-        onClick={() => onClick(type, params.data)}
-      >
-        {loadingType === type ? (
-          <span
-            className="loader"
-            style={{
-              display: "inline-block",
-              width: 14,
-              height: 14,
-              border: "2px solid #ccc",
-              borderTop: "2px solid currentColor",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-            }}
-          />
-        ) : (
-          params.value
-        )}
-      </span>
-    );
+// export const ClickableCellRenderer =
+//   (
+//     onClick: (type: "qty" | "so" | "po", data: any) => void,
+//     type: "qty" | "so" | "po",
+//     loadingType?: "qty" | "so" | "po" | null
+//   ) =>
+//   (params: any) =>
+//     (
+//       <span
+//         style={{
+//           color:
+//             type === "qty" ? "#1976d2" : type === "so" ? "#2e7d32" : "#9c27b0",
+//           cursor: "pointer",
+//           fontWeight: "bold",
+//         }}
+//         onClick={() => onClick(type, params.data)}
+//       >
+//         {loadingType === type ? (
+//           <span
+//             className="loader"
+//             style={{
+//               display: "inline-block",
+//               width: 14,
+//               height: 14,
+//               border: "2px solid #ccc",
+//               borderTop: "2px solid currentColor",
+//               borderRadius: "50%",
+//               animation: "spin 1s linear infinite",
+//             }}
+//           />
+//         ) : (
+//           params.value
+//         )}
+//       </span>
+//     );
 
-// 👇 now accepts a click handler for qty, so, and po
+export const ClickableCellRenderer = (
+  onClick: (type: "qty" | "so" | "po", data: any) => void,
+  type: "qty" | "so" | "po",
+  loadingType?: "qty" | "so" | "po" | null
+) => {
+  const Renderer = (params: any) => (
+    <span
+      style={{
+        color:
+          type === "qty" ? "#1976d2" : type === "so" ? "#2e7d32" : "#9c27b0",
+        cursor: "pointer",
+        fontWeight: "bold",
+      }}
+      onClick={() => onClick(type, params.data)}
+    >
+      {loadingType === type ? (
+        <span
+          className="loader"
+          style={{
+            display: "inline-block",
+            width: 14,
+            height: 14,
+            border: "2px solid #ccc",
+            borderTop: "2px solid currentColor",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+      ) : (
+        params.value
+      )}
+    </span>
+  );
+
+  Renderer.displayName = `ClickableCellRenderer_${type}`; //  add this
+
+  return Renderer;
+};
+
+// 👇\ now accepts a click handler for qty, so, and po
 export const inventory_columns = (
   onCellClick: (type: "qty" | "so" | "po", data: any) => void
 ) => [
