@@ -653,36 +653,72 @@ export const touchups_pens = [
 //       </span>
 //     );
 
-export const ClickableCellRenderer = (
-  onClick: (type: "qty" | "so" | "po", data: any) => void,
-  type: "qty" | "so" | "po"
-) => {
-  const Renderer = (params: any) => (
-    <span
-      style={{
-        color:
-          type === "qty"
-            ? "#1976d2" // blue for qty
-            : type === "so"
-            ? "#9c27b0" // purple for so
-            : "#2e7d32", // green for po
-        cursor: "pointer",
-        textDecoration: "underline",
-      }}
-      onClick={(e) => {
-        e.stopPropagation(); // stop triggering row click
-        onClick(type, params.data); // call parent handler
-      }}
-    >
-      {params.value ?? "-"}
-    </span>
-  );
+// export const ClickableCellRenderer = (
+//   onClick: (type: "qty" | "so" | "po", data: any) => void,
+//   type: "qty" | "so" | "po"
+// ) => {
+//   const Renderer = (params: any) => (
+//     <span
+//       style={{
+//         color:
+//           type === "qty"
+//             ? "#1976d2" // blue for qty
+//             : type === "so"
+//             ? "#9c27b0" // purple for so
+//             : "#2e7d32", // green for po
+//         cursor: "pointer",
+//         textDecoration: "underline",
+//       }}
+//       onClick={(e) => {
+//         e.stopPropagation(); // stop triggering row click
+//         onClick(type, params.data); // call parent handler
+//       }}
+//     >
+//       {params.value ?? "-"}
+//     </span>
+//   );
 
-  // ✅ Give it a display name for ESLint
-  Renderer.displayName = `ClickableCellRenderer_${type}`;
+//   // ✅ Give it a display name for ESLint
+//   Renderer.displayName = `ClickableCellRenderer_${type}`;
 
-  return Renderer;
-};
+//   return Renderer;
+// };
+
+export const ClickableCellRenderer =
+  (
+    onClick: (type: "qty" | "so" | "po", data: any) => void,
+    type: "qty" | "so" | "po",
+    loadingType?: "qty" | "so" | "po" | null
+  ) =>
+  (params: any) =>
+    (
+      <span
+        style={{
+          color:
+            type === "qty" ? "#1976d2" : type === "so" ? "#2e7d32" : "#9c27b0",
+          cursor: "pointer",
+          fontWeight: "bold",
+        }}
+        onClick={() => onClick(type, params.data)}
+      >
+        {loadingType === type ? (
+          <span
+            className="loader"
+            style={{
+              display: "inline-block",
+              width: 14,
+              height: 14,
+              border: "2px solid #ccc",
+              borderTop: "2px solid currentColor",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+        ) : (
+          params.value
+        )}
+      </span>
+    );
 
 // 👇 now accepts a click handler for qty, so, and po
 export const inventory_columns = (
@@ -945,6 +981,14 @@ export const qty_two = [
   {
     field: "zone_code",
     headerName: "Zone Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+  // bin_code
+  {
+    field: "bin_code",
+    headerName: "Bin Code",
     cellRenderer: CopyCellRenderer,
     flex: 1,
     minWidth: 150,

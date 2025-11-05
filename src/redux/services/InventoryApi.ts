@@ -176,4 +176,8 @@ export const {
   useGetPOInventoryTableQuery,
   useGetQTYoneInventoryTableQuery,
   useGetQTYtwoInventoryTableQuery,
+  useLazyGetQTYoneInventoryTableQuery, // <-- add this
+  useLazyGetQTYtwoInventoryTableQuery, // <-- add this
+  useLazyGetSOInventoryTableQuery, // optional, if needed
+  useLazyGetPOInventoryTableQuery, // optional, if needed
 } = InventoryApi;

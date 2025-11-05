@@ -1,3 +1,4 @@
+import { fontSize } from "@mui/system";
 import { ICellRendererParams } from "ag-grid-community";
 import { useMemo } from "react";
 
@@ -43,6 +44,7 @@ const useInventory = (columns: Column[]) => {
             headerName: "Qty Available",
             flex: 1,
             minWidth: 160,
+            cellStyle: { fontSize: "16px", fontWeight: "bold" },
           };
         case "avail_qty_on_hand":
           return {
@@ -66,7 +68,14 @@ const useInventory = (columns: Column[]) => {
             minWidth: 220,
           };
         case "qty_on_so":
-          return { ...col, headerName: "Qty on SO", flex: 1, minWidth: 160 };
+          return {
+            ...col,
+            headerName: "Qty on SO",
+            flex: 1,
+            minWidth: 160,
+
+            cellStyle: { fontSize: "16px", fontWeight: "bold" },
+          };
         case "life_cycle_status_code":
           return {
             ...col,
@@ -75,7 +84,13 @@ const useInventory = (columns: Column[]) => {
             minWidth: 180,
           };
         case "qty_on_po":
-          return { ...col, headerName: "Qty on PO", flex: 1, minWidth: 160 };
+          return {
+            ...col,
+            headerName: "Qty on PO",
+            flex: 1,
+            minWidth: 160,
+            cellStyle: { fontSize: "16px", fontWeight: "bold" },
+          };
         default:
           return col;
       }

@@ -7,6 +7,7 @@ import usePurchaseOrders from "@/hooks/Ag-Grid/usePurchaseOrders";
 import { inventory_columns } from "@/constants/Grid-Table/ColDefs";
 import { purchase_orders } from "@/constants/Grid-Table/ColDefs";
 import { useGetPOInventoryTableQuery } from "@/redux/services/InventoryApi";
+import { useLazyGetPOInventoryTableQuery } from "@/redux/services/InventoryApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import Loader from "@/components/Common/Loader";
 
@@ -24,19 +25,28 @@ const InventoryPOTable: React.FC<InventoryPOTableProps> = ({
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [getPOInventory, { data, isLoading, isFetching }] =
+    useLazyGetPOInventoryTableQuery();
 
-  const { data, isLoading, isFetching } = useGetPOInventoryTableQuery(
-    {
-      page,
-      page_size: pageSize,
-      location_code: location_code,
-      item_no: item_no,
-    },
-    {
-      skip: !location_code && !item_no,
-      refetchOnMountOrArgChange: true,
+  useEffect(() => {
+    if (location_code && item_no) {
+      setPage(1);
+      getPOInventory({ page: 1, page_size: pageSize, location_code, item_no });
     }
-  );
+  }, [location_code, item_no, pageSize, getPOInventory]);
+
+  // const { data, isLoading, isFetching } = useGetPOInventoryTableQuery(
+  //   {
+  //     page,
+  //     page_size: pageSize,
+  //     location_code: location_code,
+  //     item_no: item_no,
+  //   },
+  //   {
+  //     skip: !location_code && !item_no,
+  //     refetchOnMountOrArgChange: true,
+  //   }
+  // );
   useEffect(() => {
     setPage(1);
   }, [location_code, item_no]);

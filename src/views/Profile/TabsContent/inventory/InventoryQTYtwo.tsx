@@ -50,6 +50,7 @@ const InventoryQTYtwo: React.FC<InventoryQTYtwo> = ({
           lot_no: item.lot_no ?? "-",
           total_qty: item.total_qty != null ? item.total_qty : 0,
           parts_version: item.parts_version != null ? item.parts_version : 0,
+          bin_code: item.bin_code ?? "-",
         }))
       : [];
   }, [data]);

@@ -1,12 +1,13 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Paper, Box } from "@mui/material";
 import AgGridTable from "@/components/ag-grid";
 import useInventoryColumn from "@/hooks/Ag-Grid/useInventoryColumn";
 import useSalesOrders from "@/hooks/Ag-Grid/useSalesOrders";
 import { inventory_columns } from "@/constants/Grid-Table/ColDefs";
 import { sales_orders } from "@/constants/Grid-Table/ColDefs";
-import { useGetSOInventoryTableQuery } from "@/redux/services/InventoryApi";
+// import { useGetSOInventoryTableQuery } from "@/redux/services/InventoryApi";
+import { useLazyGetSOInventoryTableQuery } from "@/redux/services/InventoryApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import Loader from "@/components/Common/Loader";
 
@@ -24,18 +25,26 @@ const InventorySOTable: React.FC<InventorySOTableProps> = ({
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [getSOInventory, { data, isLoading, isFetching }] =
+    useLazyGetSOInventoryTableQuery();
 
-  const { data, isLoading, isFetching } = useGetSOInventoryTableQuery(
-    {
-      page,
-      page_size: pageSize,
-      location_code: location_code,
-      item_no: item_no,
-    },
-    {
-      skip: !location_code && !item_no,
+  useEffect(() => {
+    if (location_code && item_no) {
+      getSOInventory({ page, page_size: pageSize, location_code, item_no });
     }
-  );
+  }, [location_code, item_no, page, pageSize, getSOInventory]);
+
+  // const { data, isLoading, isFetching } = useGetSOInventoryTableQuery(
+  //   {
+  //     page,
+  //     page_size: pageSize,
+  //     location_code: location_code,
+  //     item_no: item_no,
+  //   },
+  //   {
+  //     skip: !location_code && !item_no,
+  //   }
+  // );
   console.log("location_code,item_no", location_code, item_no);
   const rowData = useMemo(() => {
     const items = data?.data || data || [];

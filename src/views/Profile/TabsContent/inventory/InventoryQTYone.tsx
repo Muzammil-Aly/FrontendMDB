@@ -4,9 +4,11 @@ import { Paper, Box } from "@mui/material";
 import AgGridTable from "@/components/ag-grid";
 import useQTYone from "@/hooks/Ag-Grid/useQTYone";
 import { qty_one } from "@/constants/Grid-Table/ColDefs";
-import { useGetQTYoneInventoryTableQuery } from "@/redux/services/InventoryApi";
+// import { useGetQTYoneInventoryTableQuery } from "@/redux/services/InventoryApi";
+import { useLazyGetQTYoneInventoryTableQuery } from "@/redux/services/InventoryApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import Loader from "@/components/Common/Loader";
+import test from "node:test";
 
 interface InventoryQTYone {
   location_code?: string;
@@ -25,17 +27,27 @@ const InventoryQTYone: React.FC<InventoryQTYone> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isFetching } = useGetQTYoneInventoryTableQuery(
-    {
-      page,
-      page_size: pageSize,
-      location_code: location_code,
-      item_no: item_no,
-    },
-    {
-      skip: !location_code && !item_no,
+  // const { data, isLoading, isFetching } = useGetQTYoneInventoryTableQuery(
+  //   {
+  //     page,
+  //     page_size: pageSize,
+  //     location_code: location_code,
+  //     item_no: item_no,
+  //   },
+  //   {
+  //     // skip: !location_code && !item_no,
+  //     skip: !location_code || !item_no,
+  //   }
+  // );
+  const [getQTYone, { data, isLoading, isFetching }] =
+    useLazyGetQTYoneInventoryTableQuery();
+
+  // Trigger manually when props change or drawer opens
+  useEffect(() => {
+    if (location_code && item_no) {
+      getQTYone({ location_code, item_no, page, page_size: pageSize });
     }
-  );
+  }, [location_code, item_no, page, pageSize, getQTYone]);
 
   const rowData = useMemo(() => {
     const items = data?.data || data || [];
@@ -49,6 +61,8 @@ const InventoryQTYone: React.FC<InventoryQTYone> = ({
           lot_no: item.lot_no ?? "-",
           total_qty: item.total_qty ?? 0,
           parts_version: item.parts_version ?? 0,
+          test_quality: item.test_quality ?? "-",
+          blocked: item.blocked ?? "-",
         }))
       : [];
   }, [data]);

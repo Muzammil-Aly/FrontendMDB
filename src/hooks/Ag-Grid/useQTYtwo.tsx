@@ -74,6 +74,13 @@ const useQTYtwo = (columns: Column[]) => {
             flex: 1,
             minWidth: 160,
           };
+        case "bin_code":
+          return {
+            ...col,
+            headerName: "Bin Code",
+            flex: 1,
+            minWidth: 160,
+          };
         default:
           return col;
       }
