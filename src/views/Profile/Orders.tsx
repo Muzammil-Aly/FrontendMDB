@@ -1505,7 +1505,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               </Popover>
 
               {/* Reset all button (optional placement) */}
-              <Box sx={{ marginLeft: "auto" }}>
+              {/* <Box sx={{ marginLeft: "auto" }}>
                 <Button
                   variant="text"
                   color="error"
@@ -1533,7 +1533,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 >
                   Reset All
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
 
             {/* ---------------- (Removed second static filter row) ---------------- */}
