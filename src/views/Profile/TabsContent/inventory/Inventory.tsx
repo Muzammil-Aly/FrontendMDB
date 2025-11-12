@@ -474,7 +474,7 @@ const Inventory = () => {
                 height: "100vh",
                 width:
                   openDrawer === "qty"
-                    ? "78vw"
+                    ? "80vw"
                     : openDrawer === "so" || openDrawer === "po"
                     ? "55vw"
                     : "50vw",
@@ -583,6 +583,9 @@ const Inventory = () => {
                     {selectedQtyoneItem && (
                       <InventoryQTYtwo
                         selectedQtyoneItem={selectedQtyoneItem?.item_no}
+                        selectedQtyoneLocationCode={
+                          selectedQtyoneItem?.location_code
+                        }
                       />
                     )}
                   </Box>

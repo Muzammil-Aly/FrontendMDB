@@ -118,12 +118,14 @@ interface InventoryQTYtwo {
   location_code?: string;
   item_no?: (item: any) => void;
   selectedQtyoneItem?: string;
+  selectedQtyoneLocationCode?: string;
 }
 
 const InventoryQTYtwo: React.FC<InventoryQTYtwo> = ({
   location_code,
   item_no,
   selectedQtyoneItem,
+  selectedQtyoneLocationCode,
 }) => {
   const tiCol = useQTYtwo(qty_two);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
@@ -162,7 +164,7 @@ const InventoryQTYtwo: React.FC<InventoryQTYtwo> = ({
   const queryParams = {
     page,
     page_size: pageSize,
-    location_code,
+    location_code: selectedQtyoneLocationCode,
     item_no: selectedQtyoneItem,
     bin_code: filters.bin_code,
     zone_code: filters.zone_code,
@@ -248,6 +250,8 @@ const InventoryQTYtwo: React.FC<InventoryQTYtwo> = ({
     </FormControl>
   );
 
+  if (!data?.data?.length) return null;
+
   return (
     <Box sx={{ width: "100%", minHeight: "100vh", p: 3 }}>
       <Typography
@@ -279,7 +283,7 @@ const InventoryQTYtwo: React.FC<InventoryQTYtwo> = ({
       >
         Bin Level Detail
       </Typography>
-      <Paper sx={{ p: 2, borderRadius: 3, height: "85vh" }}>
+      <Paper sx={{ px: 2, py: 1, borderRadius: 3, height: "100vh" }}>
         <Box display="flex" gap={1.5} flexWrap="wrap" mb={2}>
           {renderFilter("Bin Code", "bin_code")}
           {renderFilter("Zone Code", "zone_code")}

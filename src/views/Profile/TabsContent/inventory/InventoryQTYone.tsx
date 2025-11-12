@@ -84,7 +84,7 @@ const InventoryQTYone: React.FC<InventoryQTYone> = ({
     }
   }, [data, setSelectedQtyoneItem]);
   return (
-    <Box sx={{ width: "100%", minHeight: "100vh", p: 3 }}>
+    <Box sx={{ width: "100%", minHeight: "100vh", p: 1 }}>
       <Typography
         className="drag-handle"
         variant="caption"
@@ -114,7 +114,7 @@ const InventoryQTYone: React.FC<InventoryQTYone> = ({
       >
         Lot Level Detail
       </Typography>
-      <Paper sx={{ p: 2, borderRadius: 3, height: "85vh" }}>
+      <Paper sx={{ p: 2, borderRadius: 3, height: "100vh" }}>
         {isLoading || isFetching ? (
           <Loader />
         ) : (
