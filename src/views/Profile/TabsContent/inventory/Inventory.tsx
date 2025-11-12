@@ -502,7 +502,7 @@ const Inventory = () => {
               >
                 <Typography variant="h6" fontWeight={700}>
                   {openDrawer === "qty"
-                    ? "Quantity Details"
+                    ? "Quantity Available Details"
                     : openDrawer === "so"
                     ? "Sales Orders"
                     : "Purchase Orders"}

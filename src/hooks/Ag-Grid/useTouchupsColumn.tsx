@@ -74,6 +74,13 @@ const useTouchupsColumn = (columns: Column[]) => {
           return { ...col, headerName: "Color Slug", flex: 1, minWidth: 150 };
         case "color_name":
           return { ...col, headerName: "Color Name", flex: 1, minWidth: 150 };
+        case "parts_version":
+          return {
+            ...col,
+            headerName: "Parts Version",
+            flex: 1,
+            minWidth: 150,
+          };
         default:
           return col;
       }

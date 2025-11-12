@@ -372,6 +372,11 @@ export const touchups_columns = [
     cellRenderer: CopyCellRenderer,
   },
   {
+    field: "parts_version",
+    headerName: "Parts Version",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
     field: "color_slug",
     headerName: "Color Slug",
     cellRenderer: CopyCellRenderer,

@@ -269,6 +269,7 @@ export const klaviyoApi = createApi({
         brand?: string;
         color_slug?: string;
         color_name?: string;
+        parts_version?: string;
       }
     >({
       query: ({
@@ -286,6 +287,7 @@ export const klaviyoApi = createApi({
         brand,
         color_slug,
         color_name,
+        parts_version,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -305,6 +307,7 @@ export const klaviyoApi = createApi({
         if (brand) params.set("brand", brand);
         if (color_slug) params.set("color_slug", color_slug);
         if (color_name) params.set("color_name", color_name);
+        if (parts_version) params.set("parts_version", parts_version);
 
         return `touchup_part?${params.toString()}`;
       },
@@ -320,6 +323,7 @@ export const klaviyoApi = createApi({
         item_name?: string;
         item_name2?: string;
         color_name?: string;
+        sku?: string;
       }
     >({
       query: ({
@@ -330,6 +334,7 @@ export const klaviyoApi = createApi({
         item_name,
         item_name2,
         color_name,
+        sku,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -340,6 +345,7 @@ export const klaviyoApi = createApi({
         if (item_name) params.set("item_name", item_name);
         if (item_name2) params.set("ItemName2", item_name2);
         if (color_name) params.set("ColorName", color_name);
+        if (sku) params.set("sku", sku);
 
         return `touchup_pen?${params.toString()}`;
       },

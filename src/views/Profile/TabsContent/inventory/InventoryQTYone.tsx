@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import { Paper, Box } from "@mui/material";
+import { Paper, Box, Typography } from "@mui/material";
 import AgGridTable from "@/components/ag-grid";
 import useQTYone from "@/hooks/Ag-Grid/useQTYone";
 import { qty_one } from "@/constants/Grid-Table/ColDefs";
@@ -85,6 +85,35 @@ const InventoryQTYone: React.FC<InventoryQTYone> = ({
   }, [data, setSelectedQtyoneItem]);
   return (
     <Box sx={{ width: "100%", minHeight: "100vh", p: 3 }}>
+      <Typography
+        className="drag-handle"
+        variant="caption"
+        sx={{
+          fontWeight: 600,
+          color: "#fff",
+          background: "#1976d2",
+          px: 1.5,
+          py: 0.5,
+          fontSize: "1em",
+          borderRadius: "3px 5px 5px 3px",
+          position: "relative",
+          display: "inline-block",
+          "::before": {
+            content: '""',
+            position: "absolute",
+            left: -8,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 0,
+            height: 0,
+            borderTop: "8px solid transparent",
+            borderBottom: "8px solid transparent",
+            borderRight: "8px solid #1976d2",
+          },
+        }}
+      >
+        Lot Level Detail
+      </Typography>
       <Paper sx={{ p: 2, borderRadius: 3, height: "85vh" }}>
         {isLoading || isFetching ? (
           <Loader />

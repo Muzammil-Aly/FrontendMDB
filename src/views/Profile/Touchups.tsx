@@ -413,6 +413,8 @@ import { RootState } from "@/redux/store";
 
 interface Props {
   lotNo?: string | null;
+  sku?: string | null;
+
   shouldFilterNull?: boolean;
   setSelectedTouchup?: React.Dispatch<React.SetStateAction<Touchup | null>>;
 }
@@ -430,10 +432,12 @@ interface Touchup {
   brand: string | null;
   color_slug: string | null;
   color_name: string | null;
+  parts_version: string | null;
 }
 
 const Touchups = ({
   lotNo,
+  sku,
   shouldFilterNull = false,
   setSelectedTouchup,
 }: Props) => {
@@ -457,6 +461,7 @@ const Touchups = ({
     customer_id?: string;
     sku?: string;
     color_slug?: string;
+    parts_version?: string;
   }>({});
 
   const [inputs, setInputs] = useState({
@@ -465,6 +470,7 @@ const Touchups = ({
     customer_id: "",
     sku: "",
     color_slug: "",
+    parts_version: "",
   });
 
   const [isTyping, setIsTyping] = useState({
@@ -473,6 +479,7 @@ const Touchups = ({
     customer_id: false,
     sku: false,
     color_slug: false,
+    parts_version: false,
   });
 
   const handlePageSizeChange = (value: number) => {
@@ -500,8 +507,10 @@ const Touchups = ({
     page_size: pageSizeInput,
     order_id: filters.order_id || undefined,
     customer_id: filters.customer_id || undefined,
-    sku: filters.sku || undefined,
+    sku: filters.sku || sku || undefined,
     color_slug: filters.color_slug || undefined,
+    parts_version: filters.parts_version || undefined,
+
     ...(filters.lot_no ?? lotNo
       ? { lot_no: filters.lot_no ?? lotNo }
       : shouldFilterNull
@@ -528,6 +537,7 @@ const Touchups = ({
           brand: item.brand,
           color_slug: item.color_slug,
           color_name: item.color_name,
+          parts_version: item.parts_version,
         }))
       : [];
   }, [data]);
@@ -735,6 +745,8 @@ const Touchups = ({
         <Box display="flex" gap={1.5} flexWrap="wrap" marginRight={3}>
           {renderFilter("Lot No", "lot_no")}
           {renderFilter("SKU", "sku")}
+          {renderFilter("Parts Version", "parts_version")}
+
           <FormControl sx={{ width: 150 }}>
             <TextField
               select

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import { Paper, Box } from "@mui/material";
 import AgGridTable from "@/components/ag-grid";
 import useInventoryColumn from "@/hooks/Ag-Grid/useInventoryColumn";
 import usePurchaseOrders from "@/hooks/Ag-Grid/usePurchaseOrders";
@@ -10,6 +9,7 @@ import { useGetPOInventoryTableQuery } from "@/redux/services/InventoryApi";
 import { useLazyGetPOInventoryTableQuery } from "@/redux/services/InventoryApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import Loader from "@/components/Common/Loader";
+import { Paper, Box, FormControl, TextField, MenuItem } from "@mui/material";
 
 interface InventoryPOTableProps {
   location_code?: string;
@@ -27,13 +27,19 @@ const InventoryPOTable: React.FC<InventoryPOTableProps> = ({
   const [page, setPage] = useState(1);
   const [getPOInventory, { data, isLoading, isFetching }] =
     useLazyGetPOInventoryTableQuery();
+  const [pageSizeInput, setPageSizeInput] = useState(pageSize);
 
   useEffect(() => {
     if (location_code && item_no) {
       setPage(1);
-      getPOInventory({ page: 1, page_size: pageSize, location_code, item_no });
+      getPOInventory({
+        page: 1,
+        page_size: pageSizeInput,
+        location_code,
+        item_no,
+      });
     }
-  }, [location_code, item_no, pageSize, getPOInventory]);
+  }, [location_code, item_no, pageSizeInput, getPOInventory]);
 
   // const { data, isLoading, isFetching } = useGetPOInventoryTableQuery(
   //   {
@@ -72,10 +78,59 @@ const InventoryPOTable: React.FC<InventoryPOTableProps> = ({
       setHighlightedId(clickedId);
     }
   };
-
+  const handlePageSizeChange = (value: number) => {
+    setPageSizeInput(value);
+    setPage(1);
+  };
   console.log("row data for PO table", data);
   return (
     <Box sx={{ width: "100%", minHeight: "100vh", p: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "end",
+          marginLeft: "40vw",
+          marginBottom: "10px",
+        }}
+      >
+        <FormControl sx={{ width: 150 }}>
+          <TextField
+            select
+            value={pageSizeInput}
+            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+            size="small"
+            variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "20px",
+                backgroundColor: "#ffffff",
+                border: "1px solid #e0e0e0",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                transition: "all 0.25s ease",
+                "&:hover": {
+                  borderColor: "#42a5f5",
+                  boxShadow: "0 2px 6px rgba(66, 165, 245, 0.15)",
+                },
+                "&.Mui-focused": {
+                  borderColor: "#1976d2",
+                  boxShadow: "0 0 6px rgba(25, 118, 210, 0.25)",
+                },
+              },
+              "& .MuiInputBase-input": {
+                padding: "6px 14px",
+              },
+            }}
+            InputLabelProps={{ style: { display: "none" } }}
+          >
+            {[10, 50, 100].map((size) => (
+              <MenuItem key={size} value={size}>
+                {size}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+      </Box>
       <Paper sx={{ p: 2, borderRadius: 3, height: "85vh" }}>
         {isLoading || isFetching ? (
           <Loader />
@@ -91,7 +146,7 @@ const InventoryPOTable: React.FC<InventoryPOTableProps> = ({
             totalPages={data?.total_pages || 1}
             onPageChange={(newPage: number) => setPage(newPage)}
             pagination={true}
-            paginationPageSize={pageSize}
+            paginationPageSize={pageSizeInput}
           />
         )}
       </Paper>

@@ -140,6 +140,7 @@ export const InventoryApi = createApi({
         lot_no?: string;
         page?: number;
         page_size?: number;
+        bin_code?: string;
       }
     >({
       query: ({
@@ -151,6 +152,7 @@ export const InventoryApi = createApi({
         location_code,
         zone_code,
         lot_no,
+        bin_code,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -162,6 +164,7 @@ export const InventoryApi = createApi({
         if (location_code) params.set("location_code", location_code);
         if (zone_code) params.set("zone_code", zone_code);
         if (lot_no) params.set("lot_no", lot_no);
+        if (bin_code) params.set("bin_code", bin_code);
 
         return {
           url: `/qty_available_pop_up2?${params.toString()}`,

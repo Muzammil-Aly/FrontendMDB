@@ -509,6 +509,7 @@ const ResponsiveDashboard = ({
             <>
               <Touchups
                 lotNo={selectedOrderItem.lot_no}
+                sku={selectedOrderItem.sku}
                 setSelectedTouchup={handleSelectTouchup}
                 shouldFilterNull
               />
