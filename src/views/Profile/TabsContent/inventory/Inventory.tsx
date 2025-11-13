@@ -33,8 +33,6 @@ import InventorySOTable from "./InventorySOTable";
 import InventoryPOTable from "./InventoryPOTable";
 import InventoryQTYone from "./InventoryQTYone";
 import InventoryQTYtwo from "./InventoryQTYtwo";
-import MultiLocationInput from "./MultiLocationInput";
-import MultiLocationInputWithSuggestions from "./MultiLocationInput";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -44,14 +42,10 @@ const Inventory = () => {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
-  // const [locationCodeInput, setLocationCodeInput] = useState("");
-  // const [locationCodeFilter, setLocationCodeFilter] = useState<
-  //   string | undefined
-  // >(undefined);
-
-  const [locationCodeInput, setLocationCodeInput] = useState<string[]>([]);
-  const [locationCodeFilter, setLocationCodeFilter] = useState<string[]>([]);
-  const [locationCodeSearch, setLocationCodeSearch] = useState<string>("");
+  const [locationCodeInput, setLocationCodeInput] = useState("");
+  const [locationCodeFilter, setLocationCodeFilter] = useState<
+    string | undefined
+  >(undefined);
   const [itemNoInput, setItemNoInput] = useState("");
   const [ItemNoFilter, setItemNoFilter] = useState<string | undefined>(
     undefined
@@ -83,8 +77,7 @@ const Inventory = () => {
   const { data, isLoading, isFetching } = useGetInventoryQuery({
     page,
     page_size: pageSize,
-    // location_code: locationCodeFilter || undefined,
-    location_code: locationCodeFilter?.length ? locationCodeFilter : undefined,
+    location_code: locationCodeFilter || undefined,
     item_no: ItemNoFilter || undefined,
     description: descriptionFilter,
   });
@@ -110,41 +103,11 @@ const Inventory = () => {
       : [];
   }, [data]);
 
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(locationCodeInput, {
-  //   skip: locationCodeInput.trim().length < 1,
-  // });
-
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(locationCodeInput, {
-  //   skip: locationCodeInput.join("").trim().length < 1,
-  // });
-
-  // const searchText = locationCodeInput.join("").trim();
-
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(searchText, {
-  //   skip: !searchText, // Only skip suggestions, not inventory data
-  // });
-
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(locationCodeSearch, {
-  //   skip: !locationCodeSearch.trim(), // only when typing
-  // });
-
   const {
     data: locationCodeSuggestions = [],
     isFetching: isLocationCodeLoading,
-  } = useGetLocationCodesQuery(locationCodeSearch, {
-    skip: !locationCodeSearch.trim(), // only call API if input is not empty
+  } = useGetLocationCodesQuery(locationCodeInput, {
+    skip: locationCodeInput.trim().length < 1,
   });
 
   // const onRowClicked = (params: any) => {
@@ -166,15 +129,15 @@ const Inventory = () => {
     // }
   };
 
-  // const debouncedLocationCode = useMemo(
-  //   () =>
-  //     debounce((value: string) => {
-  //       setLocationCodeFilter(value ? value.toUpperCase() : undefined);
-  //       setPage(1);
-  //       setLocationCodeInputTyping(false);
-  //     }, 500),
-  //   []
-  // );
+  const debouncedLocationCode = useMemo(
+    () =>
+      debounce((value: string) => {
+        setLocationCodeFilter(value ? value.toUpperCase() : undefined);
+        setPage(1);
+        setLocationCodeInputTyping(false);
+      }, 500),
+    []
+  );
 
   const debouncedItemNo = useMemo(
     () =>
@@ -312,33 +275,7 @@ const Inventory = () => {
       {/* ================= Filters ================= */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" gap={2} mb={2} mt={2} ml={10}>
-          {/* <MultiLocationInputWithSuggestions
-            label="Location Code"
-            value={locationCodeInput}
-            setValue={setLocationCodeInput}
-            setFilter={setLocationCodeFilter}
-            suggestions={locationCodeSuggestions?.results || []}
-            loading={isLocationCodeLoading}
-            fetchSuggestions={(input) => fetchLocationCodes(input)}
-            // onSearch={setLocationCodeSearch}
-            width={200}
-          /> */}
-
-          <MultiLocationInputWithSuggestions
-            label="Location Code"
-            value={locationCodeInput}
-            setValue={setLocationCodeInput}
-            setFilter={setLocationCodeFilter}
-            suggestions={locationCodeSuggestions?.results || []}
-            loading={isLocationCodeLoading}
-            fetchSuggestions={async (input: string) => {
-              setLocationCodeSearch(input); // update the query for RTK
-              return []; // return empty for now, suggestions come via `suggestions` prop
-            }}
-            width={200}
-          />
-
-          {/* <DropdownSearchInput
+          <DropdownSearchInput
             label="Location Code"
             value={locationCodeInput}
             setValue={setLocationCodeInput}
@@ -347,7 +284,7 @@ const Inventory = () => {
             loading={isLocationCodeLoading}
             suggestions={locationCodeSuggestions?.results || []}
             width={150}
-          /> */}
+          />
           <SearchInput
             label="Item No"
             value={itemNoInput}
