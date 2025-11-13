@@ -379,7 +379,7 @@ export const klaviyoApi = createApi({
       any,
       {
         item_no?: string;
-        location_code?: string;
+        location_code?: any;
         description?: string;
         eta?: string;
         qty?: number;
@@ -409,7 +409,12 @@ export const klaviyoApi = createApi({
         params.set("page_size", page_size.toString());
 
         if (item_no) params.set("item_no", item_no);
-        if (location_code) params.set("location_code", location_code);
+        // if (location_code) params.set("location_code", location_code);
+        if (Array.isArray(location_code) && location_code.length > 0) {
+          params.set("location_code", location_code.join(",")); // <-- correct format
+        } else if (location_code) {
+          params.set("location_code", location_code);
+        }
         if (description) params.set("description", description);
         if (eta) params.set("eta", eta);
         if (qty !== undefined) params.set("qty", qty.toString());
