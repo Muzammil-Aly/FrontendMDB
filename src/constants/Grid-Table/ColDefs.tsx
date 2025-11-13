@@ -336,11 +336,11 @@ export const touchups_columns = [
     headerName: "SKU",
     cellRenderer: CopyCellRenderer,
   },
-  {
-    field: "customer_id",
-    headerName: "Customer ID",
-    cellRenderer: CopyCellRenderer,
-  },
+  // {
+  //   field: "customer_id",
+  //   headerName: "Customer ID",
+  //   cellRenderer: CopyCellRenderer,
+  // },
   {
     field: "parts_item_no",
     headerName: "Parts Item No",
