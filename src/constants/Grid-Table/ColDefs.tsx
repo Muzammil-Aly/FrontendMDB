@@ -409,9 +409,15 @@ export const touchups_pens = [
     headerName: "Color Slug",
     cellRenderer: CopyCellRenderer,
   },
+
   {
     field: "ColorName",
     headerName: "Color Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "QtyAvailable",
+    headerName: "Qty Available",
     cellRenderer: CopyCellRenderer,
   },
 ];
