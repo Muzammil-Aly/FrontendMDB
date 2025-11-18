@@ -53,9 +53,10 @@ const useTouchupsPens = (columns: Column[]) => {
           return {
             ...col,
             headerName: "Color Name",
-            flex: 2,
+            flex: 1,
             minWidth: 200,
           };
+
         default:
           return col;
       }
