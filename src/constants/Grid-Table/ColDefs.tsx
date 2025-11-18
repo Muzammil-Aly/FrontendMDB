@@ -13,6 +13,7 @@
 //   { field: "last_order_date", headerName: "Last Order Date" },
 //   { field: "total_orders", headerName: "Total Orders" },
 // ];
+import { margin } from "@mui/system";
 import CopyCellRenderer from "./CopyCellRenderer";
 
 export const users = [
@@ -160,7 +161,7 @@ export const orders = [
     headerName: "Shipping Address",
     cellRenderer: CopyCellRenderer,
   },
-  { field: "channel", headerName: "Channel" },
+  { field: "channel", headerName: "Channel", cellRenderer: CopyCellRenderer },
 ];
 
 export const orderItems = [
@@ -336,11 +337,11 @@ export const touchups_columns = [
     headerName: "SKU",
     cellRenderer: CopyCellRenderer,
   },
-  {
-    field: "customer_id",
-    headerName: "Customer ID",
-    cellRenderer: CopyCellRenderer,
-  },
+  // {
+  //   field: "customer_id",
+  //   headerName: "Customer ID",
+  //   cellRenderer: CopyCellRenderer,
+  // },
   {
     field: "parts_item_no",
     headerName: "Parts Item No",
@@ -412,6 +413,11 @@ export const touchups_pens = [
   {
     field: "ColorName",
     headerName: "Color Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "QtyAvailable",
+    headerName: "Qty Available",
     cellRenderer: CopyCellRenderer,
   },
 ];
@@ -788,7 +794,7 @@ export const inventory_columns = (
     cellRenderer: CopyCellRenderer,
     flex: 1,
     minWidth: 250,
-    autoHeight: true,
+    // autoHeight: true,
   },
   {
     field: "qty",

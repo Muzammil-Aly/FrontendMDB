@@ -42,6 +42,13 @@ const useTouchupsPens = (columns: Column[]) => {
             flex: 1,
             minWidth: 150,
           };
+        case "QtyAvailable":
+          return {
+            ...col,
+            headerName: "Qty Available",
+            flex: 1,
+            minWidth: 150,
+          };
         case "ColorName":
           return {
             ...col,

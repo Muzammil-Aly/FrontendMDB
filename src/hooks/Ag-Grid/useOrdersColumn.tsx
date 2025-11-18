@@ -66,7 +66,7 @@ const useOrdersColumn = (columns: Column[]) => {
             flex: 1,
             minWidth: 180,
             cellStyle: { whiteSpace: "normal" },
-            autoHeight: true,
+            // autoHeight: true,
           };
         case "profit_name":
           return { ...col, headerName: "Profit Name", flex: 1, minWidth: 140 };
@@ -136,9 +136,9 @@ const useOrdersColumn = (columns: Column[]) => {
           return {
             ...col,
             headerName: "Shipping Address",
-            flex: 2,
-            minWidth: 200,
-            cellStyle: { whiteSpace: "normal" },
+            flex: 1,
+            minWidth: 180,
+            // cellStyle: { whiteSpace: "normal" },
           };
         case "channel":
           return { ...col, headerName: "Channel", minWidth: 140 };

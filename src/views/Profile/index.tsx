@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
@@ -27,7 +26,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 const Profile = () => {
   const router = useRouter();
-  const [activeMenu, setActiveMenu] = useState("Profile Information");
+  const [activeMenu, setActiveMenu] = useState("Customer Profiles");
 
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
@@ -36,15 +35,15 @@ const Profile = () => {
 
   const menuItems = [
     {
-      key: "Profile Information",
-      label: "Profile Information",
-      icon: <InfoIcon />,
-    },
-    {
       key: "Customer Profiles",
       label: "Customer Profiles",
-      icon: <PeopleIcon />,
+      icon: <InfoIcon />,
     },
+    // {
+    //   key: "Customer Profiles",
+    //   label: "Customer Profiles",
+    //   icon: <PeopleIcon />,
+    // },
     { key: "Orders", label: "Orders", icon: <ShoppingCartIcon /> },
     {
       key: "Support Tickets",
@@ -56,8 +55,8 @@ const Profile = () => {
   ];
 
   const menuConfig: Record<string, { component?: React.ReactNode }> = {
-    "Profile Information": { component: <DetailedInfo /> },
-    "Customer Profiles": { component: <CustomerProfile /> },
+    "Customer Profiles": { component: <DetailedInfo /> },
+    // "Customer Profiles": { component: <CustomerProfile /> },
     Orders: { component: <Orders /> },
     "Support Tickets": { component: <SupportTickets /> },
     "Marketing Events": { component: <MarketingEvents /> },

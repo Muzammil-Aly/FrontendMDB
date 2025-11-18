@@ -36,7 +36,7 @@ const useSalesOrders = (columns: Column[]) => {
             headerName: "Customer Name",
             flex: 1,
             minWidth: 260,
-            autoHeight: true,
+            // autoHeight: true,
           };
         case "qty":
           return {

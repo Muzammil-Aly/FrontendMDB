@@ -24,15 +24,15 @@ const useTouchupsColumn = (columns: Column[]) => {
             flex: 1,
             minWidth: 140,
           };
-        case "customer_id":
-          return {
-            ...col,
-            headerName: "Customer ID",
-            flex: 1,
-            minWidth: 180,
-            cellStyle: { whiteSpace: "normal" },
-            autoHeight: true,
-          };
+        // case "customer_id":
+        //   return {
+        //     ...col,
+        //     headerName: "Customer ID",
+        //     flex: 1,
+        //     minWidth: 180,
+        //     cellStyle: { whiteSpace: "normal" },
+        //     autoHeight: true,
+        //   };
         case "parts_item_no":
           return {
             ...col,

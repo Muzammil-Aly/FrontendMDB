@@ -103,6 +103,7 @@ export const klaviyoApi = createApi({
         fulfillment_status?: string;
         order_status?: string;
         psi_number?: string;
+        customer_no?: string;
       }
     >({
       query: ({
@@ -121,6 +122,7 @@ export const klaviyoApi = createApi({
         fulfillment_status,
         order_status,
         psi_number,
+        customer_no,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -140,6 +142,7 @@ export const klaviyoApi = createApi({
           params.set("fulfillment_status", fulfillment_status);
         if (order_status) params.set("order_status", order_status);
         if (psi_number) params.set("psi_number", psi_number);
+        if (customer_no) params.set("customer_no", customer_no);
 
         return `/customer_orders?${params.toString()}`;
       },
@@ -324,6 +327,7 @@ export const klaviyoApi = createApi({
         item_name2?: string;
         color_name?: string;
         sku?: string;
+        QtyAvailable?: string;
       }
     >({
       query: ({
@@ -335,6 +339,7 @@ export const klaviyoApi = createApi({
         item_name2,
         color_name,
         sku,
+        QtyAvailable,
       }) => {
         const params = new URLSearchParams();
         params.set("page", page.toString());
@@ -346,6 +351,7 @@ export const klaviyoApi = createApi({
         if (item_name2) params.set("ItemName2", item_name2);
         if (color_name) params.set("ColorName", color_name);
         if (sku) params.set("sku", sku);
+        if (QtyAvailable) params.set("QtyAvailable", QtyAvailable);
 
         return `touchup_pen?${params.toString()}`;
       },
@@ -367,6 +373,7 @@ export const klaviyoApi = createApi({
                 ItemName2: item.ItemName2,
                 Colorslug: item.Colorslug,
                 ColorName: item.ColorName,
+                QtyAvailable: item.QtyAvailable,
               }))
             : [],
           total_pages: response?.total_pages ?? 1,

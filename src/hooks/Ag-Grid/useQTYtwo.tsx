@@ -29,7 +29,7 @@ const useQTYtwo = (columns: Column[]) => {
             headerName: "Description",
             flex: 2,
             minWidth: 220,
-            autoHeight: true,
+            // autoHeight: true,
           };
         case "description_2":
           return {
@@ -37,7 +37,7 @@ const useQTYtwo = (columns: Column[]) => {
             headerName: "Description 2",
             flex: 2,
             minWidth: 220,
-            autoHeight: true,
+            // autoHeight: true,
           };
         case "location_code":
           return {

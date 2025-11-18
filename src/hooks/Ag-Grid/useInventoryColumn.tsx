@@ -1,4 +1,4 @@
-import { fontSize } from "@mui/system";
+import { fontSize, margin } from "@mui/system";
 import { ICellRendererParams } from "ag-grid-community";
 import { useMemo } from "react";
 
@@ -32,7 +32,7 @@ const useInventory = (columns: Column[]) => {
             headerName: "Description",
             flex: 1,
             minWidth: 250,
-            autoHeight: true,
+            // autoHeight: true,
           };
         case "qty":
           return { ...col, headerName: "Quantity", flex: 1, minWidth: 120 };
