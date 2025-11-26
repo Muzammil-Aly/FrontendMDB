@@ -124,6 +124,15 @@ const useOrdersColumn = (columns: Column[]) => {
             align: "center",
             headerAlign: "center",
           };
+
+        case "release_error":
+          return {
+            ...col,
+            headerName: "Release Error",
+            flex: 1,
+            minWidth: 180,
+            cellStyle: { whiteSpace: "normal" },
+          };
         case "fulfillment_status":
           return {
             ...col,

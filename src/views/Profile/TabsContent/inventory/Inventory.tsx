@@ -35,7 +35,7 @@ import InventoryQTYone from "./InventoryQTYone";
 import InventoryQTYtwo from "./InventoryQTYtwo";
 import MultiLocationInput from "./MultiLocationInput";
 import MultiLocationInputWithSuggestions from "./MultiLocationInput";
-
+import { useGetLifeCycleStatusQuery } from "@/redux/services/profileApi";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Inventory = () => {
@@ -65,6 +65,12 @@ const Inventory = () => {
   const [selectedInventoryItem, setSelectedInventoryItem] = useState<
     any | null
   >(null);
+  const [lifeCycleInput, setLifeCycleInput] = useState("");
+  const [lifeCycleInputTyping, setIsLifeCycleInputTyping] = useState(false);
+  const [lifeCycleFilter, setLifeCycleFilter] = useState<string | undefined>(
+    undefined
+  );
+  const [islifeCycleTyping, setisLifeCycleTyping] = useState(false);
 
   const [isItemNoInputTyping, setItemNoInputTyping] = useState(false);
   const [islocationCodeInputTyping, setLocationCodeInputTyping] =
@@ -87,6 +93,7 @@ const Inventory = () => {
     location_code: locationCodeFilter?.length ? locationCodeFilter : undefined,
     item_no: ItemNoFilter || undefined,
     description: descriptionFilter,
+    life_cycle_status_code: lifeCycleFilter || undefined,
   });
   console.log("selectedQtyoneItem", selectedQtyoneItem);
 
@@ -146,6 +153,10 @@ const Inventory = () => {
   } = useGetLocationCodesQuery(locationCodeSearch, {
     skip: !locationCodeSearch.trim(), // only call API if input is not empty
   });
+  const { data: lifeCycleSuggestions = [], isFetching: isLifeCycleLoading } =
+    useGetLifeCycleStatusQuery(lifeCycleInput, {
+      skip: lifeCycleInput.trim().length < 1,
+    });
 
   // const onRowClicked = (params: any) => {
   //   setHighlightedId(params.data.item_no);
@@ -195,7 +206,15 @@ const Inventory = () => {
       }, 500),
     []
   );
-
+  const debouncedLifeCycleStatus = useMemo(
+    () =>
+      debounce((value: string) => {
+        setLifeCycleFilter(value || undefined);
+        setPage(1);
+        setIsLifeCycleInputTyping(false);
+      }, 5000),
+    []
+  );
   const baseLayout = [
     { i: "inventory", x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 10 },
     { i: "touchups", x: 0, y: 20, w: 12, h: 14, minH: 8 },
@@ -338,16 +357,6 @@ const Inventory = () => {
             width={200}
           />
 
-          {/* <DropdownSearchInput
-            label="Location Code"
-            value={locationCodeInput}
-            setValue={setLocationCodeInput}
-            setFilter={setLocationCodeFilter}
-            debouncedFunction={debouncedLocationCode}
-            loading={isLocationCodeLoading}
-            suggestions={locationCodeSuggestions?.results || []}
-            width={150}
-          /> */}
           <SearchInput
             label="Item No"
             value={itemNoInput}
@@ -359,6 +368,16 @@ const Inventory = () => {
             debouncedFunction={debouncedItemNo}
             loading={isItemNoInputTyping}
             width={150}
+          />
+          <DropdownSearchInput
+            label="Life Cycle Status"
+            value={lifeCycleInput}
+            setValue={setLifeCycleInput}
+            setFilter={setLifeCycleFilter}
+            debouncedFunction={debouncedLifeCycleStatus}
+            loading={isLifeCycleLoading}
+            suggestions={lifeCycleSuggestions?.results || []}
+            width={170}
           />
           <SearchInput
             label="Description"

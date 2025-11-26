@@ -396,6 +396,7 @@ export const klaviyoApi = createApi({
         qty_on_blocked_lot_bin?: number;
         page?: number;
         page_size?: number;
+        life_cycle_status_code?: string;
       }
     >({
       query: ({
@@ -408,6 +409,7 @@ export const klaviyoApi = createApi({
         avail_qty_on_hand,
         avail_qty_to_commit,
         qty_on_blocked_lot_bin,
+        life_cycle_status_code,
         page = 1,
         page_size = 10,
       }) => {
@@ -431,6 +433,13 @@ export const klaviyoApi = createApi({
           params.set("avail_qty_on_hand", avail_qty_on_hand.toString());
         if (avail_qty_to_commit !== undefined)
           params.set("avail_qty_to_commit", avail_qty_to_commit.toString());
+
+        if (life_cycle_status_code !== undefined)
+          params.set(
+            "life_cycle_status_code",
+            life_cycle_status_code.toString()
+          );
+
         if (qty_on_blocked_lot_bin !== undefined)
           params.set(
             "qty_on_blocked_lot_bin",
@@ -447,7 +456,12 @@ export const klaviyoApi = createApi({
         params: name ? { name } : {},
       }),
     }),
-
+    getLifeCycleStatus: builder.query<any, string | void>({
+      query: (name = "") => ({
+        url: "/inventory/life_cycle_status",
+        params: name ? { name } : {},
+      }),
+    }),
     getPhone: builder.query<any, string | void>({
       query: (name = "") => ({
         url: "/customer/phone",
@@ -480,4 +494,5 @@ export const {
   useGetFullNamesQuery,
   useGetPhoneQuery,
   useGetTouchupPensQuery,
+  useGetLifeCycleStatusQuery,
 } = klaviyoApi;

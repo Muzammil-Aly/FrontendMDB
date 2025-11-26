@@ -57,10 +57,22 @@ export const users = [
 ];
 
 export const orders = [
-  { field: "order_id", headerName: "Order ID", cellRenderer: CopyCellRenderer },
   {
-    field: "customer_id",
-    headerName: "Customer ID",
+    field: "order_date",
+    headerName: "Order Date",
+    cellRenderer: CopyCellRenderer,
+  },
+
+  { field: "order_id", headerName: "Order ID", cellRenderer: CopyCellRenderer },
+
+  {
+    field: "customer_no",
+    headerName: "Customer No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "customer_reference_no",
+    headerName: "Customer Reference No",
     cellRenderer: CopyCellRenderer,
   },
   {
@@ -68,40 +80,14 @@ export const orders = [
     headerName: "Customer Name",
     cellRenderer: CopyCellRenderer,
   },
-  { field: "phone_no", headerName: "Phone No", cellRenderer: CopyCellRenderer },
   {
-    field: "customer_email",
-    headerName: "Email",
-    cellRenderer: CopyCellRenderer,
-  },
-
-  {
-    field: "customer_reference_no",
-    headerName: "Customer Reference No",
-    cellRenderer: CopyCellRenderer,
-  },
-  { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
-  { field: "retailer", headerName: "Retailer", cellRenderer: CopyCellRenderer },
-  {
-    field: "customer_no",
-    headerName: "Customer No",
-    cellRenderer: CopyCellRenderer,
-  },
-
-  {
-    field: "order_date",
-    headerName: "Order Date",
+    field: "order_status",
+    headerName: "Order Status",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "total_value",
-    headerName: "Total Order Value",
-    cellRenderer: CopyCellRenderer,
-  },
-  // { field: "discount_code", headerName: "Discount Code" },
-  {
-    field: "profit_name",
-    headerName: "Profit Name",
+    field: "release_error",
+    headerName: "Release Error",
     cellRenderer: CopyCellRenderer,
   },
   {
@@ -109,18 +95,34 @@ export const orders = [
     headerName: "Fulfillment Status",
     cellRenderer: CopyCellRenderer,
   },
-  {
-    field: "order_status",
-    headerName: "Order Status",
-    cellRenderer: CopyCellRenderer,
-  },
-
+  { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
   {
     field: "psi_number",
     headerName: "PSI Number",
     cellRenderer: CopyCellRenderer,
   },
+  {
+    field: "shipping_address",
+    headerName: "Shipping Address",
+    cellRenderer: CopyCellRenderer,
+  },
 
+  { field: "phone_no", headerName: "Phone No", cellRenderer: CopyCellRenderer },
+  {
+    field: "customer_email",
+    headerName: "Email",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "redo",
+    headerName: "Redo",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "extend",
+    headerName: "Extend",
+    cellRenderer: CopyCellRenderer,
+  },
   {
     field: "rma_status",
     headerName: "RMA Status",
@@ -132,17 +134,20 @@ export const orders = [
     headerName: "Receive",
     cellRenderer: CopyCellRenderer,
   },
+  { field: "retailer", headerName: "Retailer", cellRenderer: CopyCellRenderer },
+  {
+    field: "total_value",
+    headerName: "Total Order Value",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "profit_name",
+    headerName: "Profit Name",
+    cellRenderer: CopyCellRenderer,
+  },
 
-  {
-    field: "extend",
-    headerName: "Extend",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "redo",
-    headerName: "Redo",
-    cellRenderer: CopyCellRenderer,
-  },
+  // { field: "discount_code", headerName: "Discount Code" },
+
   {
     field: "order_url",
     headerName: "Order URL",
@@ -151,17 +156,18 @@ export const orders = [
     suppressNavigable: true, // ⛔ avoids keyboard focus behavior
   },
 
-  {
-    field: "shipping_zip_code",
-    headerName: "Shipping Zip Code",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "shipping_address",
-    headerName: "Shipping Address",
-    cellRenderer: CopyCellRenderer,
-  },
+  // {
+  //   field: "shipping_zip_code",
+  //   headerName: "Shipping Zip Code",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+
   { field: "channel", headerName: "Channel", cellRenderer: CopyCellRenderer },
+  {
+    field: "customer_id",
+    headerName: "Customer ID",
+    cellRenderer: CopyCellRenderer,
+  },
 ];
 
 export const orderItems = [
@@ -798,6 +804,28 @@ export const inventory_columns = (
     // autoHeight: true,
   },
   {
+    field: "life_cycle_status_code",
+    headerName: "Life Cycle Status",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 180,
+  },
+  {
+    field: "qty_on_so",
+    headerName: "Qty on SO",
+    cellRenderer: ClickableCellRenderer(onCellClick, "so"),
+    flex: 1,
+    minWidth: 160,
+  },
+
+  {
+    field: "qty_on_po",
+    headerName: "Qty on PO",
+    cellRenderer: ClickableCellRenderer(onCellClick, "po"),
+    flex: 1,
+    minWidth: 160,
+  },
+  {
     field: "qty",
     headerName: "Quantity",
     cellRenderer: CopyCellRenderer,
@@ -812,13 +840,13 @@ export const inventory_columns = (
     minWidth: 140,
   },
   {
-    // 👇 clicking this opens qty drawer
     field: "qty_available",
     headerName: "Qty Available",
     cellRenderer: ClickableCellRenderer(onCellClick, "qty"),
     flex: 1,
     minWidth: 160,
   },
+
   {
     field: "avail_qty_on_hand",
     headerName: "Avail Qty on Hand",
@@ -839,29 +867,6 @@ export const inventory_columns = (
     cellRenderer: CopyCellRenderer,
     flex: 1,
     minWidth: 220,
-  },
-  {
-    // 👇 clicking this opens SO drawer
-    field: "qty_on_so",
-    headerName: "Qty on SO",
-    cellRenderer: ClickableCellRenderer(onCellClick, "so"),
-    flex: 1,
-    minWidth: 160,
-  },
-  {
-    field: "life_cycle_status_code",
-    headerName: "Life Cycle Status",
-    cellRenderer: CopyCellRenderer,
-    flex: 1,
-    minWidth: 180,
-  },
-  {
-    // 👇 clicking this opens PO drawer
-    field: "qty_on_po",
-    headerName: "Qty on PO",
-    cellRenderer: ClickableCellRenderer(onCellClick, "po"),
-    flex: 1,
-    minWidth: 160,
   },
 ];
 

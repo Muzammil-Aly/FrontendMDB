@@ -147,7 +147,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const filterOptions = [
     { key: "shippingAddress", label: "Shipping Address", type: "input" },
     { key: "customerNo", label: "Customer No", type: "input" },
-    { key: "customerReferenceNo", label: "Customer Ref No", type: "input" },
+    // { key: "customerReferenceNo", label: "Customer Ref No", type: "input" },
+    { key: "customerID", label: "Customer ID", type: "input" },
+
     { key: "tracking", label: "Tracking", type: "input" },
     { key: "profitName", label: "Profit Name", type: "dropdown" },
     { key: "retailerName", label: "Retailer Name", type: "dropdown" },
@@ -238,6 +240,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       redo: item.redo ?? "N/A",
       order_url: item.order_url ?? "N/A",
       shipping_zip_code: item.shipping_zip_code || "N/A",
+      release_error: item.release_error || "N/A",
     }));
   }, [data]);
 
@@ -485,11 +488,16 @@ const Orders = ({ customerId }: { customerId?: string }) => {
           setcustomerNoFilter(undefined);
           setIsCustomerNoTyping(false);
           break;
-        case "customerReferenceNo":
-          setCustomerReferenceNoInput("");
-          setCustomerReferenceNoFilter(undefined);
-          setIsCustomerReferenceNoTyping(false);
+        case "customerID":
+          setCustomerIdInput("");
+          setCustomerIdFilter(undefined);
+          setIsCustomerIDTyping(false);
           break;
+        // case "customerReferenceNo":
+        //   setCustomerReferenceNoInput("");
+        //   setCustomerReferenceNoFilter(undefined);
+        //   setIsCustomerReferenceNoTyping(false);
+        //   break;
         case "tracking":
           setTrackingInput("");
           setTrackingFilter(undefined);
@@ -628,7 +636,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 width={150}
               />
 
-              <SearchInput
+              {/* <SearchInput
                 label="Customer ID"
                 value={customerIdInput}
                 setValue={(val) => {
@@ -639,8 +647,19 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                 debouncedFunction={debouncedCustomerId}
                 loading={isCustomerIDTyping}
                 width={150}
+              /> */}
+              <SearchInput
+                label="Customer Reference No"
+                value={customerReferenceNoInput}
+                setValue={(val) => {
+                  setCustomerReferenceNoInput(val);
+                  setIsCustomerReferenceNoTyping(true);
+                }}
+                setFilter={setCustomerReferenceNoFilter}
+                debouncedFunction={debouncedcustomerReferenceNo}
+                loading={customerReferenceNotyping}
+                width={190}
               />
-
               <DropdownSearchInput
                 label="Customer Name"
                 value={customerNameInput}
@@ -684,6 +703,20 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                           setFilter={setcustomerNoFilter}
                           debouncedFunction={debouncedCustomerNo}
                           loading={customerNotyping}
+                          width={180}
+                        />
+                      )}
+                      {f.key === "customerID" && (
+                        <SearchInput
+                          label="Customer ID"
+                          value={customerIdInput}
+                          setValue={(val) => {
+                            setCustomerIdInput(val);
+                            setIsCustomerIDTyping(true);
+                          }}
+                          setFilter={setCustomerIdFilter}
+                          debouncedFunction={debouncedCustomerId}
+                          loading={isCustomerIDTyping}
                           width={180}
                         />
                       )}
