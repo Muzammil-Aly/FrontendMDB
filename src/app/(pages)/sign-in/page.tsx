@@ -33,6 +33,7 @@ export default function SignIn() {
     { email: "drivera@mdbmail.com", password: "drivera123" },
     { email: "Shipping@mdbmail.com", password: "Shipping123" },
     { email: "Cs@mdbmail.com", password: "Csmdb123" },
+    { email: "jbedanova@mdbmail.com", password: "jbedanova123" },
   ];
 
   const router = useRouter();

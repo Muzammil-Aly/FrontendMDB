@@ -23,7 +23,7 @@ import {
 import Loader from "@/components/Common/Loader";
 import debounce from "lodash.debounce";
 import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
-
+import CustomDateRangePicker from "@/components/Common/DatePicker/CustomDateRangePicker";
 import { orders } from "@/constants/Grid-Table/ColDefs";
 import useOrdersColumn from "@/hooks/Ag-Grid/useOrdersColumn";
 import { useGetCustomerOrdersQuery } from "@/redux/services/profileApi";
@@ -40,6 +40,7 @@ import SearchInput from "@/components/Common/CustomSearch/SearchInput";
 import CustomSelect from "@/components/Common/CustomTabs/CustomSelect";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import dayjs, { Dayjs } from "dayjs";
 
 import {
   useGetCustomerNamesQuery,
@@ -105,6 +106,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   );
   const [dateInput, setDateInput] = useState<any>(null);
   const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
   const [profitNametyping, setIsProfitNameTyping] = useState(false);
   const [profitNameInput, setProfitNameInput] = useState("");
   const [profitNameFilter, setProfitNameFilter] = useState<string | undefined>(
@@ -285,7 +289,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
 
     // When data updates and filters are active
     if (isActive && hasActiveFilter && data?.data?.length > 0) {
-      setSelectedOrder(data.data[0]); // 👈 auto-select the first order
+      setSelectedOrder(data.data[0]); //  auto-select the first order
     }
   }, [
     data, // refires when API data changes
@@ -601,13 +605,22 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               </Box>
 
               <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
-                <CustomDatePicker
+                {/* <CustomDatePicker
                   label="Order Date"
                   value={dateInput}
                   setValue={setDateInput}
                   setFilter={setDateFilter}
                   setPage={setPage}
+                /> */}
+                <CustomDateRangePicker
+                  startDate={startDate}
+                  endDate={endDate}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                  setFilter={setDateFilter}
+                  setPage={setPage}
                 />
+
                 <CustomSelect
                   label="Page Size"
                   value={pageSize}
