@@ -103,7 +103,7 @@
 
 // export default SearchInput;
 
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import {
   FormControl,
   TextField,
@@ -133,6 +133,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
   width = 180,
   loading = false,
 }) => {
+  const [isTyping, setIsTyping] = React.useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setValue(val);
@@ -140,7 +142,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
     if (val.trim() === "") {
       setFilter(undefined);
       debouncedFunction.cancel();
+      setIsTyping(false);
     } else {
+      setIsTyping(true);
       debouncedFunction(val);
     }
   };
@@ -149,7 +153,22 @@ const SearchInput: React.FC<SearchInputProps> = ({
     setValue("");
     setFilter(undefined);
     debouncedFunction.cancel();
+    setIsTyping(false);
   };
+
+  // Reset typing state when loading becomes false (debounce completed)
+  useEffect(() => {
+    if (!loading && isTyping) {
+      // Small delay to ensure smooth transition
+      const timer = setTimeout(() => {
+        setIsTyping(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, isTyping]);
+
+  // Show loader when typing/debouncing OR when loading prop is true
+  const showLoader = isTyping || loading;
 
   return (
     <FormControl size="small" sx={{ width, position: "relative" }}>
@@ -205,7 +224,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           endAdornment: (
             <InputAdornment position="end">
               {value.trim() !== "" ? (
-                loading ? (
+                showLoader ? (
                   <CircularProgress size={16} sx={{ color: "#0E1B6B" }} />
                 ) : (
                   <IconButton

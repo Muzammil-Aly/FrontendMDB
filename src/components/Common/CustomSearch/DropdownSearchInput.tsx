@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useRef } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
 import {
   Autocomplete,
   TextField,
@@ -35,15 +35,19 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
   setLoading,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isTyping, setIsTyping] = useState(false);
+
   const handleSelect = (selected: string | null) => {
     const chosen = selected || "";
     setValue(chosen);
     setFilter(chosen || undefined);
 
     if (chosen) {
+      setIsTyping(true);
       setLoading?.(true);
       debouncedFunction(chosen);
     } else {
+      setIsTyping(false);
       setLoading?.(false);
     }
   };
@@ -52,8 +56,23 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
     setValue("");
     setFilter(undefined);
     debouncedFunction.cancel();
+    setIsTyping(false);
     setLoading?.(false);
   };
+
+  // Reset typing state when loading becomes false (debounce completed)
+  useEffect(() => {
+    if (!loading && isTyping) {
+      // Small delay to ensure smooth transition
+      const timer = setTimeout(() => {
+        setIsTyping(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, isTyping]);
+
+  // Show loader when typing/debouncing OR when loading prop is true
+  const showLoader = isTyping || loading;
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
@@ -75,8 +94,19 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
         value={value}
         onChange={(_, newValue) => handleSelect(newValue)}
         onInputChange={(_, newValue, reason) => {
-          if (reason === "input") setValue(newValue);
-          else if (reason === "clear") handleClear();
+          if (reason === "input") {
+            setValue(newValue);
+            if (newValue.trim() !== "") {
+              setIsTyping(true);
+              debouncedFunction(newValue);
+            } else {
+              setIsTyping(false);
+              setFilter(undefined);
+              debouncedFunction.cancel();
+            }
+          } else if (reason === "clear") {
+            handleClear();
+          }
         }}
         ListboxProps={{
           sx: {
@@ -136,7 +166,7 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
               endAdornment: (
                 <InputAdornment position="end">
                   {value.trim() !== "" ? (
-                    loading ? (
+                    showLoader ? (
                       <CircularProgress size={16} sx={{ color: "#0E1B6B" }} />
                     ) : (
                       <IconButton

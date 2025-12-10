@@ -18,7 +18,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Mulish",
+    fontFamily: "var(--font-mulish), sans-serif",
     h1: {
       fontSize: "40px",
       fontWeight: 600,
@@ -85,7 +85,7 @@ const theme = createTheme({
       fontSize: "20px",
       lineHeight: "24px",
       letterSpacing: "-0.32px",
-      fontFamily: "Mulish",
+      fontFamily: "var(--font-mulish), sans-serif",
       fontWeight: 400,
       color: colors.heading,
     },

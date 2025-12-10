@@ -2,6 +2,14 @@ import "./globals.css";
 import { ThemeProvider } from "@mui/material";
 import theme from "@/theme";
 import AppLayout from "./AppLayout";
+import { Mulish } from "next/font/google";
+
+const mulish = Mulish({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900", "1000"],
+  variable: "--font-mulish",
+  display: "swap",
+});
 
 export const metadata = {
   title: "CXi",
@@ -14,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={mulish.variable}>
       <body>
         <ThemeProvider theme={theme}>
           <AppLayout>{children}</AppLayout>

@@ -378,7 +378,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                 }}
                 setFilter={setCustomerIdFilter}
                 debouncedFunction={debouncedCustomerId}
-                loading={isCustomerIdTyping}
+                loading={isCustomerIdTyping || (isFetching && !!customerIdFilter)}
                 width={150}
               />
 
@@ -391,7 +391,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                 }}
                 setFilter={setTicketIdFilter}
                 debouncedFunction={debouncedTicketId}
-                loading={isTicketIdTyping}
+                loading={isTicketIdTyping || (isFetching && !!ticketIdFilter)}
                 width={150}
               />
 
@@ -401,7 +401,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                 setValue={setTagsInput}
                 setFilter={setTagsFilter}
                 debouncedFunction={debouncedTags}
-                loading={isticketTagsLoading}
+                loading={isticketTagsLoading || (isFetching && !!tagsFilter)}
                 suggestions={ticketTagsSuggestions?.results || []}
                 width={150}
               />
@@ -412,7 +412,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                 setValue={setCustomerNameInput}
                 setFilter={setCustomerNameFilter}
                 debouncedFunction={debouncedCustomerName}
-                loading={isCustomerNameLoading}
+                loading={isCustomerNameLoading || (isFetching && !!customerNameFilter)}
                 suggestions={customerNameSuggestions?.results || []}
                 width={150}
               />
@@ -423,7 +423,7 @@ const SupportTickets = ({ customerId }: { customerId?: string }) => {
                 setValue={setPhoneNumberInput}
                 setFilter={setPhoneNumberFilter}
                 debouncedFunction={debouncedPhoneNumber}
-                loading={isPhoneLoading}
+                loading={isPhoneLoading || (isFetching && !!phoneNumberFilter)}
                 suggestions={phoneSuggestions?.results || []}
                 width={150}
               />
