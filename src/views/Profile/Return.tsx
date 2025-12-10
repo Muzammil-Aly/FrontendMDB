@@ -1,0 +1,123 @@
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import AgGridTable from "@/components/ag-grid";
+import { Returns } from "@/constants/Grid-Table/ColDefs";
+import useZpartETA from "@/hooks/Ag-Grid/useZpartEtaColumn";
+import useReturnColumn from "@/hooks/Ag-Grid/useReturnColumn";
+import Loader from "@/components/Common/Loader";
+import { useGetReturnsQuery } from "@/redux/services/profileApi";
+import { getRowStyle } from "@/utils/gridStyles";
+
+interface Props {
+  orderId?: string;
+  customer_id?: string;
+  setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
+  orderItemSec?: boolean;
+  filters?: string;
+}
+
+interface Return {
+  rma: string;
+  customer_id: string;
+  sell_to_customer_no: string;
+  sell_to_customer_name: string;
+  item: string;
+  description: string;
+  status: string;
+  quantity: number;
+  line_amount: number;
+  return_reason_code: string;
+  return_reason: string;
+  return_shipment_status: string;
+  tracking_no: string;
+  carrier_name: string;
+  deliverydate: string;
+  pickupdate: string;
+  pickupcontactname: string;
+  your_reference: string;
+  shopify_refund_date: string | null;
+  shopify_refund_quantity: number | null;
+  shopify_refund_subtotal: number | null;
+  shopify_refund_tax: number | null;
+  shopify_refund_note: string | null;
+  sku?: string;
+}
+
+const Return = ({ customer_id }: Props) => {
+  const columns = useReturnColumn(Returns);
+
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null
+  );
+
+  // Fetch filtered ZPart ETA data (based on SKU)
+  const { data, isLoading, isFetching } = useGetReturnsQuery(
+    { customer_id: customer_id || "" },
+    { skip: !customer_id } // Only fetch if sku is provided
+  );
+
+  // Map the response data to table format
+  const rowData = useMemo(() => {
+    const items = data?.data || data || [];
+    if (!Array.isArray(items)) return [];
+
+    return items.map((item: any) => ({
+      rma: item.rma,
+      customer_id: item.customer_id,
+      sell_to_customer_no: item.sell_to_customer_no,
+      sell_to_customer_name: item.sell_to_customer_name,
+      item: item.item,
+      description: item.description,
+      status: item.status,
+      quantity: item.quantity,
+      line_amount: item.line_amount,
+      return_reason_code: item.return_reason_code,
+      return_reason: item.return_reason,
+      return_shipment_status: item.return_shipment_status,
+      tracking_no: item.tracking_no,
+      carrier_name: item.carrier_name,
+      deliverydate: item.deliverydate,
+      pickupdate: item.pickupdate,
+      pickupcontactname: item.pickupcontactname,
+      your_reference: item.your_reference,
+      shopify_refund_date: item.shopify_refund_date,
+      shopify_refund_quantity: item.shopify_refund_quantity,
+      shopify_refund_subtotal: item.shopify_refund_subtotal,
+      shopify_refund_tax: item.shopify_refund_tax,
+      shopify_refund_note: item.shopify_refund_note,
+      sku: item.sku,
+    }));
+  }, [data]);
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      width="100%"
+      justifyContent="center"
+      alignItems="center"
+    >
+      {/* Loader or Table */}
+      {isLoading || isFetching ? (
+        <Loader />
+      ) : rowData.length === 0 ? (
+        <Typography color="text.secondary" fontSize={14}>
+          {customer_id
+            ? `No ETA data found for SKU "${customer_id}"`
+            : "Please select an SKU to view ETA data"}
+        </Typography>
+      ) : (
+        <AgGridTable
+          rowData={rowData}
+          columnDefs={columns}
+          height={480}
+          enablePagination={false}
+          getRowStyle={getRowStyle(highlightedId)}
+        />
+      )}
+    </Box>
+  );
+};
+
+export default Return;

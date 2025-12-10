@@ -62,14 +62,13 @@ export const orders = [
     headerName: "Order Date",
     cellRenderer: CopyCellRenderer,
   },
-
-  { field: "order_id", headerName: "Order ID", cellRenderer: CopyCellRenderer },
-
   {
     field: "customer_no",
     headerName: "Customer No",
     cellRenderer: CopyCellRenderer,
   },
+  { field: "order_id", headerName: "Order ID", cellRenderer: CopyCellRenderer },
+
   {
     field: "customer_reference_no",
     headerName: "Customer Reference No",
@@ -91,26 +90,13 @@ export const orders = [
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "fulfillment_status",
-    headerName: "Fulfillment Status",
-    cellRenderer: CopyCellRenderer,
-  },
-  { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
-  {
     field: "psi_number",
     headerName: "PSI Number",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "shipping_address",
-    headerName: "Shipping Address",
-    cellRenderer: CopyCellRenderer,
-  },
-
-  { field: "phone_no", headerName: "Phone No", cellRenderer: CopyCellRenderer },
-  {
-    field: "customer_email",
-    headerName: "Email",
+    field: "total_value",
+    headerName: "Total Order Value",
     cellRenderer: CopyCellRenderer,
   },
   {
@@ -124,6 +110,18 @@ export const orders = [
     cellRenderer: CopyCellRenderer,
   },
   {
+    field: "shipping_address",
+    headerName: "Shipping Address",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "phone_no", headerName: "Phone No", cellRenderer: CopyCellRenderer },
+  {
+    field: "customer_email",
+    headerName: "Email",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "retailer", headerName: "Retailer", cellRenderer: CopyCellRenderer },
+  {
     field: "rma_status",
     headerName: "RMA Status",
     cellRenderer: CopyCellRenderer,
@@ -134,27 +132,33 @@ export const orders = [
     headerName: "Receive",
     cellRenderer: CopyCellRenderer,
   },
-  { field: "retailer", headerName: "Retailer", cellRenderer: CopyCellRenderer },
   {
-    field: "total_value",
-    headerName: "Total Order Value",
+    field: "customer_id",
+    headerName: "Customer ID",
     cellRenderer: CopyCellRenderer,
   },
-  {
-    field: "profit_name",
-    headerName: "Profit Name",
-    cellRenderer: CopyCellRenderer,
-  },
+  // {
+  //   field: "fulfillment_status",
+  //   headerName: "Fulfillment Status",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+  // { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
+
+  // {
+  //   field: "profit_name",
+  //   headerName: "Profit Name",
+  //   cellRenderer: CopyCellRenderer,
+  // },
 
   // { field: "discount_code", headerName: "Discount Code" },
 
-  {
-    field: "order_url",
-    headerName: "Order URL",
-    cellRenderer: CopyCellRenderer,
-    suppressClickEdit: true, // ⛔ stops grid from reacting to clicks
-    suppressNavigable: true, // ⛔ avoids keyboard focus behavior
-  },
+  // {
+  //   field: "order_url",
+  //   headerName: "Order URL",
+  //   cellRenderer: CopyCellRenderer,
+  //   suppressClickEdit: true, // ⛔ stops grid from reacting to clicks
+  //   suppressNavigable: true, // ⛔ avoids keyboard focus behavior
+  // },
 
   // {
   //   field: "shipping_zip_code",
@@ -162,45 +166,322 @@ export const orders = [
   //   cellRenderer: CopyCellRenderer,
   // },
 
-  { field: "channel", headerName: "Channel", cellRenderer: CopyCellRenderer },
-  {
-    field: "customer_id",
-    headerName: "Customer ID",
-    cellRenderer: CopyCellRenderer,
-  },
+  // { field: "channel", headerName: "Channel", cellRenderer: CopyCellRenderer },
 ];
 
 export const orderItems = [
-  {
-    field: "line_no",
-    headerName: "Order Item ID",
-    cellRenderer: CopyCellRenderer,
-  },
-  // { field: "order_id", headerName: "Order ID" },
   { field: "sku", headerName: "SKU", cellRenderer: CopyCellRenderer },
-
   { field: "lot_no", headerName: "Lot No", cellRenderer: CopyCellRenderer },
-
   {
     field: "product_name",
     headerName: "Product Name",
     cellRenderer: CopyCellRenderer,
   },
   { field: "quantity", headerName: "Quantity", cellRenderer: CopyCellRenderer },
+  { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
+  {
+    field: "fulfillment_status",
+    headerName: "Fulfillment Status",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "bol",
+    headerName: "BOL",
+    cellRenderer: CopyCellRenderer,
+  },
+  // {
+  //   field: "line_no",
+  //   headerName: "Order Item ID",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+
+  // { field: "order_id", headerName: "Order ID" },
+
   {
     field: "amount",
     headerName: "Gross Amount",
     cellRenderer: CopyCellRenderer,
   },
+  // {
+  //   field: "item_type",
+  //   headerName: "Item Type",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+  // { field: "brand", headerName: "Brand", cellRenderer: CopyCellRenderer },
+  // {
+  //   field: "collection",
+  //   headerName: "Collection",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+];
+
+export const ZPartETA = [
   {
-    field: "item_type",
-    headerName: "Item Type",
+    field: "document_no",
+    headerName: "Document No",
     cellRenderer: CopyCellRenderer,
   },
-  { field: "brand", headerName: "Brand", cellRenderer: CopyCellRenderer },
   {
-    field: "collection",
-    headerName: "Collection",
+    field: "external_document_no",
+    headerName: "External Document No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "no",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "associated_whole_unit",
+    headerName: "Associated Whole Unit",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "alternative_status",
+    headerName: "Status",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "customer_no",
+    headerName: "Customer No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "order_date",
+    headerName: "Order Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "sales_order_aging_days",
+    headerName: "Order Aging (Days)",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "earliest_eta",
+    headerName: "Earliest ETA",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "earliest_eta_to_rex",
+    headerName: "ETA to REX",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "earliest_eta_to_unga",
+    headerName: "ETA to UNGA",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "earliest_eta_to_unnj",
+    headerName: "ETA to UNNJ",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "earliest_eta_to_ggtj",
+    headerName: "ETA to GGTJ",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Days to Earliest ETA",
+    headerName: "Days to Earliest ETA",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "Days to Rex ETA",
+    headerName: "Days to Rex ETA",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "qty",
+    headerName: "Quantity",
+    cellRenderer: CopyCellRenderer,
+  },
+];
+
+export const Returns = [
+  { field: "rma", headerName: "RMA No", cellRenderer: CopyCellRenderer },
+  {
+    field: "customer_id",
+    headerName: "Customer ID",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "sell_to_customer_no",
+    headerName: "Customer No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "sell_to_customer_name",
+    headerName: "Customer Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "item", headerName: "Item No", cellRenderer: CopyCellRenderer },
+  {
+    field: "description",
+    headerName: "Description",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "status", headerName: "Status", cellRenderer: CopyCellRenderer },
+  { field: "quantity", headerName: "Quantity", cellRenderer: CopyCellRenderer },
+  {
+    field: "line_amount",
+    headerName: "Line Amount",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "return_reason_code",
+    headerName: "Return Reason Code",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "return_reason",
+    headerName: "Return Reason",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "return_shipment_status",
+    headerName: "Return Shipment Status",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "tracking_no",
+    headerName: "Tracking No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "carrier_name",
+    headerName: "Carrier Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "deliverydate",
+    headerName: "Delivery Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "pickupdate",
+    headerName: "Pickup Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "pickupcontactname",
+    headerName: "Pickup Contact",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "your_reference",
+    headerName: "Your Reference",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "shopify_refund_date",
+    headerName: "Shopify Refund Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "shopify_refund_quantity",
+    headerName: "Refund Qty",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "shopify_refund_subtotal",
+    headerName: "Refund Subtotal",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "shopify_refund_tax",
+    headerName: "Refund Tax",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "shopify_refund_note",
+    headerName: "Refund Note",
+    cellRenderer: CopyCellRenderer,
+  },
+];
+
+export const Refunds = [
+  {
+    field: "doc_no_",
+    headerName: "Document No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "doc_type",
+    headerName: "Document Type",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "external_document_no_",
+    headerName: "External Document No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "customer_id",
+    headerName: "Customer ID",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "sell_to_customer_no_",
+    headerName: "Customer No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "profit_name",
+    headerName: "Profit Name",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "created_date",
+    headerName: "Created Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "order_date",
+    headerName: "Order Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "posting_date",
+    headerName: "Posting Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "doc_status",
+    headerName: "Document Status",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "item_no", headerName: "Item No", cellRenderer: CopyCellRenderer },
+  {
+    field: "description",
+    headerName: "Description",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "description_2",
+    headerName: "Description 2",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "qty_", headerName: "Quantity", cellRenderer: CopyCellRenderer },
+  {
+    field: "gross_amount",
+    headerName: "Gross Amount",
+    cellRenderer: CopyCellRenderer,
+  },
+  { field: "amt_", headerName: "Amount", cellRenderer: CopyCellRenderer },
+  {
+    field: "entered_by",
+    headerName: "Entered By",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "return_reason_code",
+    headerName: "Return Reason Code",
     cellRenderer: CopyCellRenderer,
   },
 ];

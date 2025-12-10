@@ -202,6 +202,9 @@ import CustomerSegmentCard from "../../CustomerSegmentCard";
 import SupportTickets from "../../SupportTickets";
 import MarketingEvents from "../../MarketingEvents";
 import Orders from "../../Orders";
+import { Returns } from "@/constants/Grid-Table/ColDefs";
+import Return from "../../Return";
+import Refund from "../../Refund";
 
 interface UserDetailsModalProps {
   open: boolean;
@@ -237,6 +240,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     "Support tickets",
     "Orders",
     "Marketing events",
+    "Returns",
+    "Refunds",
   ];
 
   useEffect(() => {
@@ -254,6 +259,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     <SupportTickets customerId={userData.customer_id} key="support" />,
     <Orders customerId={userData.customer_id} key="orders" />,
     <MarketingEvents customerId={userData.customer_id} key="marketing" />,
+    <Return customer_id={userData.customer_id} key="returns" />,
+    <Refund customer_id={userData.customer_id} key="refunds" />,
   ];
 
   const firstLetter = userData?.full_name?.charAt(0)?.toUpperCase() || "U";

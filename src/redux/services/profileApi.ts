@@ -151,7 +151,17 @@ export const klaviyoApi = createApi({
     getOrderItems: builder.query<any, { orderId: string }>({
       query: ({ orderId }) => `customer_order_items?order_id=${orderId}`,
     }),
-
+    getZpartEtA: builder.query<any, { sku: string }>({
+      query: ({ sku }) => `z_part_eta?no=${sku}`,
+    }),
+    getReturns: builder.query<any, { customer_id: string }>({
+      query: ({ customer_id }) =>
+        `customer_orders_return?customer_id=${customer_id}`,
+    }),
+    getRefunds: builder.query<any, { customer_id: string }>({
+      query: ({ customer_id }) =>
+        `customer_orders_refund?customer_id=${customer_id}`,
+    }),
     getSupportTickets: builder.query<
       any,
       {
@@ -486,6 +496,10 @@ export const {
   useGetCustomerSegmentQuery,
   useGetCustomerOrdersQuery,
   useGetOrderItemsQuery,
+
+  useGetZpartEtAQuery,
+  useGetReturnsQuery,
+  useGetRefundsQuery,
   useGetSupportTicketsQuery,
   useGetSupportTicketsCommnetsQuery,
   useGetCustomerEventsQuery,

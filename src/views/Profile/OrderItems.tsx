@@ -34,6 +34,7 @@ interface OrderItem {
   collection: string;
   quantity: number;
   amount: number;
+  lot_no: string;
 }
 const OrderItems = ({
   orderId,
@@ -84,7 +85,7 @@ const OrderItems = ({
       return; // ignore clicks from any MUI icon button
     }
 
-    if (selectedItemDetail?.line_no === params.data.line_no) {
+    if (selectedItemDetail?.sku === params.data.sku) {
       setSelectedItemDetail(null);
       setSelectedOrderItem?.(null);
       dispatch(setTouchupsOpen(false));

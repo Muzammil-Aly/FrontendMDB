@@ -11,7 +11,7 @@ import OrderItems from "../OrderItems";
 import SupportTicketComments from "../SupportTicketComments";
 import Touchups from "../Touchups";
 import TouchupsPens from "../TouchupsPens";
-
+import ZpartETA from "../ZpartETA";
 import {
   setActiveTab,
   setOrderItemsOpen,
@@ -98,6 +98,56 @@ const ResponsiveDashboard = ({
   };
 
   // 🔹 Layout setup
+  // const baseLayout = useMemo(() => {
+  //   const layout: any[] = [
+  //     {
+  //       i: "profiles",
+  //       x: 0,
+  //       y: 0,
+  //       w: hasId ? 7 : 12,
+  //       h: hasId ? 17 : 20,
+  //       minW: 4,
+  //       minH: 10,
+  //     },
+  //   ];
+
+  //   if (hasId) {
+  //     layout.push({
+  //       i: "customer_segments",
+  //       x: 7,
+  //       y: 0,
+  //       w: 5,
+  //       h: 17,
+  //       minW: 3,
+  //       minH: 4,
+  //     });
+  //   }
+
+  //   if (isTouchupsOpen) {
+  //     layout.push({
+  //       i: "order_items",
+  //       x: 0,
+  //       y: 18,
+  //       w: 12,
+  //       h: 20,
+  //       minW: 3,
+  //       minH: 8,
+  //     });
+  //   }
+  //   if (selectedOrderId) {
+  //     layout.push({
+  //       i: "zpart_eta",
+  //       x: 0,
+  //       y: isTouchupsOpen ? 38 : 18, // place below order_items if open
+  //       w: 12,
+  //       h: 20,
+  //       minW: 3,
+  //       minH: 8,
+  //     });
+  //   }
+
+  //   return layout;
+  // }, [hasId, isTouchupsOpen]);
   const baseLayout = useMemo(() => {
     const layout: any[] = [
       {
@@ -123,11 +173,24 @@ const ResponsiveDashboard = ({
       });
     }
 
+    // 🔹 ZPART ETA should come before touchups
+    if (selectedOrderId) {
+      layout.push({
+        i: "zpart_eta",
+        x: 0,
+        y: isTouchupsOpen ? 18 : 18, // directly below profiles
+        w: 12,
+        h: 20,
+        minW: 3,
+        minH: 8,
+      });
+    }
+
     if (isTouchupsOpen) {
       layout.push({
         i: "order_items",
         x: 0,
-        y: 18,
+        y: selectedOrderId ? 38 : 18, // below zpart_eta if it exists
         w: 12,
         h: 20,
         minW: 3,
@@ -136,7 +199,7 @@ const ResponsiveDashboard = ({
     }
 
     return layout;
-  }, [hasId, isTouchupsOpen]);
+  }, [hasId, isTouchupsOpen, selectedOrderId]);
 
   const layouts = { lg: baseLayout, md: baseLayout, sm: baseLayout };
 
@@ -215,7 +278,21 @@ const ResponsiveDashboard = ({
             )}
           </Box>
         </Paper>
-
+        {/* ========== ZPART ETA TABLE ========== */}
+        <Paper
+          key="zpart_eta"
+          elevation={3}
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            height: "100%",
+            display: selectedOrderId ? "block" : "none",
+          }}
+        >
+          {selectedOrderId && (
+            <ZpartETA sku={selectedOrderItem?.sku} filters={filters} />
+          )}
+        </Paper>
         {/* ========== TOUCHUPS & TOUCHUP PENS ========== */}
         <Paper
           key="order_items"

@@ -140,6 +140,14 @@ const useOrderItems = (columns: Column[]) => {
                 : "-",
           };
 
+        case "line_no":
+          return {
+            ...col,
+            headerName: "Order Item ID",
+            flex: 1,
+            minWidth: 150,
+          };
+
         default:
           return { ...col, flex: 1, minWidth: 120 };
       }
