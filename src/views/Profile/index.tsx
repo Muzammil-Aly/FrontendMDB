@@ -23,13 +23,21 @@ import {
   Link as MUILink,
 } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Cookies from "js-cookie";
 
 const Profile = () => {
   const router = useRouter();
   const [activeMenu, setActiveMenu] = useState("Customer Profiles");
 
   const handleLogout = () => {
+    // Clear cookies for server-side middleware (Vercel)
+    Cookies.remove("loggedIn", { path: "/" });
+    Cookies.remove("userEmail", { path: "/" });
+    Cookies.remove("userName", { path: "/" });
+    // Clear localStorage for client-side checks
     localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
     router.push("/sign-in");
   };
 

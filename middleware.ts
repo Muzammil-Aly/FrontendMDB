@@ -13,7 +13,7 @@ export function middleware(req: NextRequest) {
 
   // If logged in and trying to access auth page (e.g. sign-in again)
   if (loggedIn && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL("/customer-profile", req.url));
   }
 
   return NextResponse.next();

@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import CustomTextField from "@/components/Common/CustomTextField";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment } from "@mui/material";
+import Cookies from "js-cookie";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,11 +79,20 @@ export default function SignIn() {
       if (user) {
         setSeverity("success");
         setMessage("Signed in successfully!");
+        // Set cookie for server-side middleware (Vercel)
+        Cookies.set("loggedIn", "true", { expires: 7, path: "/" });
+        Cookies.set("userEmail", user.email, { expires: 7, path: "/" });
+        Cookies.set("userName", user.email.split("@")[0], {
+          expires: 7,
+          path: "/",
+        });
+        // Set localStorage for client-side checks
         localStorage.setItem("loggedIn", "true");
         localStorage.setItem("userEmail", user.email);
         localStorage.setItem("userName", user.email.split("@")[0]);
+        // Use window.location.href for full page reload to ensure cookie is sent to server
         setTimeout(() => {
-          router.push("/customer-profile");
+          window.location.href = "/customer-profile";
         }, 500);
       } else {
         setSeverity("error");
