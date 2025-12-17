@@ -279,7 +279,7 @@ const ResponsiveDashboard = ({
           </Box>
         </Paper>
         {/* ========== ZPART ETA TABLE ========== */}
-        <Paper
+        {/* <Paper
           key="zpart_eta"
           elevation={3}
           sx={{
@@ -292,7 +292,7 @@ const ResponsiveDashboard = ({
           {selectedOrderId && (
             <ZpartETA sku={selectedOrderItem?.sku} filters={filters} />
           )}
-        </Paper>
+        </Paper> */}
         {/* ========== TOUCHUPS & TOUCHUP PENS ========== */}
         <Paper
           key="order_items"
