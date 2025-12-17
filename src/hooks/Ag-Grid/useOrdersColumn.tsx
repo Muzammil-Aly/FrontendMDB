@@ -93,7 +93,10 @@ const useOrdersColumn = (columns: Column[]) => {
           return { ...col, headerName: "Extend", flex: 1, minWidth: 140 };
         case "redo":
           return { ...col, headerName: "Redo", flex: 1, minWidth: 140 };
-
+        case "extend_flag":
+          return { ...col, headerName: "Extend", flex: 1, minWidth: 140 };
+        case "redo_flag":
+          return { ...col, headerName: "Redo", flex: 1, minWidth: 140 };
         case "order_url":
           return { ...col, headerName: "Order URL", flex: 1, minWidth: 140 };
 

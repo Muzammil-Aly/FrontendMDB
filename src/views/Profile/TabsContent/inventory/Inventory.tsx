@@ -113,6 +113,8 @@ const Inventory = () => {
           qty_on_so: item.qty_on_so,
           life_cycle_status_code: item.life_cycle_status_code,
           qty_on_po: item.qty_on_po,
+          property_code: item.property_code,
+          unit_price: item.unit_price,
         }))
       : [];
   }, [data]);

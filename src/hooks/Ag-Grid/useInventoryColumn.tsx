@@ -91,6 +91,23 @@ const useInventory = (columns: Column[]) => {
             minWidth: 160,
             cellStyle: { fontSize: "16px", fontWeight: "bold" },
           };
+
+        case "property_code":
+          return {
+            ...col,
+            headerName: "Property Code",
+            flex: 1,
+            minWidth: 160,
+            cellStyle: { fontSize: "16px" },
+          };
+        case "unit_price":
+          return {
+            ...col,
+            headerName: "Unit Price",
+            flex: 1,
+            minWidth: 160,
+            cellStyle: { fontSize: "16px" },
+          };
         default:
           return col;
       }

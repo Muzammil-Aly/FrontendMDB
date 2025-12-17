@@ -99,13 +99,23 @@ export const orders = [
     headerName: "Total Order Value",
     cellRenderer: CopyCellRenderer,
   },
+  // {
+  //   field: "redo",
+  //   headerName: "Redo",
+  //   cellRenderer: CopyCellRenderer,
+  // },
+  // {
+  //   field: "extend",
+  //   headerName: "Extend",
+  //   cellRenderer: CopyCellRenderer,
+  // },
   {
-    field: "redo",
+    field: "redo_flag",
     headerName: "Redo",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "extend",
+    field: "extend_flag",
     headerName: "Extend",
     cellRenderer: CopyCellRenderer,
   },
@@ -202,6 +212,27 @@ export const orderItems = [
     headerName: "Gross Amount",
     cellRenderer: CopyCellRenderer,
   },
+  {
+    field: "earliest_eta",
+    headerName: "Earliest ETA",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "earliest_eta_to_rex",
+    headerName: "Earliest ETA Rex",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "alternative_status",
+    headerName: "Alternative Status",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "sales_order_aging_days",
+    headerName: "Sales Order Aging Days",
+    cellRenderer: CopyCellRenderer,
+  },
+
   // {
   //   field: "item_type",
   //   headerName: "Item Type",
@@ -1063,13 +1094,6 @@ export const inventory_columns = (
   onCellClick: (type: "qty" | "so" | "po", data: any) => void
 ) => [
   {
-    field: "location_code",
-    headerName: "Location Code",
-    cellRenderer: CopyCellRenderer,
-    flex: 1,
-    minWidth: 150,
-  },
-  {
     field: "item_no",
     headerName: "Item No",
     cellRenderer: CopyCellRenderer,
@@ -1085,33 +1109,11 @@ export const inventory_columns = (
     // autoHeight: true,
   },
   {
-    field: "life_cycle_status_code",
-    headerName: "Life Cycle Status",
+    field: "property_code",
+    headerName: "Property Code",
     cellRenderer: CopyCellRenderer,
     flex: 1,
-    minWidth: 180,
-  },
-  {
-    field: "qty_on_so",
-    headerName: "Qty on SO",
-    cellRenderer: ClickableCellRenderer(onCellClick, "so"),
-    flex: 1,
-    minWidth: 160,
-  },
-
-  {
-    field: "qty_on_po",
-    headerName: "Qty on PO",
-    cellRenderer: ClickableCellRenderer(onCellClick, "po"),
-    flex: 1,
-    minWidth: 160,
-  },
-  {
-    field: "qty",
-    headerName: "Quantity",
-    cellRenderer: CopyCellRenderer,
-    flex: 1,
-    minWidth: 120,
+    minWidth: 220,
   },
   {
     field: "eta",
@@ -1120,14 +1122,6 @@ export const inventory_columns = (
     flex: 1,
     minWidth: 140,
   },
-  {
-    field: "qty_available",
-    headerName: "Qty Available",
-    cellRenderer: ClickableCellRenderer(onCellClick, "qty"),
-    flex: 1,
-    minWidth: 160,
-  },
-
   {
     field: "avail_qty_on_hand",
     headerName: "Avail Qty on Hand",
@@ -1142,6 +1136,59 @@ export const inventory_columns = (
     flex: 1,
     minWidth: 200,
   },
+  {
+    field: "qty_on_so",
+    headerName: "Qty on SO",
+    cellRenderer: ClickableCellRenderer(onCellClick, "so"),
+    flex: 1,
+    minWidth: 160,
+  },
+  {
+    field: "qty_on_po",
+    headerName: "Qty on PO",
+    cellRenderer: ClickableCellRenderer(onCellClick, "po"),
+    flex: 1,
+    minWidth: 160,
+  },
+
+  {
+    field: "life_cycle_status_code",
+    headerName: "Life Cycle Status",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 180,
+  },
+  {
+    field: "unit_price",
+    headerName: "Unit Price",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 220,
+  },
+  {
+    field: "location_code",
+    headerName: "Location Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 150,
+  },
+
+  {
+    field: "qty",
+    headerName: "Quantity",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 120,
+  },
+
+  {
+    field: "qty_available",
+    headerName: "Qty Available",
+    cellRenderer: ClickableCellRenderer(onCellClick, "qty"),
+    flex: 1,
+    minWidth: 160,
+  },
+
   {
     field: "qty_on_blocked_lot_bin",
     headerName: "Qty on Blocked Lot/Bin",

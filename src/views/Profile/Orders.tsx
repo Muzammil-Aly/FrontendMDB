@@ -240,11 +240,17 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       psi_number: item.psi_number || "N/A",
       rma_status: item.rma_status || "N/A",
       receive: item.receive ?? "N/A",
-      extend: item.extend ?? "N/A",
-      redo: item.redo ?? "N/A",
+      redo: Array.isArray(item.redo)
+        ? item.redo.join(", ")
+        : item.redo ?? "N/A",
+      extend: Array.isArray(item.extend)
+        ? item.extend.join(", ")
+        : item.extend ?? "N/A",
       order_url: item.order_url ?? "N/A",
       shipping_zip_code: item.shipping_zip_code || "N/A",
       release_error: item.release_error || "N/A",
+      extend_flag: item.extend_flag,
+      redo_flag: item.redo_flag,
     }));
   }, [data]);
 

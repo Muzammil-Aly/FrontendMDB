@@ -73,6 +73,10 @@ const OrderItems = ({
           quantity: item.quantity,
           amount: item.amount,
           lot_no: item.lot_no,
+          earliest_eta: item.earliest_eta,
+          earliest_eta_to_rex: item.earliest_eta_to_rex,
+          alternative_status: item.alternative_status,
+          sales_order_aging_days: item.sales_order_aging_days,
         }))
       : [];
   }, [data]);

@@ -147,7 +147,34 @@ const useOrderItems = (columns: Column[]) => {
             flex: 1,
             minWidth: 150,
           };
-
+        case "earliest_eta":
+          return {
+            ...col,
+            headerName: "Earliest ETA",
+            flex: 1,
+            minWidth: 150,
+          };
+        case "earliest_eta_to_rex":
+          return {
+            ...col,
+            headerName: "Earliest ETA Rex",
+            flex: 1,
+            minWidth: 150,
+          };
+        case "alternative_status":
+          return {
+            ...col,
+            headerName: "Alternative Status",
+            flex: 1,
+            minWidth: 150,
+          };
+        case "sales_order_aging_days":
+          return {
+            ...col,
+            headerName: "Sales Order Aging Days",
+            flex: 1,
+            minWidth: 150,
+          };
         default:
           return { ...col, flex: 1, minWidth: 120 };
       }
