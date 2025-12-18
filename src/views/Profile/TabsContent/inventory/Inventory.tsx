@@ -119,36 +119,6 @@ const Inventory = () => {
       : [];
   }, [data]);
 
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(locationCodeInput, {
-  //   skip: locationCodeInput.trim().length < 1,
-  // });
-
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(locationCodeInput, {
-  //   skip: locationCodeInput.join("").trim().length < 1,
-  // });
-
-  // const searchText = locationCodeInput.join("").trim();
-
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(searchText, {
-  //   skip: !searchText, // Only skip suggestions, not inventory data
-  // });
-
-  // const {
-  //   data: locationCodeSuggestions = [],
-  //   isFetching: isLocationCodeLoading,
-  // } = useGetLocationCodesQuery(locationCodeSearch, {
-  //   skip: !locationCodeSearch.trim(), // only when typing
-  // });
-
   const {
     data: locationCodeSuggestions = [],
     isFetching: isLocationCodeLoading,
@@ -159,11 +129,6 @@ const Inventory = () => {
     useGetLifeCycleStatusQuery(lifeCycleInput, {
       skip: lifeCycleInput.trim().length < 1,
     });
-
-  // const onRowClicked = (params: any) => {
-  //   setHighlightedId(params.data.item_no);
-  //   setSelectedInventoryItem(params.data);
-  // };
 
   const onRowClicked = (params: any) => {
     const clickedId = params.data.item_no;
@@ -178,16 +143,6 @@ const Inventory = () => {
     setSelectedInventoryItem(params.data);
     // }
   };
-
-  // const debouncedLocationCode = useMemo(
-  //   () =>
-  //     debounce((value: string) => {
-  //       setLocationCodeFilter(value ? value.toUpperCase() : undefined);
-  //       setPage(1);
-  //       setLocationCodeInputTyping(false);
-  //     }, 500),
-  //   []
-  // );
 
   const debouncedItemNo = useMemo(
     () =>

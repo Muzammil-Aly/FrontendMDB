@@ -1,16 +1,22 @@
 "use client";
-import React, { Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import {
   Autocomplete,
   TextField,
-  CircularProgress,
   InputAdornment,
   IconButton,
   Box,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { DebouncedFunc } from "lodash";
-
+import Loader from "../Loader";
+import CircularLoader from "./CircularLoader";
 interface DropdownSearchInputProps {
   label: string;
   value: string;
@@ -37,19 +43,25 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isTyping, setIsTyping] = useState(false);
 
+  // const handleSelect = (selected: string | null) => {
+  //   const chosen = selected || "";
+  //   setValue(chosen);
+  //   setFilter(chosen || undefined);
+
+  //   if (chosen) {
+  //     setIsTyping(true);
+  //     setLoading?.(true);
+  //     debouncedFunction(chosen);
+  //   } else {
+  //     setIsTyping(false);
+  //     setLoading?.(false);
+  //   }
+  // };
+
   const handleSelect = (selected: string | null) => {
     const chosen = selected || "";
     setValue(chosen);
-    setFilter(chosen || undefined);
-
-    if (chosen) {
-      setIsTyping(true);
-      setLoading?.(true);
-      debouncedFunction(chosen);
-    } else {
-      setIsTyping(false);
-      setLoading?.(false);
-    }
+    setFilter(chosen || undefined); // Filter applied immediately on selection
   };
 
   const handleClear = () => {
@@ -93,19 +105,27 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
         options={suggestions}
         value={value}
         onChange={(_, newValue) => handleSelect(newValue)}
+        // onInputChange={(_, newValue, reason) => {
+        //   if (reason === "input") {
+        //     setValue(newValue);
+        //     if (newValue.trim() !== "") {
+        //       setIsTyping(true);
+        //       debouncedFunction(newValue);
+        //     } else {
+        //       setIsTyping(false);
+        //       setFilter(undefined);
+        //       debouncedFunction.cancel();
+        //     }
+        //   } else if (reason === "clear") {
+        //     handleClear();
+        //   }
+        // }}
         onInputChange={(_, newValue, reason) => {
           if (reason === "input") {
-            setValue(newValue);
-            if (newValue.trim() !== "") {
-              setIsTyping(true);
-              debouncedFunction(newValue);
-            } else {
-              setIsTyping(false);
-              setFilter(undefined);
-              debouncedFunction.cancel();
-            }
+            setValue(newValue); // Only update input value, no API call
           } else if (reason === "clear") {
-            handleClear();
+            setValue("");
+            setFilter(undefined); // Clear filter
           }
         }}
         ListboxProps={{
@@ -167,7 +187,7 @@ const DropdownSearchInput: React.FC<DropdownSearchInputProps> = ({
                 <InputAdornment position="end">
                   {value.trim() !== "" ? (
                     showLoader ? (
-                      <CircularProgress size={16} sx={{ color: "#0E1B6B" }} />
+                      <CircularLoader size={16} color="#0E1B6B" />
                     ) : (
                       <IconButton
                         size="small"

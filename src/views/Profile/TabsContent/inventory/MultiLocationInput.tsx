@@ -8,7 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import debounce from "lodash/debounce";
-
+import CircularLoader from "@/components/Common/CustomSearch/CircularLoader";
 interface MultiLocationInputProps {
   label?: string;
   value: string[];
@@ -165,12 +165,7 @@ const MultiLocationInputWithSuggestions: React.FC<MultiLocationInputProps> = ({
               ...params.InputProps,
               endAdornment: (
                 <>
-                  {loading && (
-                    <CircularProgress
-                      size={16}
-                      sx={{ color: "#0E1B6B", mr: 1 }}
-                    />
-                  )}
+                  {loading && <CircularLoader size={16} color="#0E1B6B" />}
                   {params.InputProps.endAdornment}
                 </>
               ),
