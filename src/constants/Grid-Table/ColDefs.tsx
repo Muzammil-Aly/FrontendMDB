@@ -195,7 +195,7 @@ export const orderItems = [
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "bol",
+    field: "bol_no",
     headerName: "BOL",
     cellRenderer: CopyCellRenderer,
   },
@@ -246,90 +246,30 @@ export const orderItems = [
   // },
 ];
 
-export const ZPartETA = [
+export const location_item_lot = [
   {
-    field: "document_no",
-    headerName: "Document No",
+    field: "sku",
+    headerName: "SKU",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "external_document_no",
-    headerName: "External Document No",
+    field: "parts_item_no",
+    headerName: "Parts Item No",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "no",
-    headerName: "Item No",
+    field: "parts_item_name",
+    headerName: "Parts Item Name",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "associated_whole_unit",
-    headerName: "Associated Whole Unit",
+    field: "parts_item_name_2",
+    headerName: "Parts Item Name 2",
     cellRenderer: CopyCellRenderer,
   },
   {
-    field: "description",
-    headerName: "Description",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "alternative_status",
-    headerName: "Status",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "customer_no",
-    headerName: "Customer No",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "order_date",
-    headerName: "Order Date",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "sales_order_aging_days",
-    headerName: "Order Aging (Days)",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "earliest_eta",
-    headerName: "Earliest ETA",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "earliest_eta_to_rex",
-    headerName: "ETA to REX",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "earliest_eta_to_unga",
-    headerName: "ETA to UNGA",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "earliest_eta_to_unnj",
-    headerName: "ETA to UNNJ",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "earliest_eta_to_ggtj",
-    headerName: "ETA to GGTJ",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "Days to Earliest ETA",
-    headerName: "Days to Earliest ETA",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "Days to Rex ETA",
-    headerName: "Days to Rex ETA",
-    cellRenderer: CopyCellRenderer,
-  },
-  {
-    field: "qty",
-    headerName: "Quantity",
+    field: "potential_qty_available",
+    headerName: "Potential Qty Available",
     cellRenderer: CopyCellRenderer,
   },
 ];

@@ -2,10 +2,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AgGridTable from "@/components/ag-grid";
-import { ZPartETA } from "@/constants/Grid-Table/ColDefs";
-import useZpartETA from "@/hooks/Ag-Grid/useZpartEtaColumn";
+import { location_item_lot } from "@/constants/Grid-Table/ColDefs";
+import useLocationItemLot from "@/hooks/Ag-Grid/useLocationItemLot";
 import Loader from "@/components/Common/Loader";
-import { useGetZpartEtAQuery } from "@/redux/services/profileApi";
+import { useGetLocationItemLotQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -39,8 +39,10 @@ interface ZPartETAItem {
   qty: number;
 }
 
-const ZpartETA = ({ sku }: Props) => {
-  const orderItemsCol = useZpartETA(ZPartETA);
+const LocationItemLot = ({ sku }: Props) => {
+  const orderItemsCol = useLocationItemLot(location_item_lot);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [highlightedId, setHighlightedId] = useState<string | number | null>(
     null
@@ -49,8 +51,12 @@ const ZpartETA = ({ sku }: Props) => {
     useState<ZPartETAItem | null>(null);
 
   //  Fetch filtered ZPart ETA data (based on SKU)
-  const { data, isLoading, isFetching } = useGetZpartEtAQuery(
-    { sku: sku || "" },
+  const { data, isLoading, isFetching } = useGetLocationItemLotQuery(
+    {
+      page,
+      page_size: pageSize,
+      sku: sku || "",
+    },
     { skip: !sku } // Only fetch if sku is provided
   );
 
@@ -60,24 +66,11 @@ const ZpartETA = ({ sku }: Props) => {
     if (!Array.isArray(items)) return [];
 
     return items.map((item: any) => ({
-      document_no: item.document_no,
-      external_document_no: item.external_document_no,
-      no: item.no,
-      associated_whole_unit: item.associated_whole_unit,
-      description: item.description,
-      alternative_status: item.alternative_status,
-      customer_no: item.customer_no,
-      order_date: item.order_date,
-      sales_order_aging_days: item.sales_order_aging_days,
-      earliest_eta: item.earliest_eta,
-      earliest_eta_to_rex: item.earliest_eta_to_rex,
-      earliest_eta_to_unga: item.earliest_eta_to_unga,
-      earliest_eta_to_unnj: item.earliest_eta_to_unnj,
-      earliest_eta_to_ggtj: item.earliest_eta_to_ggtj,
-      "Days to Earliest ETA": item["Days to Earliest ETA"],
-      "Days to Rex ETA": item["Days to Rex ETA"],
-      qty: item.qty,
       sku: item.sku,
+      parts_item_no: item.parts_item_no,
+      parts_item_name: item.parts_item_name,
+      parts_item_name_2: item.parts_item_name_2,
+      potential_qty_available: item.potential_qty_available,
     }));
   }, [data]);
 
@@ -118,7 +111,7 @@ const ZpartETA = ({ sku }: Props) => {
           },
         }}
       >
-        ZPART ETA {sku ? `— ${sku}` : ""}
+        Location Item Lot{sku ? `— ${sku}` : ""}
       </Typography>
 
       {/* Loader or Table */}
@@ -127,20 +120,26 @@ const ZpartETA = ({ sku }: Props) => {
       ) : rowData.length === 0 ? (
         <Typography color="text.secondary" fontSize={14}>
           {sku
-            ? `No ETA data found for SKU "${sku}"`
-            : "Please select an SKU to view ETA data"}
+            ? `No  data found for SKU "${sku}"`
+            : "Please select an SKU to view  data"}
         </Typography>
       ) : (
         <AgGridTable
           rowData={rowData}
           columnDefs={orderItemsCol}
           height={480}
-          enablePagination={false}
+          enablePagination
           getRowStyle={getRowStyle(highlightedId)}
+          currentPage={page}
+          totalPages={data?.total_pages || 1}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          pagination={false}
+          currentMenu="support_tickets"
+          paginationPageSize={pageSize}
         />
       )}
     </Box>
   );
 };
 
-export default ZpartETA;
+export default LocationItemLot;

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AgGridTable from "@/components/ag-grid";
 import { Returns } from "@/constants/Grid-Table/ColDefs";
-import useZpartETA from "@/hooks/Ag-Grid/useZpartEtaColumn";
+import useZpartETA from "@/hooks/Ag-Grid/useLocationItemLot";
 import useReturnColumn from "@/hooks/Ag-Grid/useReturnColumn";
 import Loader from "@/components/Common/Loader";
 import { useGetReturnsQuery } from "@/redux/services/profileApi";
