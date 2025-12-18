@@ -53,6 +53,8 @@ import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearch
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import CircularLoader from "@/components/Common/CustomSearch/CircularLoader";
+
 const Orders = ({ customerId }: { customerId?: string }) => {
   const orderCol = useOrdersColumn(orders);
 
@@ -591,7 +593,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                   InputProps={{
                     endAdornment: searchInput.trim() !== "" && isTyping && (
                       <InputAdornment position="end">
-                        <CircularProgress size={20} />
+                        <CircularLoader size={16} color="#0E1B6B" />
                       </InputAdornment>
                     ),
                   }}
