@@ -30,11 +30,98 @@ export default function SignIn() {
   //   password: "drivera123",
   // };
 
+  // const allowedUsers = [
+  //   { email: "drivera@mdbmail.com", password: "drivera123" },
+  //   { email: "Shipping@mdbmail.com", password: "Shipping123" },
+  //   { email: "Cs@mdbmail.com", password: "Csmdb123" },
+  //   { email: "jbedanova@mdbmail.com", password: "jbedanova123" },
+  //   { email: "AChaleekul@mdbmail.com", password: "AChaleekul123" },
+  //   { email: "ruth@mdbmail.com", password: "ruth123" },
+  //   { email: "ddigamo@mdbmail.com", password: "ddigamo123" },
+  //   { email: "kledesma@mdbmail.com", password: "kledesma123" },
+  //   { email: "aabelgas@mdbmail.com", password: "aabelgas123" },
+  //   { email: "rmanzanare@mdbmail.com", password: "rmanzanare123" },
+  //   { email: "rpandaog@mdbmail.com", password: "rpandaog123" },
+  //   { email: "mperez@mdbmail.com", password: "mperez123" },
+  //   { email: "jgascon@mdbmail.com", password: "jgascon123" },
+  //   { email: "jlucero@mdbmail.com", password: "jlucero123" },
+  //   { email: "jsabaldana@mdbmail.com", password: "jsabaldana123" },
+  //   { email: "dgebretensai@mdbmail.com", password: "dgebretensai123" },
+  //   { email: "sjoya@mdbmail.com", password: "sjoya123" },
+  //   { email: "s.welke@mdbmail.com", password: "s.welke123" },
+  // ];
+
   const allowedUsers = [
-    { email: "drivera@mdbmail.com", password: "drivera123" },
-    { email: "Shipping@mdbmail.com", password: "Shipping123" },
-    { email: "Cs@mdbmail.com", password: "Csmdb123" },
-    { email: "jbedanova@mdbmail.com", password: "jbedanova123" },
+    { name: "Drivera ", email: "drivera@mdbmail.com", password: "drivera123" },
+    {
+      name: "Shipping Team",
+      email: "Shipping@mdbmail.com",
+      password: "Shipping123",
+    },
+    { name: "CS Team", email: "Cs@mdbmail.com", password: "Csmdb123" },
+    {
+      name: "J. Bedanova",
+      email: "jbedanova@mdbmail.com",
+      password: "jbedanova123",
+    },
+    {
+      name: "Amy Chaleekul",
+      email: "AChaleekul@mdbmail.com",
+      password: "AChaleekul123",
+    },
+    { name: "Ruth Sutton", email: "ruth@mdbmail.com", password: "ruth123" },
+    {
+      name: "Dana Digamo",
+      email: "ddigamo@mdbmail.com",
+      password: "ddigamo123",
+    },
+    {
+      name: "Kristine Ledesma",
+      email: "kledesma@mdbmail.com",
+      password: "kledesma123",
+    },
+    {
+      name: "Allan R. Abelgas",
+      email: "aabelgas@mdbmail.com",
+      password: "aabelgas123",
+    },
+    {
+      name: "Ryan Manzanare",
+      email: "rmanzanare@mdbmail.com",
+      password: "rmanzanare123",
+    },
+    {
+      name: "Ronnie Pandaog",
+      email: "rpandaog@mdbmail.com",
+      password: "rpandaog123",
+    },
+    { name: "Mae Perez", email: "mperez@mdbmail.com", password: "mperez123" },
+    {
+      name: "Jaynard Gascon",
+      email: "jgascon@mdbmail.com",
+      password: "jgascon123",
+    },
+    {
+      name: "Jessa Lucero",
+      email: "jlucero@mdbmail.com",
+      password: "jlucero123",
+    },
+    {
+      name: "Jay A. Sabaldana",
+      email: "jsabaldana@mdbmail.com",
+      password: "jsabaldana123",
+    },
+    {
+      name: "Daniel Gebretensai",
+      email: "dgebretensai@mdbmail.com",
+      password: "dgebretensai123",
+    },
+    { name: "Sandra Joya", email: "sjoya@mdbmail.com", password: "sjoya123" },
+    {
+      name: "Stephanie Welke",
+      email: "s.welke@mdbmail.com",
+      password: "s.welke123",
+    },
   ];
 
   const router = useRouter();
@@ -89,7 +176,9 @@ export default function SignIn() {
         // Set localStorage for client-side checks
         localStorage.setItem("loggedIn", "true");
         localStorage.setItem("userEmail", user.email);
-        localStorage.setItem("userName", user.email.split("@")[0]);
+        // localStorage.setItem("userName", user.email.split("@")[0]);
+        localStorage.setItem("userName", user.name);
+
         // Use window.location.href for full page reload to ensure cookie is sent to server
         setTimeout(() => {
           window.location.href = "/customer-profile";
