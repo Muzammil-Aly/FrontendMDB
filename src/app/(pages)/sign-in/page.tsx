@@ -67,60 +67,60 @@ export default function SignIn() {
     {
       name: "Amy Chaleekul",
       email: "AChaleekul@mdbmail.com",
-      password: "AChaleekul123",
+      password: "@AChaleekul3",
     },
-    { name: "Ruth Sutton", email: "ruth@mdbmail.com", password: "ruth123" },
+    { name: "Ruth Sutton", email: "ruth@mdbmail.com", password: "@ruth_541" },
     {
       name: "Dana Digamo",
       email: "ddigamo@mdbmail.com",
-      password: "ddigamo123",
+      password: "ddigamo@56",
     },
     {
       name: "Kristine Ledesma",
       email: "kledesma@mdbmail.com",
-      password: "kledesma123",
+      password: "Kledesma!2",
     },
     {
       name: "Allan R. Abelgas",
       email: "aabelgas@mdbmail.com",
-      password: "aabelgas123",
+      password: "@aabelgas9",
     },
     {
       name: "Ryan Manzanare",
       email: "rmanzanare@mdbmail.com",
-      password: "rmanzanare123",
+      password: "rmanzanare@78",
     },
     {
       name: "Ronnie Pandaog",
       email: "rpandaog@mdbmail.com",
-      password: "rpandaog123",
+      password: "@rpandaog67!",
     },
     { name: "Mae Perez", email: "mperez@mdbmail.com", password: "mperez123" },
     {
       name: "Jaynard Gascon",
       email: "jgascon@mdbmail.com",
-      password: "jgascon123",
+      password: "jgascon@98",
     },
     {
       name: "Jessa Lucero",
       email: "jlucero@mdbmail.com",
-      password: "jlucero123",
+      password: "jlucero@51",
     },
     {
       name: "Jay A. Sabaldana",
       email: "jsabaldana@mdbmail.com",
-      password: "jsabaldana123",
+      password: "@jsabaldana1",
     },
     {
       name: "Daniel Gebretensai",
       email: "dgebretensai@mdbmail.com",
-      password: "dgebretensai123",
+      password: "dgebretensai@18!",
     },
-    { name: "Sandra Joya", email: "sjoya@mdbmail.com", password: "sjoya123" },
+    { name: "Sandra Joya", email: "sjoya@mdbmail.com", password: "sjoya_19!" },
     {
       name: "Stephanie Welke",
       email: "s.welke@mdbmail.com",
-      password: "s.welke123",
+      password: "welke1s_09",
     },
   ];
 
