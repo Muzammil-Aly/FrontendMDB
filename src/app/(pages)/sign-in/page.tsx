@@ -95,7 +95,7 @@ export default function SignIn() {
       email: "rpandaog@mdbmail.com",
       password: "@rpandaog67!",
     },
-    { name: "Mae Perez", email: "mperez@mdbmail.com", password: "mperez123" },
+    { name: "Mae Perez", email: "mperez@mdbmail.com", password: "mperez@56" },
     {
       name: "Jaynard Gascon",
       email: "jgascon@mdbmail.com",
