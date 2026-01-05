@@ -122,6 +122,11 @@ export default function SignIn() {
       email: "s.welke@mdbmail.com",
       password: "welke1s_09",
     },
+        {
+      name: "Henry",
+      email: "htruong@mdbmail.com",
+      password: "henry_85",
+    },
   ];
 
   const router = useRouter();
