@@ -1,19 +1,6 @@
-// import CopyCellRenderer from "./CopyCellRenderer";
-
-// export const users = [
-//   { field: "customer_id", headerName: "Customer ID" },
-//   { field: "email", headerName: "Email" },
-//   { field: "phone", headerName: "Phone" },
-//   { field: "full_name", headerName: "Full Name" },
-//   { field: "source", headerName: "Source" },
-//   { field: "join_type", headerName: "Join Type" },
-//   { field: "key", headerName: "Key" },
-
-//   { field: "created_at", headerName: "Created At" },
-//   { field: "last_order_date", headerName: "Last Order Date" },
-//   { field: "total_orders", headerName: "Total Orders" },
-// ];
+import React from "react";
 import { margin } from "@mui/system";
+import toast from "react-hot-toast";
 import CopyCellRenderer from "./CopyCellRenderer";
 
 export const users = [
@@ -147,44 +134,34 @@ export const orders = [
     headerName: "Customer ID",
     cellRenderer: CopyCellRenderer,
   },
-  // {
-  //   field: "fulfillment_status",
-  //   headerName: "Fulfillment Status",
-  //   cellRenderer: CopyCellRenderer,
-  // },
-  // { field: "tracking", headerName: "Tracking", cellRenderer: CopyCellRenderer },
-
-  // {
-  //   field: "profit_name",
-  //   headerName: "Profit Name",
-  //   cellRenderer: CopyCellRenderer,
-  // },
-
-  // { field: "discount_code", headerName: "Discount Code" },
-
-  // {
-  //   field: "order_url",
-  //   headerName: "Order URL",
-  //   cellRenderer: CopyCellRenderer,
-  //   suppressClickEdit: true, // ⛔ stops grid from reacting to clicks
-  //   suppressNavigable: true, // ⛔ avoids keyboard focus behavior
-  // },
-
-  // {
-  //   field: "shipping_zip_code",
-  //   headerName: "Shipping Zip Code",
-  //   cellRenderer: CopyCellRenderer,
-  // },
-
-  // { field: "channel", headerName: "Channel", cellRenderer: CopyCellRenderer },
+  {
+    field: "shipping_agent_code",
+    headerName: "Shipping Agent Code",
+    cellRenderer: CopyCellRenderer,
+  },
 ];
 
-export const orderItems = [
-  { field: "sku", headerName: "SKU", cellRenderer: CopyCellRenderer },
-  { field: "lot_no", headerName: "Lot No", cellRenderer: CopyCellRenderer },
+export const orderItems = (
+  onCellClick: (type: "qty" | "sku" | "lot_no" | "so" | "po", data: any) => void
+) => [
   {
-    field: "product_name",
-    headerName: "Product Name",
+    field: "sku",
+    headerName: "SKU",
+    cellRenderer: ClickableCellRenderer(onCellClick, "sku"),
+  },
+  {
+    field: "lot_no",
+    headerName: "Lot No",
+    cellRenderer: ClickableCellRenderer(onCellClick, "lot_no"),
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "description_2",
+    headerName: "Description 2",
     cellRenderer: CopyCellRenderer,
   },
   { field: "quantity", headerName: "Quantity", cellRenderer: CopyCellRenderer },
@@ -645,6 +622,11 @@ export const touchups_columns = [
     headerName: "Color Name",
     cellRenderer: CopyCellRenderer,
   },
+  {
+    field: "potential_qty_available",
+    headerName: "Potential Qty Available",
+    cellRenderer: CopyCellRenderer,
+  },
 ];
 
 export const touchups_pens = [
@@ -991,47 +973,108 @@ export const touchups_pens = [
 //     );
 
 export const ClickableCellRenderer = (
-  onClick: (type: "qty" | "so" | "po", data: any) => void,
-  type: "qty" | "so" | "po",
-  loadingType?: "qty" | "so" | "po" | null
+  onClick: (type: "qty" | "so" | "po" | "sku" | "lot_no", data: any) => void,
+  type: "qty" | "so" | "po" | "sku" | "lot_no",
+  loadingType?: "qty" | "so" | "po" | "sku" | "lot_no" | null
 ) => {
-  const Renderer = (params: any) => (
-    <span
-      style={{
-        color:
-          type === "qty" ? "#1976d2" : type === "so" ? "#2e7d32" : "#9c27b0",
-        cursor: "pointer",
-        fontWeight: "bold",
-      }}
-      onClick={() => onClick(type, params.data)}
-    >
-      {loadingType === type ? (
-        <span
-          className="loader"
-          style={{
-            display: "inline-block",
-            width: 14,
-            height: 14,
-            border: "2px solid #ccc",
-            borderTop: "2px solid currentColor",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
-          }}
-        />
-      ) : (
-        params.value
-      )}
-    </span>
-  );
+  const Renderer = (params: any) => {
+    const [hover, setHover] = React.useState(false);
+    const { value } = params;
 
-  Renderer.displayName = `ClickableCellRenderer_${type}`; //  add this
+    const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      e.nativeEvent.stopImmediatePropagation();
+      if (value !== undefined && value !== null) {
+        navigator.clipboard.writeText(String(value)).then(() => {
+          toast.success("Copied to clipboard!");
+        });
+      }
+    };
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "start",
+        }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        {/* Copy icon */}
+        {value !== null && value !== undefined && value !== "N/A" && (
+          <button
+            onClick={handleCopy}
+            style={{
+              marginLeft: -25,
+              visibility: hover ? "visible" : "hidden",
+              border: "none",
+              background: "transparent",
+              cursor: "pointer",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+            }}
+            className="no-drag"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+            </svg>
+          </button>
+        )}
+
+        <span
+          style={{
+            color:
+              type === "qty"
+                ? "#1976d2"
+                : type === "so"
+                ? "#2e7d32"
+                : type === "po"
+                ? "#9c27b0"
+                : type === "sku"
+                ? "#1976d2"
+                : type === "lot_no"
+                ? "#2e7d32"
+                : "#1976d2",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick(type, params.data);
+          }}
+        >
+          {loadingType === type ? (
+            <span
+              className="loader"
+              style={{
+                display: "inline-block",
+                width: 14,
+                height: 14,
+                border: "2px solid #ccc",
+                borderTop: "2px solid currentColor",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+          ) : (
+            value ?? "N/A"
+          )}
+        </span>
+      </div>
+    );
+  };
+
+  Renderer.displayName = `ClickableCellRenderer_${type}`;
 
   return Renderer;
 };
 
 // 👇\ now accepts a click handler for qty, so, and po
 export const inventory_columns = (
-  onCellClick: (type: "qty" | "so" | "po", data: any) => void
+  onCellClick: (type: "qty" | "sku" | "lot_no" | "so" | "po", data: any) => void
 ) => [
   {
     field: "item_no",
@@ -1132,6 +1175,20 @@ export const inventory_columns = (
   {
     field: "qty_on_blocked_lot_bin",
     headerName: "Qty on Blocked Lot/Bin",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 220,
+  },
+  {
+    field: "qty_on_inspecting_lot",
+    headerName: "Qty on Inspecting Lot",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 220,
+  },
+  {
+    field: "expected_receipt_qty",
+    headerName: "Expected Receipt Qty",
     cellRenderer: CopyCellRenderer,
     flex: 1,
     minWidth: 220,

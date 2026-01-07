@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -26,7 +26,7 @@ import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
 import CustomDateRangePicker from "@/components/Common/DatePicker/CustomDateRangePicker";
 import { orders } from "@/constants/Grid-Table/ColDefs";
 import useOrdersColumn from "@/hooks/Ag-Grid/useOrdersColumn";
-import { useGetCustomerOrdersQuery } from "@/redux/services/profileApi";
+import { useGetCustomerOrdersQuery, useUpsertUserPreferencesMutation } from "@/redux/services/profileApi";
 import { exportProfilesToPDF } from "@/utils/exportPDF";
 import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
 interface OrdersProps {
@@ -54,9 +54,91 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import CircularLoader from "@/components/Common/CustomSearch/CircularLoader";
+import { useGetUserPreferencesQuery } from "@/redux/services/profileApi";
 
 const Orders = ({ customerId }: { customerId?: string }) => {
-  const orderCol = useOrdersColumn(orders);
+  // Get user ID from localStorage
+  const userId = localStorage.getItem("userId") || undefined;
+
+  // Fetch user preferences for column ordering filtered by endpoint
+  const { data: userPreferences } = useGetUserPreferencesQuery({
+    user_id: userId,
+    endpoint: "customer_orders",
+  });
+
+  // Initialize the mutation hook for upserting user preferences
+  const [upsertUserPreferences, { isLoading: isUpsertLoading }] = useUpsertUserPreferencesMutation();
+
+  // Store default preferences on initial load
+  const [defaultPreferences, setDefaultPreferences] = useState<
+    Map<string, any>
+  >(new Map());
+
+  // Store current column order state to prevent re-sorting during updates
+  const [currentColumnOrder, setCurrentColumnOrder] = useState<any[]>([]);
+
+  // Track if we're currently saving to prevent refetch loops
+  const [isSavingPreferences, setIsSavingPreferences] = useState(false);
+
+  // Sort columns based on user preferences
+  const filteredColumns = useMemo(() => {
+    // If we have a pending column order (from user drag), use that
+    if (currentColumnOrder.length > 0) {
+      console.log("Using current column order (user modified)");
+      return currentColumnOrder;
+    }
+
+    // Otherwise, use API data
+    if (userPreferences && (userPreferences as any)?.data && (userPreferences as any).data.length > 0) {
+      console.log("Using API user preferences data");
+
+      const prefsData = (userPreferences as any).data;
+
+      // Store default preferences on first load (only once)
+      if (defaultPreferences.size === 0) {
+        const defaultMap = new Map<string, any>(
+          prefsData.map((pref: any) => [
+            pref.preference,
+            {
+              default_preference: pref.default_preference,
+              defualt_sort: pref.defualt_sort, // Keep original typo as is in backend
+            },
+          ])
+        );
+        setDefaultPreferences(defaultMap);
+      }
+
+      // Create a map of preference field to sort order
+      const preferenceMap = new Map(
+        prefsData.map((pref: any) => [
+          pref.preference,
+          pref.preference_sort,
+        ])
+      );
+
+      console.log("Preference map:", preferenceMap);
+
+      // Filter columns that exist in preferences and sort by preference_sort
+      const orderedColumns = orders
+        .filter((col) => preferenceMap.has(col.field))
+        .sort((a, b) => {
+          const sortA = (preferenceMap.get(a.field) as number) || 999;
+          const sortB = (preferenceMap.get(b.field) as number) || 999;
+          return sortA - sortB;
+        });
+
+      console.log("Ordered columns:", orderedColumns);
+
+      return orderedColumns;
+    }
+
+    // If no API data, return all default columns
+    console.log("No user preferences data, returning all columns");
+    return orders;
+  }, [userPreferences, userId, currentColumnOrder]);
+
+  // Apply column customization
+  const orderCol = useOrdersColumn(filteredColumns);
 
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [page, setPage] = useState(1);
@@ -253,6 +335,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       release_error: item.release_error || "N/A",
       extend_flag: item.extend_flag,
       redo_flag: item.redo_flag,
+      shipping_agent_code: item.shipping_agent_code || "N/A",
     }));
   }, [data]);
 
@@ -320,9 +403,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   useEffect(() => {
     if (
       orderIdFilter && // user searched by Order ID
-      data?.orders?.length === 1 // only one match
+      data?.data?.length === 1 // only one match
     ) {
-      setSelectedOrder(data.orders[0]); // auto-select it
+      setSelectedOrder(data.data[0]); // auto-select it
     }
   }, [orderIdFilter, data]);
   const onRowClicked = (params: any) => {
@@ -556,6 +639,123 @@ const Orders = ({ customerId }: { customerId?: string }) => {
 
   const hasActiveFilters = activeFilters.length > 0;
   // ----------------------------------------------------------------
+
+  // Ref to track the last processed column order signature
+  const lastProcessedSignatureRef = React.useRef<string>("");
+
+  // Ref to track the last saved column order to prevent duplicate saves
+  const lastSavedOrderRef = React.useRef<string>("");
+
+  // Ref to store the debounce timer
+  const columnMoveTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Handle column reorder event with debouncing
+  const handleColumnMoved = useCallback(
+    (event: any) => {
+      // Only process when the drag is finished
+      if (event.finished && event.api) {
+        const columnState = event.api.getColumnState();
+
+        // Create a signature of the current column order
+        const columnOrderSignature = columnState
+          .filter((col: any) => col.colId)
+          .map((col: any) => col.colId)
+          .join(",");
+
+        // FIRST: Check if we already processed this exact signature (prevents AG Grid's duplicate events)
+        if (columnOrderSignature === lastProcessedSignatureRef.current) {
+          console.log("⏭️ Skipping - already processed this column order");
+          return;
+        }
+
+        // SECOND: Check if this is the same as the last saved order (prevents saving unchanged state)
+        if (columnOrderSignature === lastSavedOrderRef.current) {
+          console.log("⏭️ Skipping save - column order unchanged from last save");
+          return;
+        }
+
+        // Mark this signature as processed
+        lastProcessedSignatureRef.current = columnOrderSignature;
+
+        // Update the local column order immediately (optimistic update)
+        const newColumnOrder = columnState
+          .filter((col: any) => col.colId)
+          .map((col: any) => {
+            return orders.find((order) => order.field === col.colId);
+          })
+          .filter(Boolean);
+
+        setCurrentColumnOrder(newColumnOrder);
+        console.log("✅ Column order updated locally (optimistic)");
+
+        // Clear any existing timer
+        if (columnMoveTimerRef.current) {
+          clearTimeout(columnMoveTimerRef.current);
+        }
+
+        // Debounce the API call by 500ms
+        columnMoveTimerRef.current = setTimeout(async () => {
+          // Check if we're already saving
+          if (isSavingPreferences) {
+            console.log("⏳ Already saving preferences, skipping duplicate call");
+            return;
+          }
+
+          // Map column state to the backend format
+          const preferencesData = columnState
+            .filter((col: any) => col.colId) // Filter out any invalid columns
+            .map((col: any, index: number) => {
+              // Get the stored default values for this column
+              const defaults = defaultPreferences.get(col.colId);
+
+              return {
+                user_id: userId, // Use userId from component state
+                endpoint: "customer_orders",
+                preference: col.colId, // The current field name (e.g., "order_id", "customer_name")
+                preference_sort: index + 1, // The NEW sort order after drag (1, 2, 3, 4...)
+                default_preference: defaults?.default_preference || col.colId, // The ORIGINAL default preference (unchanged)
+                defualt_sort: defaults?.defualt_sort || index + 1, // The ORIGINAL default sort order (unchanged)
+              };
+            });
+
+          // Create the full API request payload
+          const apiPayload = {
+            data: preferencesData,
+          };
+
+          // Console log the data that would be sent to the API
+          console.log("=== Column Order Update Payload ===");
+          console.log("Endpoint:", "customer_orders");
+          console.log("Number of columns:", preferencesData.length);
+          console.log("Full API Payload:", JSON.stringify(apiPayload, null, 2));
+
+          // Mark as saving
+          setIsSavingPreferences(true);
+
+          // Send the data to the API
+          try {
+            await upsertUserPreferences(apiPayload).unwrap();
+            console.log("✅ Preferences synced with API successfully");
+
+            // Update the last saved order
+            lastSavedOrderRef.current = columnOrderSignature;
+
+            // Keep the optimistic update - don't clear it
+            // The API won't refetch automatically, so the UI stays as the user arranged it
+            // On page refresh, the API will load the saved preferences
+          } catch (error) {
+            console.error("❌ Failed to sync with API:", error);
+            // Keep the optimistic update in place even if API fails
+            // The user's view won't flip back
+          } finally {
+            // Mark as done saving
+            setIsSavingPreferences(false);
+          }
+        }, 500); // Wait 500ms after the last column move event
+      }
+    },
+    [defaultPreferences, userId, upsertUserPreferences, isSavingPreferences]
+  );
 
   return (
     <Box display="flex">
@@ -966,6 +1166,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
               pagination={false}
               currentMenu="orders"
               paginationPageSize={pageSize}
+              onColumnMoved={handleColumnMoved}
               filters={{
                 orderIdFilter,
                 customerIdFilter,

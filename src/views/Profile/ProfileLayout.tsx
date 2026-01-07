@@ -1,21 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Box } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import PeopleIcon from "@mui/icons-material/People";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import EventIcon from "@mui/icons-material/Event";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import Sidebar from "./Sidebar";
-import Orders from "./Orders";
-import SupportTickets from "./SupportTickets";
-import MarketingEvents from "./MarketingEvents";
-import DetailedInfo from "./TabsContent/profile-Information/ProfileInfo";
-import Inventory from "./TabsContent/inventory/Inventory";
 import { useRouter } from "next/navigation";
-import CustomerProfile from "./TabsContent/customer-profile/CustomerProfile";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import Cookies from "js-cookie";
 import {
   Typography,
   IconButton,
@@ -23,11 +16,18 @@ import {
   Link as MUILink,
 } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import Cookies from "js-cookie";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 
-const Profile = () => {
+interface ProfileLayoutProps {
+  children: React.ReactNode;
+  activeMenu: string;
+}
+
+const ProfileLayout: React.FC<ProfileLayoutProps> = ({
+  children,
+  activeMenu,
+}) => {
   const router = useRouter();
-  const [activeMenu, setActiveMenu] = useState("Customer Profiles");
 
   const handleLogout = () => {
     // Clear cookies for server-side middleware (Vercel)
@@ -48,18 +48,12 @@ const Profile = () => {
       icon: <InfoIcon />,
       path: "/profile",
     },
-    // {
-    //   key: "Customer Profiles",
-    //   label: "Customer Profiles",
-    //   icon: <PeopleIcon />,
-    // },
     {
       key: "Orders",
       label: "Orders",
       icon: <ShoppingCartIcon />,
       path: "/orders",
     },
-
     {
       key: "Support Tickets",
       label: "Support Tickets",
@@ -79,15 +73,6 @@ const Profile = () => {
       path: "/inventory",
     },
   ];
-
-  const menuConfig: Record<string, { component?: React.ReactNode }> = {
-    "Customer Profiles": { component: <DetailedInfo /> },
-    // "Customer Profiles": { component: <CustomerProfile /> },
-    Orders: { component: <Orders /> },
-    "Support Tickets": { component: <SupportTickets /> },
-    "Marketing Events": { component: <MarketingEvents /> },
-    Inventory: { component: <Inventory /> },
-  };
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f8f9fa" }}>
@@ -111,8 +96,6 @@ const Profile = () => {
           flexDirection: "column",
           overflow: "hidden",
           height: "100vh",
-
-          // gap: 2,
         }}
       >
         {/* Header Section */}
@@ -124,7 +107,6 @@ const Profile = () => {
             mb: 2,
             borderBottom: "1px solid #E0E0E0",
             bgcolor: "#fff",
-            // pb: 1,
             pl: { xs: 0, sm: "90px" },
             minHeight: "70px",
           }}
@@ -163,14 +145,10 @@ const Profile = () => {
         </Box>
 
         {/* Dynamic Page Content */}
-        <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
-          {menuConfig[activeMenu]?.component || (
-            <Box sx={{ p: 2 }}>Select a menu item</Box>
-          )}
-        </Box>
+        <Box sx={{ flexGrow: 1, overflowY: "auto" }}>{children}</Box>
       </Box>
     </Box>
   );
 };
 
-export default Profile;
+export default ProfileLayout;

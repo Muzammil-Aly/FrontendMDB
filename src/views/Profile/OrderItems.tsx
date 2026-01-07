@@ -6,7 +6,10 @@ import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
 import { Box, Typography } from "@mui/material";
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
-import { useGetOrderItemsQuery } from "@/redux/services/profileApi";
+import {
+  useGetOrderItemsQuery,
+  useGetUserPreferencesQuery,
+} from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -17,12 +20,13 @@ import {
   setTouchupsOpen,
   setTouchupPensOpen,
   resetAllTabs,
-} from "../../app/redux/tabSlice";
+} from "@/redux/slices/tabSlice";
 interface Props {
   orderId: string;
   setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
   orderItemSec?: boolean;
   filters?: string;
+  onCellClick?: (type: "sku" | "lot_no", data: any) => void;
 }
 interface OrderItem {
   line_no: string | number;
@@ -41,8 +45,61 @@ const OrderItems = ({
   setSelectedOrderItem,
   orderItemSec,
   filters,
+  onCellClick,
 }: Props) => {
-  const orderItemsCol = useOrderItems(orderItems);
+  // Wrapper function to handle all cell click types
+  const handleCellClick = (
+    type: "qty" | "sku" | "lot_no" | "so" | "po",
+    data: any
+  ) => {
+    // Only call onCellClick for sku and lot_no types
+    if (onCellClick && (type === "sku" || type === "lot_no")) {
+      onCellClick(type, data);
+    }
+  };
+
+  // Get user ID from localStorage
+  const userId = localStorage.getItem("userId") || undefined;
+
+  // Fetch user preferences for column ordering filtered by endpoint
+  const { data: userPreferences } = useGetUserPreferencesQuery({
+    user_id: userId,
+    endpoint: "customer_order_items",
+  });
+
+  // Sort columns based on user preferences
+  const filteredColumns = useMemo(() => {
+    const baseColumns = orderItems(handleCellClick);
+
+    // If no preferences data, return all default columns
+    if (
+      !userPreferences ||
+      !(userPreferences as any)?.data ||
+      (userPreferences as any).data.length === 0
+    ) {
+      return baseColumns;
+    }
+
+    const prefsData = (userPreferences as any).data;
+
+    // Create a map of preference field to sort order
+    const preferenceMap = new Map(
+      prefsData.map((pref: any) => [pref.preference, pref.preference_sort])
+    );
+
+    // Filter columns that exist in preferences and sort by preference_sort
+    const orderedColumns = baseColumns
+      .filter((col) => preferenceMap.has(col.field))
+      .sort((a, b) => {
+        const sortA = (preferenceMap.get(a.field) as number) || 999;
+        const sortB = (preferenceMap.get(b.field) as number) || 999;
+        return sortA - sortB;
+      });
+
+    return orderedColumns;
+  }, [userPreferences, handleCellClick]);
+
+  const orderItemsCol = useOrderItems(filteredColumns);
   const { isActive, activeTabName, isTouchupsOpen } = useSelector(
     (state: RootState) => state.tab
   );
@@ -66,7 +123,8 @@ const OrderItems = ({
           line_no: item.line_no,
           order_id: item.order_id,
           sku: item.sku,
-          product_name: item.product_name,
+          description: item.description,
+          description_2: item.description_2,
           item_type: item.item_type,
           brand: item.brand,
           collection: item.collection,
@@ -90,6 +148,20 @@ const OrderItems = ({
     const event = params?.event;
     if ((event?.target as HTMLElement).closest(".MuiIconButton-root")) {
       return; // ignore clicks from any MUI icon button
+    }
+
+    // Ignore clicks on clickable cells (SKU and lot_no) and copy buttons
+    const clickedElement = event?.target as HTMLElement;
+    const clickedOnClickableCell =
+      clickedElement?.closest("span[style*='cursor: pointer']") ||
+      clickedElement?.closest("span[style*='cursor:pointer']") ||
+      clickedElement?.closest("button") ||
+      clickedElement?.tagName === "BUTTON" ||
+      clickedElement?.tagName === "svg" ||
+      clickedElement?.tagName === "path";
+
+    if (clickedOnClickableCell) {
+      return; // ignore clicks from clickable cells and copy buttons
     }
 
     if (selectedItemDetail?.sku === params.data.sku) {

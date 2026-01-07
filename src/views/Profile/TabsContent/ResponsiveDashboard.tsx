@@ -18,8 +18,9 @@ import {
   setTouchupsOpen,
   setTouchupPensOpen,
   setCustomerSegmentsOpen,
+  setLocationItemLotOpen,
   resetAllTabs,
-} from "../../../app/redux/tabSlice";
+} from "@/redux/slices/tabSlice";
 
 import { RootState } from "../../../redux/store";
 
@@ -43,6 +44,7 @@ const ResponsiveDashboard = ({
   paginationPageSize,
   getRowStyle,
   filters,
+  onColumnMoved,
 }: any) => {
   const dispatch = useDispatch();
 
@@ -51,6 +53,7 @@ const ResponsiveDashboard = ({
     isTouchupsOpen,
     isTouchupPensOpen,
     isCustomerSegmentsOpen,
+    isLocationItemLotOpen,
   } = useSelector((state: RootState) => state.tab);
 
   const [selectedOrderItem, setSelectedOrderItem] = useState<any | null>(null);
@@ -96,6 +99,34 @@ const ResponsiveDashboard = ({
     setSelectedTouchup(item);
     setSelectedTouchupColorSlug(item?.color_slug);
     dispatch(setTouchupPensOpen(true));
+  };
+
+  const handleCellClick = (type: "sku" | "lot_no", data: any) => {
+    if (type === "sku") {
+      // Toggle: if same SKU clicked again, close the table
+      if (isLocationItemLotOpen && selectedOrderItem === data) {
+        dispatch(setLocationItemLotOpen(false));
+        setSelectedOrderItem(null);
+      } else {
+        // Close touchups table and open location item lot
+        dispatch(setTouchupsOpen(false));
+        setSelectedOrderItem(data);
+        dispatch(setLocationItemLotOpen(true));
+      }
+    } else if (type === "lot_no") {
+      // Toggle: if same lot_no clicked again, close the table
+      if (isTouchupsOpen && selectedOrderItem === data) {
+        dispatch(setTouchupsOpen(false));
+        setSelectedOrderItem(null);
+        setSelectedOrderItemLotNo(null);
+      } else {
+        // Close location item lot table and open touchups
+        dispatch(setLocationItemLotOpen(false));
+        setSelectedOrderItem(data);
+        setSelectedOrderItemLotNo(data.lot_no);
+        dispatch(setTouchupsOpen(true));
+      }
+    }
   };
 
   // 🔹 Layout setup
@@ -174,33 +205,38 @@ const ResponsiveDashboard = ({
       });
     }
 
-    // 🔹 ZPART ETA should come before touchups
-    if (selectedOrderId) {
+    let yPosition = 18;
+
+    // 🔹 LocationItemLot table (appears when SKU is clicked)
+    if (isLocationItemLotOpen && selectedOrderId) {
       layout.push({
-        i: "zpart_eta",
+        i: "location_item_lot",
         x: 0,
-        y: isTouchupsOpen ? 18 : 18, // directly below profiles
+        y: yPosition,
         w: 12,
         h: 20,
         minW: 3,
         minH: 8,
       });
+      yPosition += 20;
     }
 
+    // 🔹 Touchups/Replacement table (appears when Lot No is clicked)
     if (isTouchupsOpen) {
       layout.push({
         i: "order_items",
         x: 0,
-        y: selectedOrderId ? 38 : 18, // below zpart_eta if it exists
+        y: yPosition,
         w: 12,
         h: 20,
         minW: 3,
         minH: 8,
       });
+      yPosition += 20;
     }
 
     return layout;
-  }, [hasId, isTouchupsOpen, selectedOrderId]);
+  }, [hasId, isTouchupsOpen, isLocationItemLotOpen, selectedOrderId]);
 
   const layouts = { lg: baseLayout, md: baseLayout, sm: baseLayout };
 
@@ -242,6 +278,7 @@ const ResponsiveDashboard = ({
               pagination
               paginationPageSize={paginationPageSize}
               cancel=".no-drag .MuiIconButton-root"
+              onColumnMoved={onColumnMoved}
             />
           </Box>
         </Paper>
@@ -269,6 +306,7 @@ const ResponsiveDashboard = ({
                 setSelectedOrderItem={handleSelectOrderItem}
                 orderItemSec={isOrderItemsOpen}
                 filters={filters}
+                onCellClick={handleCellClick}
               />
             )}
             {selectedTicket && currentMenu === "support_tickets" && (
@@ -279,18 +317,19 @@ const ResponsiveDashboard = ({
             )}
           </Box>
         </Paper>
-        {/* ========== ZPART ETA TABLE ========== */}
+        {/* ========== LOCATION ITEM LOT TABLE (shown on SKU click) ========== */}
         <Paper
-          key="zpart_eta"
+          key="location_item_lot"
           elevation={3}
           sx={{
             p: 2,
             borderRadius: 3,
             height: "100%",
-            display: selectedOrderId ? "block" : "none",
+            display:
+              isLocationItemLotOpen && selectedOrderId ? "block" : "none",
           }}
         >
-          {selectedOrderId && (
+          {selectedOrderItem && (
             <LocationItemLot sku={selectedOrderItem?.sku} filters={filters} />
           )}
         </Paper>

@@ -81,14 +81,20 @@ const useOrderItems = (columns: Column[]) => {
             minWidth: 140,
           };
 
-        case "product_name":
+        case "description":
           return {
             ...col,
-            headerName: "Product Name",
+            headerName: "Description",
             flex: 1.5,
             minWidth: 220,
           };
-
+        case "description_2":
+          return {
+            ...col,
+            headerName: "Description 2",
+            flex: 1.5,
+            minWidth: 220,
+          };
         case "item_type":
           return {
             ...col,
@@ -116,7 +122,12 @@ const useOrderItems = (columns: Column[]) => {
             valueGetter: (params: any) => params.data.collection || "-",
           };
         case "lot_no":
-          return { ...col, headerName: "Lot No", flex: 1, minWidth: 140 };
+          return {
+            ...col,
+            headerName: "Lot No",
+            flex: 1,
+            minWidth: 140,
+          };
 
         case "quantity":
           return {
