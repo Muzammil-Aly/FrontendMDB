@@ -135,9 +135,8 @@ export const customerApi = createApi({
         method: "PATCH",
         body,
       }),
-      // Don't invalidate tags to prevent refetch loop
-      // The UI uses optimistic updates, so we don't need to refetch immediately
-      // User will see updated preferences on next page load
+      // Invalidate UserPreferences cache to ensure fresh data when switching tabs
+      invalidatesTags: ["UserPreferences"],
     }),
   }),
 });

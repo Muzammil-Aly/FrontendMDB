@@ -26,7 +26,10 @@ import CustomDatePicker from "@/components/Common/DatePicker/DatePicker";
 import CustomDateRangePicker from "@/components/Common/DatePicker/CustomDateRangePicker";
 import { orders } from "@/constants/Grid-Table/ColDefs";
 import useOrdersColumn from "@/hooks/Ag-Grid/useOrdersColumn";
-import { useGetCustomerOrdersQuery, useUpsertUserPreferencesMutation } from "@/redux/services/profileApi";
+import {
+  useGetCustomerOrdersQuery,
+  useUpsertUserPreferencesMutation,
+} from "@/redux/services/profileApi";
 import { exportProfilesToPDF } from "@/utils/exportPDF";
 import ResponsiveDashboard from "./TabsContent/ResponsiveDashboard";
 interface OrdersProps {
@@ -61,13 +64,14 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   const userId = localStorage.getItem("userId") || undefined;
 
   // Fetch user preferences for column ordering filtered by endpoint
-  const { data: userPreferences } = useGetUserPreferencesQuery({
+  const { data: userPreferences, refetch: refetchUserPreferences } = useGetUserPreferencesQuery({
     user_id: userId,
     endpoint: "customer_orders",
   });
 
   // Initialize the mutation hook for upserting user preferences
-  const [upsertUserPreferences, { isLoading: isUpsertLoading }] = useUpsertUserPreferencesMutation();
+  const [upsertUserPreferences, { isLoading: isUpsertLoading }] =
+    useUpsertUserPreferencesMutation();
 
   // Store default preferences on initial load
   const [defaultPreferences, setDefaultPreferences] = useState<
@@ -89,7 +93,11 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     }
 
     // Otherwise, use API data
-    if (userPreferences && (userPreferences as any)?.data && (userPreferences as any).data.length > 0) {
+    if (
+      userPreferences &&
+      (userPreferences as any)?.data &&
+      (userPreferences as any).data.length > 0
+    ) {
       console.log("Using API user preferences data");
 
       const prefsData = (userPreferences as any).data;
@@ -110,10 +118,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
 
       // Create a map of preference field to sort order
       const preferenceMap = new Map(
-        prefsData.map((pref: any) => [
-          pref.preference,
-          pref.preference_sort,
-        ])
+        prefsData.map((pref: any) => [pref.preference, pref.preference_sort])
       );
 
       console.log("Preference map:", preferenceMap);
@@ -135,7 +140,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     // If no API data, return all default columns
     console.log("No user preferences data, returning all columns");
     return orders;
-  }, [userPreferences, userId, currentColumnOrder]);
+  }, [userPreferences, currentColumnOrder, defaultPreferences]);
 
   // Apply column customization
   const orderCol = useOrdersColumn(filteredColumns);
@@ -670,7 +675,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
 
         // SECOND: Check if this is the same as the last saved order (prevents saving unchanged state)
         if (columnOrderSignature === lastSavedOrderRef.current) {
-          console.log("⏭️ Skipping save - column order unchanged from last save");
+          console.log(
+            "⏭️ Skipping save - column order unchanged from last save"
+          );
           return;
         }
 
@@ -697,7 +704,9 @@ const Orders = ({ customerId }: { customerId?: string }) => {
         columnMoveTimerRef.current = setTimeout(async () => {
           // Check if we're already saving
           if (isSavingPreferences) {
-            console.log("⏳ Already saving preferences, skipping duplicate call");
+            console.log(
+              "⏳ Already saving preferences, skipping duplicate call"
+            );
             return;
           }
 
@@ -740,9 +749,8 @@ const Orders = ({ customerId }: { customerId?: string }) => {
             // Update the last saved order
             lastSavedOrderRef.current = columnOrderSignature;
 
-            // Keep the optimistic update - don't clear it
-            // The API won't refetch automatically, so the UI stays as the user arranged it
-            // On page refresh, the API will load the saved preferences
+            // Don't clear currentColumnOrder - keep the optimistic update
+            // This prevents the UI from jumping when the refetch happens
           } catch (error) {
             console.error("❌ Failed to sync with API:", error);
             // Keep the optimistic update in place even if API fails
@@ -756,6 +764,18 @@ const Orders = ({ customerId }: { customerId?: string }) => {
     },
     [defaultPreferences, userId, upsertUserPreferences, isSavingPreferences]
   );
+
+  // Refetch user preferences when switching to Orders tab
+  useEffect(() => {
+    if (activeTabName === "Orders") {
+      console.log("Switching to Orders tab - clearing state and refetching preferences...");
+      // Clear current column order and default preferences to force using fresh API data
+      setCurrentColumnOrder([]);
+      setDefaultPreferences(new Map());
+      // Force refetch from server (bypassing cache)
+      refetchUserPreferences();
+    }
+  }, [activeTabName, refetchUserPreferences]);
 
   return (
     <Box display="flex">
