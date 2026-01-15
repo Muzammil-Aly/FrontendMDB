@@ -1,15 +1,12 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import AgGridTable from "@/components/ag-grid";
 import { orderItems } from "@/constants/Grid-Table/ColDefs";
 import useOrderItems from "@/hooks/Ag-Grid/useOrderItems";
 import { Box, Typography } from "@mui/material";
 import React, { useState, useMemo } from "react";
 import Loader from "@/components/Common/Loader";
-import {
-  useGetOrderItemsQuery,
-  useGetUserPreferencesQuery,
-} from "@/redux/services/profileApi";
+import { useGetOrderItemsQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -21,6 +18,7 @@ import {
   setTouchupPensOpen,
   resetAllTabs,
 } from "@/redux/slices/tabSlice";
+import { useColumnPreferences } from "@/hooks/useColumnPreferences";
 interface Props {
   orderId: string;
   setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
@@ -48,56 +46,32 @@ const OrderItems = ({
   onCellClick,
 }: Props) => {
   // Wrapper function to handle all cell click types
-  const handleCellClick = (
-    type: "qty" | "sku" | "lot_no" | "so" | "po",
-    data: any
-  ) => {
-    // Only call onCellClick for sku and lot_no types
-    if (onCellClick && (type === "sku" || type === "lot_no")) {
-      onCellClick(type, data);
-    }
-  };
+  const handleCellClick = useCallback(
+    (type: "qty" | "sku" | "lot_no" | "so" | "po", data: any) => {
+      // Only call onCellClick for sku and lot_no types
+      if (onCellClick && (type === "sku" || type === "lot_no")) {
+        onCellClick(type, data);
+      }
+    },
+    [onCellClick]
+  );
 
-  // Get user ID from localStorage
-  const userId = localStorage.getItem("userId") || undefined;
+  // Generate base columns with handleCellClick
+  const baseColumns = useMemo(
+    () => orderItems(handleCellClick),
+    [handleCellClick]
+  );
 
-  // Fetch user preferences for column ordering filtered by endpoint
-  const { data: userPreferences } = useGetUserPreferencesQuery({
-    user_id: userId,
-    endpoint: "customer_order_items",
-  });
-
-  // Sort columns based on user preferences
-  const filteredColumns = useMemo(() => {
-    const baseColumns = orderItems(handleCellClick);
-
-    // If no preferences data, return all default columns
-    if (
-      !userPreferences ||
-      !(userPreferences as any)?.data ||
-      (userPreferences as any).data.length === 0
-    ) {
-      return baseColumns;
-    }
-
-    const prefsData = (userPreferences as any).data;
-
-    // Create a map of preference field to sort order
-    const preferenceMap = new Map(
-      prefsData.map((pref: any) => [pref.preference, pref.preference_sort])
-    );
-
-    // Filter columns that exist in preferences and sort by preference_sort
-    const orderedColumns = baseColumns
-      .filter((col) => preferenceMap.has(col.field))
-      .sort((a, b) => {
-        const sortA = (preferenceMap.get(a.field) as number) || 999;
-        const sortB = (preferenceMap.get(b.field) as number) || 999;
-        return sortA - sortB;
-      });
-
-    return orderedColumns;
-  }, [userPreferences, handleCellClick]);
+  // Use column preferences hook
+  // OrderItems is always nested (requires orderId prop), so always disable tab management
+  const { filteredColumns, handleColumnMoved, handleResetColumns, storageKey } =
+    useColumnPreferences({
+      endpoint: "customer_order_items",
+      tabName: "OrderItems",
+      defaultColumns: baseColumns,
+      // disableTabManagement: true,
+      // parentTabName: "Orders", // Refetch when Orders tab is activated
+    });
 
   const orderItemsCol = useOrderItems(filteredColumns);
   const { isActive, activeTabName, isTouchupsOpen } = useSelector(
@@ -238,6 +212,9 @@ const OrderItems = ({
           enablePagination={false}
           onRowClicked={onRowClicked}
           getRowStyle={getRowStyle(highlightedId)}
+          onColumnMoved={handleColumnMoved}
+          onResetColumns={handleResetColumns}
+          storageKey={storageKey}
         />
       )}
     </Box>

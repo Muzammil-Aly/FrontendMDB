@@ -1,13 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getAccessToken } from "@/utils/auth";
 
 export const inventoryApi = createApi({
   reducerPath: "inventoryApi",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     prepareHeaders: (headers) => {
-      const token = process.env.NEXT_PUBLIC_DATABRICKS_PAT;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+      // Try to get JWT token first
+      const jwtToken = getAccessToken();
+      if (jwtToken) {
+        headers.set("Authorization", `Bearer ${jwtToken}`);
+      } else {
+        // Fallback to Databricks PAT for backwards compatibility
+        const token = process.env.NEXT_PUBLIC_DATABRICKS_PAT;
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
       }
       headers.set("Content-Type", "application/json");
       return headers;
@@ -249,9 +257,21 @@ export const inventoryApi = createApi({
 
         params.set("page", page.toString());
         params.set("page_size", page_size.toString());
-        if (sku) params.set("sku", sku);
+        if (sku) params.set("item_no", sku);
 
         return `/location_item_lot?${params.toString()}`;
+      },
+    }),
+
+    getNavETA: builder.query<
+      any,
+      { sku: string; page?: number; page_size?: number }
+    >({
+      query: ({ sku }) => {
+        const params = new URLSearchParams();
+        if (sku) params.set("item_no", sku);
+
+        return `/nav_eta?${params.toString()}`;
       },
     }),
 
@@ -380,7 +400,7 @@ export const inventoryApi = createApi({
         url: "/inventory/life_cycle_status",
         params: name ? { name } : {},
       }),
-    })
+    }),
   }),
 });
 export const {
@@ -399,4 +419,5 @@ export const {
   useGetTouchupsQuery,
   useGetTouchupPensQuery,
   useGetLifeCycleStatusQuery,
+  useGetNavETAQuery,
 } = inventoryApi;

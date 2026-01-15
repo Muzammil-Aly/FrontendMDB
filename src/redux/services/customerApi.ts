@@ -1,13 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getAccessToken } from "@/utils/auth";
 
 export const customerApi = createApi({
   reducerPath: "customerApi",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     prepareHeaders: (headers) => {
-      const token = process.env.NEXT_PUBLIC_DATABRICKS_PAT;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+      // Try to get JWT token first
+      const jwtToken = getAccessToken();
+      if (jwtToken) {
+        headers.set("Authorization", `Bearer ${jwtToken}`);
+      } else {
+        // Fallback to Databricks PAT for backwards compatibility
+        const token = process.env.NEXT_PUBLIC_DATABRICKS_PAT;
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
       }
       headers.set("Content-Type", "application/json");
       return headers;
@@ -126,7 +134,10 @@ export const customerApi = createApi({
         const queryString = searchParams.toString();
         return `/user_prefernce_view${queryString ? `?${queryString}` : ""}`;
       },
-      providesTags: ["UserPreferences"],
+      providesTags: (result, error, arg) => [
+        "UserPreferences",
+        { type: "UserPreferences" as const, id: arg?.endpoint || "all" },
+      ],
     }),
 
     upsertUserPreferences: builder.mutation<any, { data: any[] }>({
@@ -135,8 +146,15 @@ export const customerApi = createApi({
         method: "PATCH",
         body,
       }),
-      // Invalidate UserPreferences cache to ensure fresh data when switching tabs
-      invalidatesTags: ["UserPreferences"],
+      // Invalidate UserPreferences cache to ensure all components get fresh data
+      // Extract endpoint from first data item to invalidate specific cache
+      invalidatesTags: (result, error, arg) => {
+        const endpoint = arg.data[0]?.endpoint;
+        return [
+          "UserPreferences",
+          { type: "UserPreferences" as const, id: endpoint || "all" },
+        ];
+      },
     }),
   }),
 });

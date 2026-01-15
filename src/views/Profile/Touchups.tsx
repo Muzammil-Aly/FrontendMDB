@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import AgGridTable from "@/components/ag-grid";
 import { touchups_columns } from "@/constants/Grid-Table/ColDefs";
 import useTouchupsColumn from "@/hooks/Ag-Grid/useTouchupsColumn";
+import { useColumnPreferences } from "@/hooks/useColumnPreferences";
 import {
   Box,
   Typography,
@@ -16,10 +17,7 @@ import {
 } from "@mui/material";
 import { Cancel as CancelIcon } from "@mui/icons-material";
 import Loader from "@/components/Common/Loader";
-import {
-  useGetTouchupsQuery,
-  useGetUserPreferencesQuery,
-} from "@/redux/services/profileApi";
+import { useGetTouchupsQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
 import debounce from "lodash.debounce";
 import { useSelector } from "react-redux";
@@ -55,47 +53,25 @@ const Touchups = ({
   shouldFilterNull = false,
   setSelectedTouchup,
 }: Props) => {
-  const { isActive, activeTabName, isTouchupPensOpen } = useSelector(
-    (state: RootState) => state.tab
-  );
+  const { isActive, activeTabName, isTouchupPensOpen, isTouchupsOpen } =
+    useSelector((state: RootState) => state.tab);
 
-  // Get user ID from localStorage
-  const userId = localStorage.getItem("userId") || undefined;
+  // Use column preferences hook
+  // Disable tab management when used as nested component (lotNo, sku props provided OR shouldFilterNull explicitly set)
+  const isNestedComponent = !!lotNo || !!sku || shouldFilterNull === false;
+  const [refetchKey, setRefetchKey] = useState<number>(0);
 
-  // Fetch user preferences for column ordering filtered by endpoint
-  const { data: userPreferences } = useGetUserPreferencesQuery({
-    user_id: userId,
-    endpoint: "touchup_part",
-  });
-
-  // Sort columns based on user preferences
-  const filteredColumns = useMemo(() => {
-    // If no preferences data, return all default columns
-    if (!userPreferences || !(userPreferences as any)?.data || (userPreferences as any).data.length === 0) {
-      return touchups_columns;
-    }
-
-    const prefsData = (userPreferences as any).data;
-
-    // Create a map of preference field to sort order
-    const preferenceMap = new Map(
-      prefsData.map((pref: any) => [
-        pref.preference,
-        pref.preference_sort,
-      ])
-    );
-
-    // Filter columns that exist in preferences and sort by preference_sort
-    const orderedColumns = touchups_columns
-      .filter((col) => preferenceMap.has(col.field))
-      .sort((a, b) => {
-        const sortA = (preferenceMap.get(a.field) as number) || 999;
-        const sortB = (preferenceMap.get(b.field) as number) || 999;
-        return sortA - sortB;
-      });
-
-    return orderedColumns;
-  }, [userPreferences]);
+  const { filteredColumns, handleColumnMoved, handleResetColumns, storageKey } =
+    useColumnPreferences({
+      endpoint: "touchup_part",
+      tabName: "Touchups",
+      defaultColumns: touchups_columns,
+      disableTabManagement: isNestedComponent,
+      parentTabName: isNestedComponent ? ["Inventory", "Orders"] : undefined, // Refetch when Inventory or Orders tab is activated
+      isVisible: isNestedComponent ? isTouchupsOpen : undefined, // Track visibility for nested component
+      // refetchTrigger: isNestedComponent ? lotNo : undefined, // Refetch when lotNo changes
+      refetchTrigger: isNestedComponent ? refetchKey : undefined, // Refetch when refetchKey changes
+    });
 
   const touchupsCol = useTouchupsColumn(filteredColumns);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
@@ -194,7 +170,11 @@ const Touchups = ({
         }))
       : [];
   }, [data]);
-
+  useEffect(() => {
+    if (isNestedComponent && isTouchupsOpen) {
+      setRefetchKey((prev) => prev + 1);
+    }
+  }, [isTouchupsOpen, isNestedComponent]);
   // 🔹 Row click handler
   const onRowClicked = (params: any) => {
     const clicked = params.data as Touchup;
@@ -456,7 +436,9 @@ const Touchups = ({
           totalPages={data?.total_pages || 1}
           onPageChange={(newPage: number) => setPage(newPage)}
           paginationPageSize={pageSizeInput}
-          storageKey="touchups-grid-columns"
+          onColumnMoved={handleColumnMoved}
+          onResetColumns={handleResetColumns}
+          storageKey={storageKey}
         />
       )}
     </Box>
