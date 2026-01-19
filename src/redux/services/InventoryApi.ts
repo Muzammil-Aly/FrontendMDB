@@ -235,13 +235,13 @@ export const inventoryApi = createApi({
         if (life_cycle_status_code !== undefined)
           params.set(
             "life_cycle_status_code",
-            life_cycle_status_code.toString()
+            life_cycle_status_code.toString(),
           );
 
         if (qty_on_blocked_lot_bin !== undefined)
           params.set(
             "qty_on_blocked_lot_bin",
-            qty_on_blocked_lot_bin.toString()
+            qty_on_blocked_lot_bin.toString(),
           );
 
         return `inventory_Availability?${params.toString()}`;
@@ -267,8 +267,10 @@ export const inventoryApi = createApi({
       any,
       { sku: string; page?: number; page_size?: number }
     >({
-      query: ({ sku }) => {
+      query: ({ sku, page = 1, page_size = 10 }) => {
         const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
         if (sku) params.set("item_no", sku);
 
         return `/nav_eta?${params.toString()}`;
