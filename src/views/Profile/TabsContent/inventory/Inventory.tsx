@@ -40,7 +40,6 @@ import { useGetLifeCycleStatusQuery } from "@/redux/services/profileApi";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Inventory = () => {
-
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
@@ -54,7 +53,7 @@ const Inventory = () => {
   const [locationCodeSearch, setLocationCodeSearch] = useState<string>("");
   const [itemNoInput, setItemNoInput] = useState("");
   const [ItemNoFilter, setItemNoFilter] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [descriptionInput, setDescriptionInput] = useState("");
   const [descriptionFilter, setDescriptionFilter] = useState<
@@ -68,7 +67,7 @@ const Inventory = () => {
   const [lifeCycleInput, setLifeCycleInput] = useState("");
   const [lifeCycleInputTyping, setIsLifeCycleInputTyping] = useState(false);
   const [lifeCycleFilter, setLifeCycleFilter] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [islifeCycleTyping, setisLifeCycleTyping] = useState(false);
 
@@ -76,11 +75,11 @@ const Inventory = () => {
   const [islocationCodeInputTyping, setLocationCodeInputTyping] =
     useState(false);
   const [selectedQtyoneItem, setSelectedQtyoneItem] = useState<any | null>(
-    null
+    null,
   );
 
   const [openDrawer, setOpenDrawer] = useState<null | "qty" | "so" | "po">(
-    null
+    null,
   );
   const [loadingCellType, setLoadingCellType] = useState<
     "qty" | "so" | "po" | null
@@ -114,7 +113,7 @@ const Inventory = () => {
           life_cycle_status_code: item.life_cycle_status_code,
           qty_on_po: item.qty_on_po,
           property_code: item.property_code,
-          unit_price: item.unit_price,
+          map_price: item.map_price,
           qty_on_inspecting_lot: item.qty_on_inspecting_lot,
           expected_receipt_qty: item.expected_receipt_qty,
         }))
@@ -154,7 +153,7 @@ const Inventory = () => {
         setPage(1);
         setItemNoInputTyping(false);
       }, 500),
-    []
+    [],
   );
 
   const debouncedDescription = useMemo(
@@ -164,7 +163,7 @@ const Inventory = () => {
         setPage(1);
         setDescriptionTyping(false);
       }, 500),
-    []
+    [],
   );
   const debouncedLifeCycleStatus = useMemo(
     () =>
@@ -173,7 +172,7 @@ const Inventory = () => {
         setPage(1);
         setIsLifeCycleInputTyping(false);
       }, 5000),
-    []
+    [],
   );
   const baseLayout = [
     { i: "inventory", x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 10 },
@@ -246,7 +245,7 @@ const Inventory = () => {
 
   const handleCellClick = (
     type: "qty" | "sku" | "lot_no" | "so" | "po",
-    data: any
+    data: any,
   ) => {
     // Only handle qty, so, and po clicks in inventory
     if (type !== "qty" && type !== "so" && type !== "po") {
@@ -293,14 +292,18 @@ const Inventory = () => {
   }, [selectedInventoryItem, pendingDrawer]);
 
   // Generate base columns with handleCellClick
-  const baseColumns = useMemo(() => inventory_columns(handleCellClick), [handleCellClick]);
+  const baseColumns = useMemo(
+    () => inventory_columns(handleCellClick),
+    [handleCellClick],
+  );
 
   // Use column preferences hook
-  const { filteredColumns, handleColumnMoved, handleResetColumns, storageKey } = useColumnPreferences({
-    endpoint: "inventory_Availability",
-    tabName: "Inventory",
-    defaultColumns: baseColumns,
-  });
+  const { filteredColumns, handleColumnMoved, handleResetColumns, storageKey } =
+    useColumnPreferences({
+      endpoint: "inventory_Availability",
+      tabName: "Inventory",
+      defaultColumns: baseColumns,
+    });
 
   // Apply column customization
   const tiCol = useInventoryColumn(filteredColumns);
@@ -539,8 +542,8 @@ const Inventory = () => {
                   openDrawer === "qty"
                     ? "80vw"
                     : openDrawer === "so" || openDrawer === "po"
-                    ? "55vw"
-                    : "50vw",
+                      ? "55vw"
+                      : "50vw",
                 backgroundColor: "#f9fafb", // soft neutral tone
                 borderLeft: "1px solid #e0e0e0",
                 boxShadow: "-6px 0 18px rgba(0,0,0,0.1)",
@@ -567,8 +570,8 @@ const Inventory = () => {
                   {openDrawer === "qty"
                     ? "Quantity Available Details"
                     : openDrawer === "so"
-                    ? "Sales Orders"
-                    : "Purchase Orders"}
+                      ? "Sales Orders"
+                      : "Purchase Orders"}
                 </Typography>
 
                 <IconButton

@@ -136,20 +136,23 @@ export const orders = [
     headerName: "Customer ID",
     cellRenderer: CopyCellRenderer,
   },
-  {
-    field: "shipping_agent_code",
-    headerName: "Shipping Agent Code",
-    cellRenderer: CopyCellRenderer,
-  },
 ];
 
 export const orderItems = (
-  onCellClick: (type: "qty" | "sku" | "lot_no" | "so" | "po", data: any) => void
+  onCellClick: (
+    type: "qty" | "sku" | "lot_no" | "so" | "po",
+    data: any,
+  ) => void,
 ) => [
   {
     field: "sku",
     headerName: "SKU",
     cellRenderer: ClickableCellRenderer(onCellClick, "sku"),
+  },
+  {
+    field: "shipping_agent_code",
+    headerName: "Shipping Agent Code",
+    cellRenderer: CopyCellRenderer,
   },
   {
     field: "lot_no",
@@ -1078,7 +1081,7 @@ export const touchups_pens = [
 export const ClickableCellRenderer = (
   onClick: (type: "qty" | "so" | "po" | "sku" | "lot_no", data: any) => void,
   type: "qty" | "so" | "po" | "sku" | "lot_no",
-  loadingType?: "qty" | "so" | "po" | "sku" | "lot_no" | null
+  loadingType?: "qty" | "so" | "po" | "sku" | "lot_no" | null,
 ) => {
   const Renderer = (params: any) => {
     const [hover, setHover] = React.useState(false);
@@ -1133,14 +1136,14 @@ export const ClickableCellRenderer = (
               type === "qty"
                 ? "#1976d2"
                 : type === "so"
-                ? "#2e7d32"
-                : type === "po"
-                ? "#9c27b0"
-                : type === "sku"
-                ? "#1976d2"
-                : type === "lot_no"
-                ? "#2e7d32"
-                : "#1976d2",
+                  ? "#2e7d32"
+                  : type === "po"
+                    ? "#9c27b0"
+                    : type === "sku"
+                      ? "#1976d2"
+                      : type === "lot_no"
+                        ? "#2e7d32"
+                        : "#1976d2",
             cursor: "pointer",
             fontWeight: "bold",
           }}
@@ -1163,7 +1166,7 @@ export const ClickableCellRenderer = (
               }}
             />
           ) : (
-            value ?? "N/A"
+            (value ?? "N/A")
           )}
         </span>
       </div>
@@ -1177,7 +1180,10 @@ export const ClickableCellRenderer = (
 
 // 👇\ now accepts a click handler for qty, so, and po
 export const inventory_columns = (
-  onCellClick: (type: "qty" | "sku" | "lot_no" | "so" | "po", data: any) => void
+  onCellClick: (
+    type: "qty" | "sku" | "lot_no" | "so" | "po",
+    data: any,
+  ) => void,
 ) => [
   {
     field: "item_no",
@@ -1245,8 +1251,8 @@ export const inventory_columns = (
     minWidth: 180,
   },
   {
-    field: "unit_price",
-    headerName: "Unit Price",
+    field: "map_price",
+    headerName: "Map Price",
     cellRenderer: CopyCellRenderer,
     flex: 1,
     minWidth: 220,

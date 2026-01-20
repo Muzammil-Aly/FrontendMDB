@@ -89,7 +89,7 @@ const Touchups = ({
     customer_id?: string;
     sku?: string;
     color_slug?: string;
-    parts_version?: string;
+    parts_item_name_2?: string;
   }>({});
 
   const [inputs, setInputs] = useState({
@@ -98,7 +98,7 @@ const Touchups = ({
     customer_id: "",
     sku: "",
     color_slug: "",
-    parts_version: "",
+    parts_item_name_2: "",
   });
 
   const [isTyping, setIsTyping] = useState({
@@ -107,7 +107,7 @@ const Touchups = ({
     customer_id: false,
     sku: false,
     color_slug: false,
-    parts_version: false,
+    parts_item_name_2: false,
   });
 
   const handlePageSizeChange = (value: number) => {
@@ -126,7 +126,7 @@ const Touchups = ({
         setIsTyping((prev) => ({ ...prev, [key]: false }));
         setPage(1);
       }, 800),
-    []
+    [],
   );
 
   // 🔹 Query Params with clean null handling
@@ -137,13 +137,13 @@ const Touchups = ({
     customer_id: filters.customer_id || undefined,
     sku: filters.sku || sku || undefined,
     color_slug: filters.color_slug || undefined,
-    parts_version: filters.parts_version || undefined,
+    parts_item_name_2: filters.parts_item_name_2 || undefined,
 
-    ...(filters.lot_no ?? lotNo
+    ...((filters.lot_no ?? lotNo)
       ? { lot_no: filters.lot_no ?? lotNo }
       : shouldFilterNull
-      ? { lot_no: "null" } // filter for null lots only
-      : {}),
+        ? { lot_no: "null" } // filter for null lots only
+        : {}),
   };
 
   const { data, isLoading, isFetching } = useGetTouchupsQuery(queryParams);
@@ -378,7 +378,7 @@ const Touchups = ({
         <Box display="flex" gap={1.5} flexWrap="wrap" marginRight={3}>
           {renderFilter("Lot No", "lot_no")}
           {renderFilter("SKU", "sku")}
-          {renderFilter("Parts Version", "parts_version")}
+          {renderFilter("Parts Item Name 2", "parts_item_name_2")}
 
           <FormControl sx={{ width: 150 }}>
             <TextField
