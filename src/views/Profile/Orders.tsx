@@ -42,6 +42,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import dayjs, { Dayjs } from "dayjs";
 import { useColumnPreferences } from "@/hooks/useColumnPreferences";
+import { getUserInfo } from "@/utils/auth/tokenManager";
 
 import {
   useGetCustomerNamesQuery,
@@ -50,6 +51,10 @@ import {
   useGetStatusesQuery,
   useGetFullfillmentStatusesQuery,
 } from "@/redux/services/ordersApi";
+import {
+  useGetFilterPreferencesQuery,
+  useUpdateFilterPreferencesMutation,
+} from "@/redux/services/preferencesApi";
 import DropdownSearchInput from "@/components/Common/CustomSearch/DropdownSearchInput";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -63,6 +68,15 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       endpoint: "customer_orders",
       tabName: "Orders",
       defaultColumns: orders,
+    });
+  const userId =
+    typeof window !== "undefined"
+      ? getUserInfo()?.user_id || undefined
+      : undefined;
+  const { data: filterPrefs, isLoading: isFilterPrefsLoading } =
+    useGetFilterPreferencesQuery({
+      user_id: userId,
+      endpoint: "customer_orders",
     });
 
   // Apply column customization
@@ -535,6 +549,43 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       setIsTyping(true);
     }
   };
+  useEffect(() => {
+    if (filterPrefs?.data) {
+      const enabledFilters = filterPrefs.data
+        .filter((f: any) => f.flag)
+        .map((f: any) => {
+          // map backend keys to your frontend filter keys if needed
+          switch (f.filters) {
+            case "customer_id":
+              return "customerID";
+            case "shipping_address":
+              return "shippingAddress";
+            case "customer_no":
+              return "customerNo";
+            case "tracking":
+              return "tracking";
+            case "profit_name":
+              return "profitName";
+            case "retailer":
+              return "retailerName";
+            case "order_status":
+              return "orderStatus";
+            case "fulfillment_status":
+              return "fulfillmentStatus";
+            case "psi_number":
+              return "psiNumber";
+            case "phone_no":
+              return "phone_no";
+            case "your_reference":
+              return "your_reference";
+            default:
+              return null;
+          }
+        })
+        .filter(Boolean); // remove nulls
+      setActiveFilters(enabledFilters);
+    }
+  }, [filterPrefs]);
 
   // -------------- Dynamic filter handlers ----------------
   const handleToggleFilter = (key: string) => {
@@ -612,6 +663,72 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       // adding
       setActiveFilters((prev) => [...prev, key]);
     }
+  };
+  const [updateFilterPrefs] = useUpdateFilterPreferencesMutation();
+
+  const handleToggleFilterWithSave = (key: string) => {
+    let newActiveFilters: string[];
+    if (activeFilters.includes(key)) {
+      newActiveFilters = activeFilters.filter((f) => f !== key);
+    } else {
+      newActiveFilters = [...activeFilters, key];
+    }
+    setActiveFilters(newActiveFilters);
+
+    // Don't save to API if user is not authenticated
+    if (!userId) {
+      console.warn("Cannot save filter preferences: user not authenticated");
+      return;
+    }
+
+    // Define all filters including default visible ones
+    const allFilters = [
+      { key: "order_id", backendKey: "order_id", alwaysVisible: true },
+      { key: "customer_reference_no", backendKey: "customer_reference_no", alwaysVisible: true },
+      ...filterOptions.map((f) => ({
+        key: f.key,
+        backendKey: (() => {
+          switch (f.key) {
+            case "customerID":
+              return "customer_id";
+            case "shippingAddress":
+              return "shipping_address";
+            case "customerNo":
+              return "customer_no";
+            case "tracking":
+              return "tracking";
+            case "profitName":
+              return "profit_name";
+            case "retailerName":
+              return "retailer";
+            case "orderStatus":
+              return "order_status";
+            case "fulfillmentStatus":
+              return "fulfillment_status";
+            case "psiNumber":
+              return "psi_number";
+            case "phone_no":
+              return "phone_no";
+            case "your_reference":
+              return "your_reference";
+            default:
+              return f.key;
+          }
+        })(),
+        alwaysVisible: false,
+      })),
+    ];
+
+    // Map to backend format
+    const backendData = allFilters.map((f) => ({
+      user_id: userId,
+      endpoint: "customer_orders",
+      filter_name: "CUSTOMER_ORDERS_FILTER_COLUMN_MAP",
+      filters: f.backendKey,
+      flag: f.alwaysVisible || newActiveFilters.includes(f.key),
+    }));
+
+    updateFilterPrefs({ data: backendData });
   };
 
   const handleRemoveFilter = (key: string) => {
@@ -937,7 +1054,8 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       {isActive && (
                         <IconButton
                           size="small"
-                          onClick={() => handleRemoveFilter(f.key)}
+                          // onClick={() => handleRemoveFilter(f.key)}
+                          onClick={() => handleToggleFilterWithSave(f.key)}
                           sx={{ color: "gray" }}
                         >
                           <Close fontSize="small" />
@@ -994,7 +1112,8 @@ const Orders = ({ customerId }: { customerId?: string }) => {
                       control={
                         <Checkbox
                           checked={activeFilters.includes(f.key)}
-                          onChange={() => handleToggleFilter(f.key)}
+                          // onChange={() => handleToggleFilter(f.key)}
+                          onChange={() => handleToggleFilterWithSave(f.key)}
                         />
                       }
                       label={f.label}
