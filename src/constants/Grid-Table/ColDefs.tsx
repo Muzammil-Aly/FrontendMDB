@@ -136,6 +136,27 @@ export const orders = [
     headerName: "Customer ID",
     cellRenderer: CopyCellRenderer,
   },
+  {
+    field: "your_reference",
+    headerName: "Your Reference",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "ship_to_address",
+    headerName: "Ship To Address",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "ship_to_address_2",
+    headerName: "Ship To Address 2",
+    cellRenderer: CopyCellRenderer,
+  },
+  // ship_to_city
+  {
+    field: "ship_to_city",
+    headerName: "Ship To City",
+    cellRenderer: CopyCellRenderer,
+  },
 ];
 
 export const orderItems = (
@@ -353,6 +374,58 @@ export const nav_eta = [
   {
     field: "last_inventory_sync_time",
     headerName: "Last Inventory Sync Time",
+    cellRenderer: CopyCellRenderer,
+  },
+];
+export const item_tracking_comments = [
+  {
+    field: "item_no",
+    headerName: "Item No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "lot_no",
+    headerName: "Lot No",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "parts_version",
+    headerName: "Parts Version",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "transaction_specification",
+    headerName: "Transaction Specification",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "date",
+    headerName: "Date",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "comment_2",
+    headerName: "Comment 2",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "comment",
+    headerName: "Comment",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "blocked",
+    headerName: "Blocked",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "test_quality",
+    headerName: "Test Quality",
+    cellRenderer: CopyCellRenderer,
+  },
+  {
+    field: "country_region_of_origin_code",
+    headerName: "Country/Region of Origin",
     cellRenderer: CopyCellRenderer,
   },
 ];
@@ -1302,6 +1375,14 @@ export const inventory_columns = (
     flex: 1,
     minWidth: 220,
   },
+  // current_vendor,
+  {
+    field: "current_vendor",
+    headerName: "Current Vendor",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 220,
+  },
 ];
 
 export const sales_orders = [
@@ -1381,6 +1462,21 @@ export const purchase_orders = [
   {
     field: "qty_on_po",
     headerName: "Quantity on PO",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 200,
+  },
+  {
+    field: "buy_from_vendor_code",
+    headerName: "Buy From Vendor Code",
+    cellRenderer: CopyCellRenderer,
+    flex: 1,
+    minWidth: 200,
+  },
+
+  {
+    field: "document_no",
+    headerName: "Document No",
     cellRenderer: CopyCellRenderer,
     flex: 1,
     minWidth: 200,

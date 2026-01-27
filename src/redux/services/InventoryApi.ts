@@ -277,6 +277,44 @@ export const inventoryApi = createApi({
       },
     }),
 
+    getItemTrackingComments: builder.query<
+      any,
+      {
+        item_no?: string;
+        // serial_lot_no?: string;
+        serial_lot_no?: string | null;
+
+        date?: string;
+        comment?: string;
+        comment_2?: string;
+        page?: number;
+        page_size?: number;
+      }
+    >({
+      query: ({
+        item_no,
+        serial_lot_no,
+        date,
+        comment,
+        comment_2,
+        page = 1,
+        page_size = 10,
+      }) => {
+        const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("page_size", page_size.toString());
+
+        if (item_no) params.set("item_no", item_no);
+        if (serial_lot_no !== undefined)
+          params.set("lot_no", serial_lot_no ?? "null");
+        if (date) params.set("date", date);
+        if (comment) params.set("comment", comment);
+        if (comment_2) params.set("comment_2", comment_2);
+
+        return `/item_tracking_comments?${params.toString()}`;
+      },
+    }),
+
     getTouchups: builder.query<
       any,
       {
@@ -318,6 +356,7 @@ export const inventoryApi = createApi({
         params.set("page", page.toString());
         params.set("page_size", page_size.toString());
         if (order_id) params.set("order_id", order_id);
+        // if (lot_no !== undefined) params.set("lot_no", lot_no ?? "");
         if (lot_no) params.set("lot_no", lot_no);
         if (sku) params.set("sku", sku);
         if (customer_id) params.set("customer_id", customer_id);
@@ -422,4 +461,5 @@ export const {
   useGetTouchupPensQuery,
   useGetLifeCycleStatusQuery,
   useGetNavETAQuery,
+  useGetItemTrackingCommentsQuery,
 } = inventoryApi;

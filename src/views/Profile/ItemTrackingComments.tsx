@@ -1,115 +1,91 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import AgGridTable from "@/components/ag-grid";
-import { touchups_columns } from "@/constants/Grid-Table/ColDefs";
-import useTouchupsColumn from "@/hooks/Ag-Grid/useTouchupsColumn";
-import { useColumnPreferences } from "@/hooks/useColumnPreferences";
 import {
   Box,
   Typography,
   TextField,
-  CircularProgress,
-  InputAdornment,
   FormControl,
+  InputAdornment,
   IconButton,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
-import { Cancel as CancelIcon } from "@mui/icons-material";
+import AgGridTable from "@/components/ag-grid";
+import { item_tracking_comments } from "@/constants/Grid-Table/ColDefs";
+import useItemTrackingComments from "@/hooks/Ag-Grid/useItemTrackigComments";
 import Loader from "@/components/Common/Loader";
-import { useGetTouchupsQuery } from "@/redux/services/profileApi";
+import { useGetItemTrackingCommentsQuery } from "@/redux/services/profileApi";
 import { getRowStyle } from "@/utils/gridStyles";
+import { useColumnPreferences } from "@/hooks/useColumnPreferences";
+import { Cancel as CancelIcon } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-
 interface Props {
-  lotNo?: string | null;
-  sku?: string | null;
-
+  orderId?: string;
+  sku?: string;
+  lotNo?: string;
+  setSelectedOrderItem?: React.Dispatch<React.SetStateAction<any | null>>;
+  orderItemSec?: boolean;
+  filters?: string;
   shouldFilterNull?: boolean;
-  setSelectedTouchup?: React.Dispatch<React.SetStateAction<Touchup | null>>;
-  setSelectedTouchupItemNo?: React.Dispatch<React.SetStateAction<any | null>>;
 }
 
-interface Touchup {
-  order_id: string;
-  lot_no: string | null;
-  sku: string;
-  customer_id: string | null;
-  parts_item_no: string | null;
-  parts_item_name: string | null;
-  parts_item_name_2: string | null;
-  touchup_pen_item_no: string | null;
-  touchup_pen_item_name: string | null;
-  brand: string | null;
-  color_slug: string | null;
-  color_name: string | null;
-  parts_version: string | null;
-}
-
-const Touchups = ({
-  lotNo,
+const ItemTrackingComments = ({
   sku,
+  lotNo,
   shouldFilterNull = false,
-  setSelectedTouchup,
-  setSelectedTouchupItemNo,
 }: Props) => {
+  const isNestedComponent = !!lotNo || !!sku;
+  const [refetchKey, setRefetchKey] = useState<number>(0);
   const { isActive, activeTabName, isTouchupPensOpen, isTouchupsOpen } =
     useSelector((state: RootState) => state.tab);
-
-  // Use column preferences hook
-  // Disable tab management when used as nested component (lotNo, sku props provided OR shouldFilterNull explicitly set)
-  const isNestedComponent = !!lotNo || !!sku || shouldFilterNull === false;
-  const [refetchKey, setRefetchKey] = useState<number>(0);
-
+  // Column preferences hook
   const { filteredColumns, handleColumnMoved, handleResetColumns, storageKey } =
     useColumnPreferences({
-      endpoint: "touchup_part",
-      tabName: "Touchups",
-      defaultColumns: touchups_columns,
-      disableTabManagement: isNestedComponent,
+      endpoint: "item_tracking_comments",
+      tabName: "Item Tracking Comments",
+      defaultColumns: item_tracking_comments,
+      disableTabManagement: false,
+      // parentTabName: "orders",
       parentTabName: isNestedComponent ? ["Inventory", "Orders"] : undefined, // Refetch when Inventory or Orders tab is activated
       isVisible: isNestedComponent ? isTouchupsOpen : undefined, // Track visibility for nested component
-      // refetchTrigger: isNestedComponent ? lotNo : undefined, // Refetch when lotNo changes
       refetchTrigger: isNestedComponent ? refetchKey : undefined, // Refetch when refetchKey changes
     });
 
-  const touchupsCol = useTouchupsColumn(filteredColumns);
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
-  const [selectedTouchupDetail, setSelectedTouchupDetail] =
-    useState<Touchup | null>(null);
+  const orderItemsCol = useItemTrackingComments(filteredColumns);
 
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
   const [pageSizeInput, setPageSizeInput] = useState(pageSize);
+  const [highlightedId, setHighlightedId] = useState<string | number | null>(
+    null,
+  );
 
   // 🔹 Filters
   const [filters, setFilters] = useState<{
-    lot_no?: string;
-    order_id?: string;
-    customer_id?: string;
-    sku?: string;
-    color_slug?: string;
-    parts_item_name_2?: string;
+    item_no?: string;
+    serial_lot_no?: string;
+    transaction_specification?: string;
   }>({});
-
-  const [inputs, setInputs] = useState({
-    lot_no: "",
-    order_id: "",
-    customer_id: "",
-    sku: "",
-    color_slug: "",
-    parts_item_name_2: "",
+  const [inputs, setInputs] = useState<{
+    item_no: string;
+    serial_lot_no: string;
+    transaction_specification: string;
+  }>({
+    item_no: "",
+    serial_lot_no: "",
+    transaction_specification: "",
   });
-
-  const [isTyping, setIsTyping] = useState({
-    lot_no: false,
-    order_id: false,
-    customer_id: false,
-    sku: false,
-    color_slug: false,
-    parts_item_name_2: false,
+  const [isTyping, setIsTyping] = useState<{
+    item_no: boolean;
+    serial_lot_no: boolean;
+    transaction_specification: boolean;
+  }>({
+    item_no: false,
+    serial_lot_no: false,
+    transaction_specification: false,
   });
 
   const handlePageSizeChange = (value: number) => {
@@ -131,88 +107,47 @@ const Touchups = ({
     [],
   );
 
-  // 🔹 Query Params with clean null handling
+  // 🔹 Query Params
   const queryParams = {
     page,
     page_size: pageSizeInput,
-    order_id: filters.order_id || undefined,
-    customer_id: filters.customer_id || undefined,
-    sku: filters.sku || sku || undefined,
-    color_slug: filters.color_slug || undefined,
-    parts_item_name_2: filters.parts_item_name_2 || undefined,
-
-    ...((filters.lot_no ?? lotNo)
-      ? { lot_no: filters.lot_no ?? lotNo }
-      : shouldFilterNull
-        ? { lot_no: "null" } // filter for null lots only
-        : {}),
+    item_no: filters.item_no ? filters.item_no : sku,
+    serial_lot_no: filters.serial_lot_no ? filters.serial_lot_no : lotNo,
+    transaction_specification: filters.transaction_specification
+      ? filters.transaction_specification
+      : undefined,
   };
 
-  const { data, isLoading, isFetching } = useGetTouchupsQuery(queryParams);
+  const { data, isLoading, isFetching } =
+    useGetItemTrackingCommentsQuery(queryParams);
 
-  // 🔹 Transform Data
+  // 🔹 Map response for AG Grid
   const rowData = useMemo(() => {
     const items = data?.data || data || [];
-    return Array.isArray(items)
-      ? items.map((item: any) => ({
-          order_id: item.order_id,
-          lot_no: item.lot_no,
-          sku: item.sku,
-          customer_id: item.customer_id,
-          parts_item_no: item.parts_item_no,
-          parts_item_name: item.parts_item_name,
-          parts_item_name_2: item.parts_item_name_2,
-          touchup_pen_item_no: item.touchup_pen_item_no,
-          touchup_pen_item_name: item.touchup_pen_item_name,
-          brand: item.brand,
-          color_slug: item.color_slug,
-          color_name: item.color_name,
-          parts_version: item.parts_version,
-          potential_qty_available: item.potential_qty_available,
-        }))
-      : [];
-  }, [data]);
-  useEffect(() => {
-    if (isNestedComponent && isTouchupsOpen) {
-      setRefetchKey((prev) => prev + 1);
-    }
-  }, [isTouchupsOpen, isNestedComponent]);
-  // 🔹 Row click handler
-  const onRowClicked = (params: any) => {
-    const clicked = params.data as Touchup;
-    if (!clicked) return;
-    if (highlightedId === clicked.color_slug) {
-      setSelectedTouchupDetail(null);
-      setHighlightedId(null);
-      setSelectedTouchup?.(null);
-      setSelectedTouchupItemNo?.(null);
-    } else {
-      setSelectedTouchupDetail(clicked);
-      setHighlightedId(clicked.color_slug);
-      setSelectedTouchup?.(clicked);
-      setSelectedTouchupItemNo?.(clicked.sku);
-    }
-  };
+    if (!Array.isArray(items)) return [];
 
-  // 🔹 Auto-select first row when data changes
-  useEffect(() => {
-    if (data?.data?.length > 0) {
-      setSelectedTouchupDetail(data.data[0]);
-      setSelectedTouchup?.(data.data[0]);
-    } else {
-      setSelectedTouchupDetail(null);
-      setSelectedTouchup?.(null);
-    }
+    return items.map((item: any) => ({
+      item_no: item.item_no,
+      lot_no: item.lot_no,
+      parts_version: item.parts_version,
+      transaction_specification: item.transaction_specification,
+      date: item.date,
+      comment_2: item.comment_2,
+      comment: item.comment,
+      blocked: item.blocked,
+      test_quality: item.test_quality,
+      country_region_of_origin_code: item.country_region_of_origin_code,
+    }));
   }, [data]);
 
-  // 🔹 Reset Filter
+  // 🔹 Reset filter
   const handleCancelFilter = (key: keyof typeof filters) => {
     setInputs((prev) => ({ ...prev, [key]: "" }));
     setFilters((prev) => ({ ...prev, [key]: undefined }));
     setPage(1);
   };
 
-  // 🔹 Render Input Filter
+  // 🔹 Render input filter
   const renderFilter = (label: string, key: keyof typeof filters) => (
     <FormControl sx={{ width: 150 }}>
       <TextField
@@ -269,7 +204,6 @@ const Touchups = ({
       />
     </FormControl>
   );
-  // 🔹 If no lot number provided and should not filter nulls
   if (!lotNo && shouldFilterNull) {
     return (
       <Box
@@ -278,6 +212,7 @@ const Touchups = ({
         alignItems="center"
         justifyContent="center"
         height={320}
+        mt={10}
         sx={{
           background: "linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%)",
           borderRadius: "16px",
@@ -331,23 +266,16 @@ const Touchups = ({
             lineHeight: 1.5,
           }}
         >
-          Please select or provide a valid <strong>Lot No</strong> to view
-          touchup details.
+          Please select or provide a valid <strong>Lot No</strong> to view Item
+          Tracking Comments.
         </Typography>
       </Box>
     );
   }
-
   return (
     <Box display="flex" flexDirection="column" width="100%" gap={2}>
-      {/* 🔹 Header */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
-        gap={1.5}
-      >
+      {/* Header */}
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography
           className="drag-handle"
           variant="caption"
@@ -360,7 +288,7 @@ const Touchups = ({
             fontSize: "1em",
             borderRadius: "3px 5px 5px 3px",
             position: "relative",
-            display: "inline-block",
+            mb: 2,
             "::before": {
               content: '""',
               position: "absolute",
@@ -375,15 +303,16 @@ const Touchups = ({
             },
           }}
         >
-          Replacements Parts
+          Item Tracking Comments
         </Typography>
 
-        {/* 🔹 Filters */}
+        {/* Filters */}
         <Box display="flex" gap={1.5} flexWrap="wrap" marginRight={3}>
-          {renderFilter("Lot No", "lot_no")}
-          {renderFilter("SKU", "sku")}
-          {renderFilter("Parts Item Name 2", "parts_item_name_2")}
+          {renderFilter("Item No", "item_no")}
+          {renderFilter("Lot No", "serial_lot_no")}
+          {renderFilter("Trans Spec", "transaction_specification")}
 
+          {/* Page Size */}
           <FormControl sx={{ width: 150 }}>
             <TextField
               select
@@ -424,21 +353,28 @@ const Touchups = ({
         </Box>
       </Box>
 
-      {/* 🔹 Table */}
+      {/* Table */}
       {isLoading || isFetching ? (
         <Loader />
+      ) : rowData.length === 0 ? (
+        <Typography color="text.secondary" fontSize={14}>
+          {sku
+            ? `No data found for Item No "${sku}" and lot no "${lotNo}"`
+            : `Please select an Item  to view data`}
+        </Typography>
       ) : (
         <AgGridTable
           rowData={rowData}
-          columnDefs={touchupsCol}
-          onRowClicked={onRowClicked}
+          columnDefs={orderItemsCol}
+          // height={480}
           height={lotNo ? 300 : 400}
-          getRowStyle={getRowStyle(highlightedId)}
           enablePagination
-          pagination={false}
+          getRowStyle={getRowStyle(highlightedId)}
           currentPage={page}
           totalPages={data?.total_pages || 1}
+          // onPageChange={(newPage) => setPage(newPage)}
           onPageChange={(newPage: number) => setPage(newPage)}
+          pagination={false}
           paginationPageSize={pageSizeInput}
           onColumnMoved={handleColumnMoved}
           onResetColumns={handleResetColumns}
@@ -449,4 +385,4 @@ const Touchups = ({
   );
 };
 
-export default Touchups;
+export default ItemTrackingComments;

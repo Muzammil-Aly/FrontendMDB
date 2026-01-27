@@ -1,10 +1,20 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography, Avatar, Popover } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Avatar,
+  Popover,
+  Divider,
+} from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HistoryIcon from "@mui/icons-material/History";
 import { useRouter } from "next/navigation";
+import { useLogoutMutation } from "@/redux/services/authApi";
+import UserActivityLog from "./UserActivityLog";
+import { clearAuthData } from "@/utils/auth/tokenManager";
 
 interface SidebarItem {
   key: string;
@@ -27,21 +37,79 @@ const Sidebar: React.FC<SidebarProps> = ({
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [logout] = useLogoutMutation();
 
   // Popover state
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [activityLogOpen, setActivityLogOpen] = useState(false);
+
+  // Check if current user is admin (mdb1)
+  const isAdmin = userId === "mdb0";
 
   useEffect(() => {
     const loadUser = () => {
       const storedName = localStorage.getItem("userName");
       const storedEmail = localStorage.getItem("userEmail");
+      const storedUserId = localStorage.getItem("userId");
       setUserName(storedName);
       setUserEmail(storedEmail);
+      setUserId(storedUserId);
     };
 
     loadUser();
     const timer = setTimeout(loadUser, 300);
     return () => clearTimeout(timer);
+  }, []);
+  useEffect(() => {
+    // Check if this is a refresh (marker persists) vs new tab (marker cleared)
+    const wasRefreshing = sessionStorage.getItem("is_refreshing");
+    const hadActiveSession = localStorage.getItem("had_active_session");
+
+    if (wasRefreshing) {
+      // This was a refresh, not a tab close - clear the marker, keep user logged in
+      sessionStorage.removeItem("is_refreshing");
+    } else if (hadActiveSession && !sessionStorage.getItem("session_active")) {
+      // Had a session before, but sessionStorage is fresh = tab was closed and reopened
+      // Clear auth data and redirect to sign-in
+      localStorage.removeItem("had_active_session");
+      clearAuthData();
+      window.location.href = "/sign-in";
+      return;
+    }
+
+    // Mark session as active in both storages
+    sessionStorage.setItem("session_active", "true");
+    localStorage.setItem("had_active_session", "true");
+
+    const handleBeforeUnload = () => {
+      // Set a marker before unload - will persist if refresh, cleared if tab close
+      sessionStorage.setItem("is_refreshing", "true");
+
+      // Call logout API using fetch with keepalive (works reliably during page unload)
+      const refreshToken = localStorage.getItem("refresh_token");
+      const accessToken = localStorage.getItem("access_token");
+      if (refreshToken) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const logoutUrl = `${baseUrl}/auth/logout`;
+
+        fetch(logoutUrl, {
+          method: "POST",
+          body: JSON.stringify({ refresh_token: refreshToken }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          keepalive: true,
+        });
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -53,6 +121,33 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const open = Boolean(anchorEl);
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem("refresh_token");
+
+    // Clear session markers and auth data before redirecting
+    localStorage.removeItem("had_active_session");
+    sessionStorage.removeItem("session_active");
+    sessionStorage.removeItem("is_refreshing");
+    clearAuthData();
+    handleClose();
+
+    try {
+      if (refreshToken) {
+        const response = await logout({
+          refresh_token: refreshToken,
+        }).unwrap();
+
+        if (response?.status === 200) {
+          console.log(" Logout success:", response.message);
+        }
+      }
+    } catch (err) {
+      console.error(" Logout error:", err);
+    }
+
+    // Redirect after clearing auth data
+    window.location.href = "/sign-in";
+  };
 
   return (
     <Box
@@ -267,14 +362,51 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             {userName || "Guest User"}
           </Typography>
+          {isAdmin && (
+            <>
+              <Button
+                fullWidth
+                variant="text"
+                onClick={() => {
+                  handleClose();
+                  setActivityLogOpen(true);
+                }}
+                startIcon={<HistoryIcon />}
+                disableRipple
+                disableElevation
+                sx={{
+                  textTransform: "none",
+                  fontWeight: 600,
+                  borderRadius: "8px",
+                  color: "#fff",
+                  justifyContent: "flex-start",
+                  mb: 1,
+                  padding: "8px 16px",
+                  "&:hover": {
+                    bgcolor: "transparent",
+                    transform: "none",
+                    padding: "8px 16px",
+                  },
+                  "&:focus": {
+                    bgcolor: "transparent",
+                    transform: "none",
+                  },
+                  "&:active": {
+                    bgcolor: "transparent",
+                    transform: "none",
+                  },
+                }}
+              >
+                Activity Log
+              </Button>
+              <Divider sx={{ bgcolor: "rgba(255,255,255,0.1)", mb: 1 }} />
+            </>
+          )}
           <Button
             fullWidth
             variant="contained"
             color="error"
-            onClick={() => {
-              handleClose();
-              onLogout();
-            }}
+            onClick={handleLogout}
             startIcon={<LogoutIcon />}
             sx={{
               textTransform: "none",
@@ -287,6 +419,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             Logout
           </Button>
         </Popover>
+
+        {isAdmin && (
+          <UserActivityLog
+            open={activityLogOpen}
+            onClose={() => setActivityLogOpen(false)}
+          />
+        )}
       </Box>
     </Box>
   );

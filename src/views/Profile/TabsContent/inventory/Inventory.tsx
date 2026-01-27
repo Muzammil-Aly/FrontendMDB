@@ -37,6 +37,7 @@ import InventoryQTYtwo from "./InventoryQTYtwo";
 import MultiLocationInput from "./MultiLocationInput";
 import MultiLocationInputWithSuggestions from "./MultiLocationInput";
 import { useGetLifeCycleStatusQuery } from "@/redux/services/profileApi";
+import ItemTrackingComments from "../../ItemTrackingComments";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Inventory = () => {
@@ -84,7 +85,9 @@ const Inventory = () => {
   const [loadingCellType, setLoadingCellType] = useState<
     "qty" | "so" | "po" | null
   >(null);
-
+  const [selectedTouchupItemNo, setSelectedTouchupItemNo] = useState<
+    any | null
+  >(null);
   const { data, isLoading, isFetching } = useGetInventoryQuery({
     page,
     page_size: pageSize,
@@ -116,6 +119,7 @@ const Inventory = () => {
           map_price: item.map_price,
           qty_on_inspecting_lot: item.qty_on_inspecting_lot,
           expected_receipt_qty: item.expected_receipt_qty,
+          current_vendor: item.current_vendor,
         }))
       : [];
   }, [data]);
@@ -174,11 +178,37 @@ const Inventory = () => {
       }, 5000),
     [],
   );
-  const baseLayout = [
-    { i: "inventory", x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 10 },
-    { i: "touchups", x: 0, y: 20, w: 12, h: 14, minH: 8 },
-    { i: "touchups_pens", x: 0, y: 35, w: 12, h: 14, minH: 8 },
-  ];
+  const baseLayout = useMemo(() => {
+    const layout = [
+      { i: "inventory", x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 10 },
+      { i: "touchups", x: 0, y: 20, w: 12, h: 14, minH: 8 },
+      {
+        i: "item_tracking_comments",
+        x: 0,
+        y: 30,
+        w: 12,
+        h: 15,
+        minH: 8,
+      },
+      { i: "touchups_pens", x: 0, y: 35, w: 12, h: 14, minH: 8 },
+    ];
+
+    // if (selectedTouchupItemNo) {
+    //   layout.push({
+    //     i: "item_tracking_comments",
+    //     x: 0,
+    //     y: 30,
+    //     w: 12,
+    //     h: 16,
+    //     minH: 8,
+    //   });
+    //   layout.push({ i: "touchups_pens", x: 0, y: 55, w: 12, h: 14, minH: 8 });
+    // } else {
+    //   layout.push({ i: "touchups_pens", x: 0, y: 35, w: 12, h: 14, minH: 8 });
+    // }
+
+    return layout;
+  }, [selectedTouchupItemNo]);
 
   // const handleCloseDrawer = () => setOpenDrawer(null);
 
@@ -307,6 +337,11 @@ const Inventory = () => {
 
   // Apply column customization
   const tiCol = useInventoryColumn(filteredColumns);
+
+  const handleSelectOrderItem = (item: any) => {
+    setSelectedTouchupItemNo(item);
+    console.log("Selected Touchup Item No:", item);
+  };
   return (
     <Box sx={{ width: "100%", minHeight: "100vh", overflow: "hidden" }}>
       {/* ================= Filters ================= */}
@@ -442,7 +477,24 @@ const Inventory = () => {
             ml: 5,
           }}
         >
-          <Touchups shouldFilterNull={false} />
+          <Touchups
+            shouldFilterNull={false}
+            setSelectedTouchupItemNo={handleSelectOrderItem}
+          />
+        </Paper>
+
+        <Paper
+          key="item_tracking_comments"
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            ml: 5,
+          }}
+        >
+          <ItemTrackingComments sku={selectedTouchupItemNo} />
         </Paper>
 
         {/* Touchups Pens */}

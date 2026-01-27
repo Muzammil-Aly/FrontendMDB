@@ -28,6 +28,7 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import LocationItemLot from "../LocationItemLot";
 import NavETA from "../NavETA";
+import ItemTrackingComments from "../ItemTrackingComments";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -230,7 +231,7 @@ const ResponsiveDashboard = ({
         x: 0,
         y: yPosition,
         w: 12,
-        h: 20,
+        h: 36,
         minW: 3,
         minH: 8,
       });
@@ -361,6 +362,11 @@ const ResponsiveDashboard = ({
                 lotNo={selectedOrderItem.lot_no}
                 sku={selectedOrderItem.sku}
                 setSelectedTouchup={handleSelectTouchup}
+                shouldFilterNull
+              />
+              <ItemTrackingComments
+                sku={selectedOrderItem.sku}
+                lotNo={selectedOrderItem.lot_no}
                 shouldFilterNull
               />
               {isTouchupPensOpen && selectedTouchup && (
