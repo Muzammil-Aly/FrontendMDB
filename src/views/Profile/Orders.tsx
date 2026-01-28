@@ -43,6 +43,7 @@ import { RootState } from "../../redux/store";
 import dayjs, { Dayjs } from "dayjs";
 import { useColumnPreferences } from "@/hooks/useColumnPreferences";
 import { getUserInfo } from "@/utils/auth/tokenManager";
+import toast from "react-hot-toast";
 
 import {
   useGetCustomerNamesQuery,
@@ -666,25 +667,101 @@ const Orders = ({ customerId }: { customerId?: string }) => {
   };
   const [updateFilterPrefs] = useUpdateFilterPreferencesMutation();
 
-  const handleToggleFilterWithSave = (key: string) => {
+  // const handleToggleFilterWithSave = (key: string) => {
+  //   let newActiveFilters: string[];
+  //   if (activeFilters.includes(key)) {
+  //     newActiveFilters = activeFilters.filter((f) => f !== key);
+  //   } else {
+  //     newActiveFilters = [...activeFilters, key];
+  //   }
+  //   setActiveFilters(newActiveFilters);
+
+  //   // Don't save to API if user is not authenticated
+  //   if (!userId) {
+  //     console.warn("Cannot save filter preferences: user not authenticated");
+  //     return;
+  //   }
+
+  //   // Define all filters including default visible ones
+  //   const allFilters = [
+  //     { key: "order_id", backendKey: "order_id", alwaysVisible: true },
+  //     {
+  //       key: "customer_reference_no",
+  //       backendKey: "customer_reference_no",
+  //       alwaysVisible: true,
+  //     },
+  //     ...filterOptions.map((f) => ({
+  //       key: f.key,
+  //       backendKey: (() => {
+  //         switch (f.key) {
+  //           case "customerID":
+  //             return "customer_id";
+  //           case "shippingAddress":
+  //             return "shipping_address";
+  //           case "customerNo":
+  //             return "customer_no";
+  //           case "tracking":
+  //             return "tracking";
+  //           case "profitName":
+  //             return "profit_name";
+  //           case "retailerName":
+  //             return "retailer";
+  //           case "orderStatus":
+  //             return "order_status";
+  //           case "fulfillmentStatus":
+  //             return "fulfillment_status";
+  //           case "psiNumber":
+  //             return "psi_number";
+  //           case "phone_no":
+  //             return "phone_no";
+  //           case "your_reference":
+  //             return "your_reference";
+  //           default:
+  //             return f.key;
+  //         }
+  //       })(),
+  //       alwaysVisible: false,
+  //     })),
+  //   ];
+
+  //   // Map to backend format
+  //   const backendData = allFilters.map((f) => ({
+  //     user_id: userId,
+  //     endpoint: "customer_orders",
+  //     filter_name: "CUSTOMER_ORDERS_FILTER_COLUMN_MAP",
+  //     filters: f.backendKey,
+  //     flag: f.alwaysVisible || newActiveFilters.includes(f.key),
+  //   }));
+
+  //   updateFilterPrefs({ data: backendData });
+  // };
+
+  const handleToggleFilterWithSave = async (key: string) => {
+    const actionLabel = filterOptions.find((f) => f.key === key)?.label || key;
+
     let newActiveFilters: string[];
+
     if (activeFilters.includes(key)) {
       newActiveFilters = activeFilters.filter((f) => f !== key);
     } else {
       newActiveFilters = [...activeFilters, key];
     }
+
     setActiveFilters(newActiveFilters);
 
-    // Don't save to API if user is not authenticated
+    // 🧠 Prevent updates if not authenticated
     if (!userId) {
-      console.warn("Cannot save filter preferences: user not authenticated");
+      toast.error("User not authenticated");
       return;
     }
 
-    // Define all filters including default visible ones
     const allFilters = [
       { key: "order_id", backendKey: "order_id", alwaysVisible: true },
-      { key: "customer_reference_no", backendKey: "customer_reference_no", alwaysVisible: true },
+      {
+        key: "customer_reference_no",
+        backendKey: "customer_reference_no",
+        alwaysVisible: true,
+      },
       ...filterOptions.map((f) => ({
         key: f.key,
         backendKey: (() => {
@@ -719,7 +796,6 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       })),
     ];
 
-    // Map to backend format
     const backendData = allFilters.map((f) => ({
       user_id: userId,
       endpoint: "customer_orders",
@@ -728,7 +804,42 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       flag: f.alwaysVisible || newActiveFilters.includes(f.key),
     }));
 
-    updateFilterPrefs({ data: backendData });
+    // ------------------ 🔐 SERIALIZED API SAVE WITH TOAST FEEDBACK ------------------
+    try {
+      const toastId = toast.loading("Saving filter preferences...");
+
+      // Wait for any ongoing save (serialization lock)
+      if ((window as any).__isSavingFilterPrefs) {
+        console.log("[Filters] Waiting for previous save to finish...");
+        while ((window as any).__isSavingFilterPrefs) {
+          await new Promise((r) => setTimeout(r, 300));
+        }
+      }
+
+      (window as any).__isSavingFilterPrefs = true;
+
+      // Actual write
+      const result = await updateFilterPrefs({ data: backendData }).unwrap();
+
+      // Optional: you can re-fetch filters here if you have a refetch hook
+      // setTimeout(() => refetchFilterPreferences(), 150);
+
+      if (result?.success || result?.status === "success") {
+        toast.success(
+          activeFilters.includes(key)
+            ? `Filter "${actionLabel}" removed successfully`
+            : `Filter "${actionLabel}" added successfully`,
+          { id: toastId },
+        );
+      } else {
+        toast.error("Failed to update filter preferences.", { id: toastId });
+      }
+    } catch (error) {
+      console.error("[Filters] Failed to update preferences:", error);
+      toast.error("Error saving filter preferences.", { duration: 2500 });
+    } finally {
+      (window as any).__isSavingFilterPrefs = false; // release lock
+    }
   };
 
   const handleRemoveFilter = (key: string) => {
