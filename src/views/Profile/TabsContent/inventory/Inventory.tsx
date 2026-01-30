@@ -494,7 +494,7 @@ const Inventory = () => {
             ml: 5,
           }}
         >
-          <ItemTrackingComments sku={selectedTouchupItemNo} />
+          <ItemTrackingComments />
         </Paper>
 
         {/* Touchups Pens */}

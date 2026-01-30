@@ -297,6 +297,7 @@ const Orders = ({ customerId }: { customerId?: string }) => {
       ship_to_address: item.ship_to_address || "N/A",
       ship_to_address_2: item.ship_to_address_2 || "N/A",
       ship_to_city: item.ship_to_city || "N/A",
+      location_code: item.location_code || "N/A",
     }));
   }, [data]);
 
