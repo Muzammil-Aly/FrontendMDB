@@ -116,6 +116,7 @@ const ItemTrackingComments = ({
     transaction_specification: filters.transaction_specification
       ? filters.transaction_specification
       : undefined,
+    isFromProps: !filters.item_no && !!sku, // true when using sku prop, false when searching
   };
 
   const { data, isLoading, isFetching } =

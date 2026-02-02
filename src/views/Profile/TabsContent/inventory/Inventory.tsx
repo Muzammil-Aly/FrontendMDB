@@ -38,6 +38,7 @@ import MultiLocationInput from "./MultiLocationInput";
 import MultiLocationInputWithSuggestions from "./MultiLocationInput";
 import { useGetLifeCycleStatusQuery } from "@/redux/services/profileApi";
 import ItemTrackingComments from "../../ItemTrackingComments";
+import NavETA from "../../NavETA";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Inventory = () => {
