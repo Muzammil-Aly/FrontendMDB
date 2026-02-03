@@ -283,6 +283,7 @@ export const inventoryApi = createApi({
         item_no?: string;
         // serial_lot_no?: string;
         serial_lot_no?: string | null;
+        transaction_specification?: string;
 
         date?: string;
         comment?: string;
@@ -298,6 +299,7 @@ export const inventoryApi = createApi({
         date,
         comment,
         comment_2,
+        transaction_specification,
         page = 1,
         page_size = 10,
         isFromProps = false,
@@ -318,7 +320,8 @@ export const inventoryApi = createApi({
         if (date) params.set("date", date);
         if (comment) params.set("comment", comment);
         if (comment_2) params.set("comment_2", comment_2);
-
+        if (transaction_specification)
+          params.set("transaction_specification", transaction_specification);
         return `/item_tracking_comments?${params.toString()}`;
       },
     }),
