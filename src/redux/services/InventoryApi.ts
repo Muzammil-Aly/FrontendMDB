@@ -216,7 +216,9 @@ export const inventoryApi = createApi({
         params.set("page", page.toString());
         params.set("page_size", page_size.toString());
 
-        if (item_no) params.set("item_no", item_no);
+        // if (item_no) params.set("item_no", item_no);
+        if (item_no) params.set("item_no", `like:${item_no}`);
+
         if (Array.isArray(location_code) && location_code.length > 0) {
           params.set("location_code", location_code.join(","));
         } else if (location_code) {
