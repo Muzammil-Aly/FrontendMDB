@@ -105,7 +105,11 @@ const CopyCellRenderer: React.FC<ICellRendererParams> = (props) => {
     }
   };
 
-  const isOrderUrl = colDef?.field === "order_url" && value && value !== "N/A";
+  // const isOrderUrl = colDef?.field === "order_url" && value && value !== "N/A";
+  const isOrderUrl =
+    (colDef?.field === "order_url" || colDef?.field === "url") &&
+    value &&
+    value !== "N/A";
 
   return (
     <div
